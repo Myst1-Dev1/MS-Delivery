@@ -12,6 +12,10 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      backgroundImage: {
+        "home-bg": "url(/images/home-bg.webp)",
+        "restaurant-bg": "url(/images/restaurant-photo.webp)"
+      }
     },
   },
   plugins: [],
