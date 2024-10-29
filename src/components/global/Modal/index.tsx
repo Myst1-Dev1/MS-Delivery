@@ -11,9 +11,9 @@ interface ModaLProps {
 
 export function Modal({ open, setOpen, children }:ModaLProps) {
 
-    useGSAP(() => {
-        gsap.fromTo('.modal', { opacity:0 }, { opacity:1, duration:0.4, ease:'power1.inOut' })
-    }, []);
+    // useGSAP(() => {
+    //     gsap.fromTo('.modal', { opacity:0 }, { opacity:1, duration:0.4, ease:'power1.inOut' })
+    // }, []);
 
     return (
         <>
