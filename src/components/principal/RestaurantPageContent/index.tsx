@@ -3,25 +3,33 @@
 import { About } from "@/components/principal/RestaurantPageContent/About";
 import { Categories } from "@/components/principal/RestaurantPageContent/Categories";
 import { Testimonials } from "@/components/principal/RestaurantPageContent/Testimonials";
+import { RestaurantDetails } from "@/types/restaurantDetails";
 import { useState } from "react";
 import { FaMapMarkerAlt, FaStar } from "react-icons/fa";
 
-export function RestaurantPageContent() {
+interface RestaurantPageContentProps {
+    restaurantDetails:RestaurantDetails[];
+}
+
+export function RestaurantPageContent({ restaurantDetails }:RestaurantPageContentProps) {
     const [activeMenu, setActiveMenu] = useState('categories');
+
+    console.log(restaurantDetails);
 
     return (
         <>
-            <div className="px-4 lg:px-16 py-10">
-                <div className="bg-restaurant-bg bg-center w-full h-60 bg-cover rounded-md"></div>
+            {restaurantDetails?.map(detail => (
+            <div key={detail.id} className="px-4 lg:px-16 py-10">
+                <div style={{backgroundImage: `url(${detail.banner.url})`}} className="bg-center w-full h-60 bg-cover rounded-md"></div>
                 <div className="mt-5 flex flex-col gap-2">
-                    <h2 className="text-xl font-bold">Big Bang Burguer</h2>
+                    <h2 className="text-xl font-bold">{detail.title}</h2>
                     <div className="flex gap-3 items-center">
                         <FaStar className="text-yellow-500" />
                         <span className="text-gray-500">5.0 (3)</span>
                     </div>
                     <div className="flex gap-3 items-center text-gray-500">
                         <FaMapMarkerAlt />
-                        <h6 className="font-bold">Rua Lorem da Silva Av 14, São John Doe, - RJD</h6>
+                        <h6 className="font-bold">{detail.address}</h6>
                     </div>
                 </div>
 
@@ -34,11 +42,11 @@ export function RestaurantPageContent() {
                         </div>
                     </div>
 
-                    {activeMenu === 'categories' ? <Categories /> : ''}
-                    {activeMenu === 'about' ? <About /> : ''}
+                    {activeMenu === 'categories' ? <Categories data={detail.categorie} type={detail.foodTypes} /> : ''}
+                    {activeMenu === 'about' ? <About about={detail.about} /> : ''}
                     {activeMenu === 'testimonials' ? <Testimonials /> : ''}
                 </div>
-            </div>
+            </div>))}
         </>
     )
 }

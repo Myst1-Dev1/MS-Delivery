@@ -4,4 +4,9 @@
 
 .scrollDontShow::-webkit-scrollbar {
     display: none;
-  }
+}
+
+.dragging {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+}

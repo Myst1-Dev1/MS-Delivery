@@ -1,6 +1,7 @@
 'use client';
 
 import Image from "next/image";
+import { FormEvent, useRef } from "react";
 
 const foodTypeData = [
     {
@@ -67,10 +68,45 @@ const foodTypeData = [
 
 export function FoodType() {
 
+    const sliderRef:any = useRef(null);
+    let isDragging = false;
+    let startX:any;
+    let scrollLeft:any;
+
+    const handleMouseDown = (e:any) => {
+        isDragging = true;
+        sliderRef.current.classList.add("dragging");
+        startX = e.pageX - sliderRef.current.offsetLeft;
+        scrollLeft = sliderRef.current.scrollLeft;
+    };
+
+    const handleMouseLeave = () => {
+        isDragging = false;
+        sliderRef.current.classList.remove("dragging");
+    };
+
+    const handleMouseUp = () => {
+        isDragging = false;
+        sliderRef.current.classList.remove("dragging");
+    };
+
+    const handleMouseMove = (e:FormEvent | any) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - sliderRef.current.offsetLeft;
+        const walk = (x - startX) * 2;
+        sliderRef.current.scrollLeft = Math.max(0, scrollLeft - walk);
+    };
+
     return (
         <>
-            <div 
-                className="overflow-hidden max-w-4xl lg:max-w-7xl 2xl:max-w-full px-4 lg:px-16 py-16 flex justify-normal 2xl:justify-center gap-7">
+            <div
+                ref={sliderRef}
+                onMouseDown={handleMouseDown}
+                onMouseLeave={handleMouseLeave}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+                className="overflow-x-scroll scrollDontShow m-auto max-w-4xl lg:max-w-7xl 2xl:max-w-full px-4 lg:px-16 py-16 flex justify-normal 2xl:justify-center gap-7">
                 {foodTypeData.map(food => (
                     <div key={food.id} className="flex-shrink-0 w-20 h-20 cursor-pointer flex justify-center items-center flex-col gap-3 p-3 border border-gray-500 rounded-md transition-all duration-500 hover:bg-orange-500 hover:border-none hover:text-white">
                         <Image className="w-14 h-10 flex-shrink-0 object-cover" src={food.image} width={500} height={400} alt="tipo de comida" />
