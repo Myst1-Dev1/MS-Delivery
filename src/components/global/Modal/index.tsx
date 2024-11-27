@@ -1,6 +1,4 @@
-import { useGSAP } from '@gsap/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import gsap from 'gsap';
 import { Dispatch, ReactNode, SetStateAction } from 'react';
 
 interface ModaLProps {
@@ -17,14 +15,18 @@ export function Modal({ open, setOpen, children }:ModaLProps) {
 
     return (
         <>
-            <Dialog.Root open={open} onOpenChange={setOpen}>
-                <Dialog.Portal>
+           <div className={open ? "inert-parent" : ""}>
+            {/* Outros conteúdos da aplicação */}
+            
+                <Dialog.Root open={open} onOpenChange={setOpen}>
+                    <Dialog.Portal>
                     <Dialog.Overlay className="bg-black/50 fixed inset-0" />
-                    <Dialog.Content className="fixed top-[50%] left-[50%] max-w-md w-full bg-white rounded-md shadow-md translate-x-[-50%] translate-y-[-50%]">
+                    <Dialog.Content aria-modal="true" role="dialog" autoFocus className="fixed top-[50%] left-[50%] max-w-md w-full bg-white rounded-md shadow-md translate-x-[-50%] translate-y-[-50%]">
                         {children}
                     </Dialog.Content>
-                </Dialog.Portal>
-            </Dialog.Root>
+                    </Dialog.Portal>
+                </Dialog.Root>
+            </div>
         </>
     )
 }

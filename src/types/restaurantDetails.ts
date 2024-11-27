@@ -16,6 +16,7 @@ export type Category = {
     image: {
         url: string;
     };
+    id:string;
 }
 
 export type FoodType = {

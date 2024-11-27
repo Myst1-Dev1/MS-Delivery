@@ -52,6 +52,7 @@ export const getRestaurantDetails = async(title:any) => {
                 image {
                     url
                 }
+                id
                 }
                 id
                 foodTypes

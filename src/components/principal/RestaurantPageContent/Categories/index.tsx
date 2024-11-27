@@ -3,10 +3,11 @@ import { Modal } from "@/components/global/Modal";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaMinus, FaPlus, FaRocketchat, FaTimes } from "react-icons/fa";
-import { Category, FoodType } from "@/types/restaurantDetails";
+import { Category } from "@/types/restaurantDetails";
 import { FormatPrice } from "@/utils/formatPrice";
+import { useCart } from "@/hooks/useCart";
 
 interface CategoriesProps {
     data: Category[];
@@ -14,9 +15,10 @@ interface CategoriesProps {
 }
 
 export function Categories({ data, type }: CategoriesProps) {
-    const [open, setOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<string | null>(type?.foodType?.[0]?.type || null);
     const [selectedItem, setSelectedItem] = useState<null | any>(null);
+
+    const { cart, handleAddToCart, handleObservationChange, observation, setObservation } = useCart();
 
     const filteredData = selectedType
         ? data.filter(dataItem => dataItem.categoryTitle === selectedType)
@@ -29,6 +31,13 @@ export function Categories({ data, type }: CategoriesProps) {
     useGSAP(() => {
         gsap.fromTo('.food-box', { opacity:0, y:100 }, { opacity:1, y:0, duration:0.4, ease:'power1.inOut' })
     }, [selectedType])
+
+    // useEffect(() => {
+    //     if (selectedItem) {
+    //         const itemInCart = cart?.find((item) => item.product.id === selectedItem.id);
+    //         setQuantity(itemInCart ? itemInCart.quantity : 1);
+    //     }
+    // }, [selectedItem, cart]);
 
     return (
         <>
@@ -50,25 +59,25 @@ export function Categories({ data, type }: CategoriesProps) {
                                     </div> 
                                     : filteredData.map((data, index) => (
                                     <div key={index}>
-                                        <div  onClick={() => setSelectedItem(data)}  className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2 cursor-pointer transition-all duration-500 hover:bg-orange-300 hover:text-white">
+                                        <div onClick={() => setSelectedItem(data)}  className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2 cursor-pointer transition-all duration-500 hover:bg-orange-300 hover:text-white">
                                             <Image className="w-20 h-28 rounded-md object-cover" src={data.image.url} width={500} height={500} alt="foto do alimento" />
-                                            <div className="flex flex-col gap-2">
+                                            <div className="flex flex-col gap-3">
                                                 <h5 className="font-bold">{data.name}</h5>
                                                 <h6 className="font-bold text-sm">{FormatPrice(data.price)}</h6>
                                                 <p className="text-gray-500 text-sm max-w-[25ch] overflow-hidden text-ellipsis whitespace-nowrap">{data.description}</p>
-                                                <div className="cursor-pointer w-5 h-5 flex justify-center items-center p-2 border border-black font-bold transition-all duration-500 hover:bg-orange-500 hover:border-none hover:text-white"><FaPlus className="flex-shrink-0 text-xs" /></div>
+                                                {/* <div onClick={() => handleAddToCart(data.id, filteredData)} className="z-20 cursor-pointer w-5 h-5 flex justify-center items-center p-2 border border-black font-bold transition-all duration-500 hover:bg-orange-500 hover:border-none hover:text-white"><FaPlus className="flex-shrink-0 text-xs" /></div> */}
                                             </div>
                                         </div>
                                         {selectedItem && (
                                         <Modal open={!!selectedItem} setOpen={() => setSelectedItem(null)}>
-                                            <div className="min-h-screen lg:h-[576px]">
+                                            <div className="lg:h-[576px]">
                                                 <div onClick={() => setSelectedItem(null)} className="cursor-pointer bg-white rounded-full w-10 h-10 flex justify-center items-center absolute top-[18.5rem] lg:top-2 right-2 transition-all duration-500 hover:bg-orange-600 hover:text-white"><FaTimes /></div>
                                                 <Image className="mt-60 lg:mt-0 w-full object-contain lg:object-cover h-80 lg:h-48 object-center" src={selectedItem.image.url} width={500} height={500} alt="imagem do lanche" />
                                                 <div className="px-5 py-3 flex flex-col gap-4 overflow-y-scroll scrollDontShow h-screen lg:h-96">
                                                     <Dialog.Title className="text-2xl font-bold">{selectedItem.name}</Dialog.Title>
                                                     <h5 className="font-bold text-xl">{FormatPrice(selectedItem.price)}</h5>
                                                     <p className="text-gray-500 text-sm">{selectedItem.description}</p>
-                                                    <div className="flex flex-col gap-4">
+                                                    {/* <div className="flex flex-col gap-4">
                                                         {selectedItem.additionals.flatMap((additionalGroup:any) =>
                                                             additionalGroup.Additionals.map((additional:any) => (
                                                                 <div className="border-b border-gray-200 pb-2 flex justify-between items-center w-full" key={additional.additionalName}>
@@ -84,13 +93,13 @@ export function Categories({ data, type }: CategoriesProps) {
                                                                 </div>
                                                             ))
                                                         )}
-                                                    </div>
+                                                    </div> */}
                                                     <div className="flex flex-col gap-3">
                                                         <div className="flex items-center gap-3">
                                                             <FaRocketchat />
                                                             <h6>Alguma observação?</h6>
                                                         </div>
-                                                        <textarea className="w-full rounded-md resize-none outline-none border border-gray-300 p-3 h-20" placeholder="Sem alface, carne ao ponto, etc" />
+                                                        <textarea value={observation} onChange={handleObservationChange} className="w-full rounded-md resize-none outline-none border border-gray-300 p-3 h-20" placeholder="Sem alface, carne ao ponto, etc" />
                                                     </div>
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center gap-4">
@@ -98,7 +107,7 @@ export function Categories({ data, type }: CategoriesProps) {
                                                             <span>1</span>
                                                             <FaPlus className="text-orange-400 cursor-pointer" />
                                                         </div>
-                                                        <button className="max-w-60 bg-orange-500 text-white p-2 w-full rounded-md flex justify-between items-center font-bold transition-all duration-500 hover:bg-orange-600">
+                                                        <button onClick={() => handleAddToCart(selectedItem.id, filteredData)} className="max-w-60 bg-orange-500 text-white p-2 w-full rounded-md flex justify-between items-center font-bold transition-all duration-500 hover:bg-orange-600">
                                                             Adicionar <span>{FormatPrice(selectedItem.price)}</span>
                                                         </button>
                                                     </div>

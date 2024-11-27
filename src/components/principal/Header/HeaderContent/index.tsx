@@ -22,14 +22,30 @@ export function HeaderContent({ session }:HeaderContentProps) {
     const [openSignUpModal, setSignUpModal] = useState(false);
     const [showUserOption, setShowUserOption] = useState(false);
 
-    function handleShowUserOptions(option:string, height:number) {
+    function handleShowUserOptions(option: string, desktopHeight: number, mobileHeight?: number) {
+        const isMobile = window.innerWidth <= 768;
+        const targetHeight = isMobile ? mobileHeight : desktopHeight;
+    
         if (showUserOption) {
-            gsap.to(`${option}`, { opacity: 0, display: 'none', height: 0, duration: 0.4, ease: 'power1.inOut', onComplete: () => setShowUserOption(false) });
+            gsap.to(`${option}`, {
+                opacity: 0,
+                display: 'none',
+                height: 0,
+                duration: 0.4,
+                ease: 'power1.inOut',
+                onComplete: () => setShowUserOption(false),
+            });
         } else {
             setShowUserOption(!showUserOption);
-            gsap.to(`${option}`, { opacity: 1, display: 'block', height: height, duration: 0.4, ease: 'power1.inOut' });
+            gsap.to(`${option}`, {
+                opacity: 1,
+                display: 'block',
+                height: targetHeight,
+                duration: 0.4,
+                ease: 'power1.inOut',
+            });
         }
-    }
+    }    
 
     return (
         <>
@@ -46,11 +62,11 @@ export function HeaderContent({ session }:HeaderContentProps) {
                 :
                 <>
                     <div className="flex items-center gap-5">
-                        <FaShoppingBag onClick={() => handleShowUserOptions('.cart', 500)} className="text-xl cursor-pointer transition-all duration-500 hover:text-orange-500" />
-                        <Image onClick={() => handleShowUserOptions('.user-box', 158)} className="w-10 h-10 object-cover cursor-pointer" src="/images/user-icon.png" width={500} height={500} alt="icone de usuário" />
+                        <FaShoppingBag onClick={() => handleShowUserOptions('.cart', 500, window.innerHeight)} className="text-xl cursor-pointer transition-all duration-500 hover:text-orange-500" />
+                        <Image onClick={() => handleShowUserOptions('.user-box', 158, 160)} className="w-10 h-10 object-cover cursor-pointer" src="/images/user-icon.png" width={500} height={500} alt="icone de usuário" />
                     </div>
                    <UserBox />
-                   <Cart />
+                   <Cart handleShowUserOptions = {handleShowUserOptions} />
                 </>
                 }
             </header>

@@ -14,8 +14,6 @@ interface RestaurantPageContentProps {
 export function RestaurantPageContent({ restaurantDetails }:RestaurantPageContentProps) {
     const [activeMenu, setActiveMenu] = useState('categories');
 
-    console.log(restaurantDetails);
-
     return (
         <>
             {restaurantDetails?.map(detail => (
