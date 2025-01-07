@@ -3,7 +3,7 @@ import { Modal } from "@/components/global/Modal";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaMinus, FaPlus, FaRocketchat, FaTimes } from "react-icons/fa";
 import { Category } from "@/types/restaurantDetails";
 import { FormatPrice } from "@/utils/formatPrice";
@@ -17,12 +17,20 @@ interface CategoriesProps {
 export function Categories({ data, type }: CategoriesProps) {
     const [selectedType, setSelectedType] = useState<string | null>(type?.foodType?.[0]?.type || null);
     const [selectedItem, setSelectedItem] = useState<null | any>(null);
+    const [quantity, setQuantity] = useState(1);
 
-    const { cart, handleAddToCart, handleObservationChange, observation, setObservation } = useCart();
+    const { handleAddToCart, handleObservationChange, observation } = useCart();
 
     const filteredData = selectedType
         ? data.filter(dataItem => dataItem.categoryTitle === selectedType)
         : data;
+
+    function handleCart(id: string, data: Category[]) {
+        handleAddToCart(id, data, quantity);
+        
+        setSelectedItem(null);
+        setQuantity(1);
+    }
 
     useGSAP(() => {
         gsap.fromTo(".categories", { opacity:0 }, { opacity:1, duration:0.4, ease:'power1.inOut' });
@@ -31,13 +39,6 @@ export function Categories({ data, type }: CategoriesProps) {
     useGSAP(() => {
         gsap.fromTo('.food-box', { opacity:0, y:100 }, { opacity:1, y:0, duration:0.4, ease:'power1.inOut' })
     }, [selectedType])
-
-    // useEffect(() => {
-    //     if (selectedItem) {
-    //         const itemInCart = cart?.find((item) => item.product.id === selectedItem.id);
-    //         setQuantity(itemInCart ? itemInCart.quantity : 1);
-    //     }
-    // }, [selectedItem, cart]);
 
     return (
         <>
@@ -103,12 +104,12 @@ export function Categories({ data, type }: CategoriesProps) {
                                                     </div>
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center gap-4">
-                                                            <FaMinus className="text-gray-400 cursor-pointer" />
-                                                            <span>1</span>
-                                                            <FaPlus className="text-orange-400 cursor-pointer" />
+                                                            <FaMinus onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))} className="text-gray-400 cursor-pointer" />
+                                                            <span>{quantity}</span>
+                                                            <FaPlus onClick={() => setQuantity((prev) => prev + 1)} className="text-orange-400 cursor-pointer" />
                                                         </div>
-                                                        <button onClick={() => handleAddToCart(selectedItem.id, filteredData)} className="max-w-60 bg-orange-500 text-white p-2 w-full rounded-md flex justify-between items-center font-bold transition-all duration-500 hover:bg-orange-600">
-                                                            Adicionar <span>{FormatPrice(selectedItem.price)}</span>
+                                                        <button onClick={() => handleCart(selectedItem.id, filteredData)} className="max-w-60 bg-orange-500 text-white p-2 w-full rounded-md flex justify-between items-center font-bold transition-all duration-500 hover:bg-orange-600">
+                                                            Adicionar <span>{FormatPrice(selectedItem.price * quantity)}</span>
                                                         </button>
                                                     </div>
                                                 </div>

@@ -11,13 +11,18 @@ import Image from "next/image";
 import { UserBox } from "../UserBox";
 import gsap from "gsap";
 import { Cart } from "../Cart";
+import { useCart } from "@/hooks/useCart";
+import { usePathname } from "next/navigation";
+import { useGSAP } from "@gsap/react";
 
 interface HeaderContentProps {
     session:Session | null;
 }
 
 export function HeaderContent({ session }:HeaderContentProps) {
-
+    const { cart } = useCart();
+    const pathname = usePathname();
+ 
     const [openSignInModal, setSignInModal] = useState(false);
     const [openSignUpModal, setSignUpModal] = useState(false);
     const [showUserOption, setShowUserOption] = useState(false);
@@ -45,7 +50,30 @@ export function HeaderContent({ session }:HeaderContentProps) {
                 ease: 'power1.inOut',
             });
         }
-    }    
+    }
+    
+    useGSAP(() => {
+        if (showUserOption) {
+            gsap.to(".user-box", {
+              opacity: 0,
+              display: "none",
+              height: 0,
+              duration: 0.4,
+              ease: "power1.inOut",
+              onComplete: () => setShowUserOption(false),
+            });
+          }
+        if (showUserOption) {
+          gsap.to(".cart", {
+            opacity: 0,
+            display: "none",
+            height: 0,
+            duration: 0.4,
+            ease: "power1.inOut",
+            onComplete: () => setShowUserOption(false),
+          });
+        }
+      }, [pathname]);
 
     return (
         <>
@@ -62,7 +90,10 @@ export function HeaderContent({ session }:HeaderContentProps) {
                 :
                 <>
                     <div className="flex items-center gap-5">
-                        <FaShoppingBag onClick={() => handleShowUserOptions('.cart', 500, window.innerHeight)} className="text-xl cursor-pointer transition-all duration-500 hover:text-orange-500" />
+                        <div className="relative">
+                            <span className={`absolute bottom-[9px] right-[-11px] w-5 h-5 bg-orange-500 text-white rounded-full ${cart.length === 0 ? 'hidden' : 'flex'} justify-center items-center`}>{cart.length}</span>
+                            <FaShoppingBag onClick={() => handleShowUserOptions('.cart', 500, window.innerHeight)} className="text-xl cursor-pointer transition-all duration-500 hover:text-orange-500" />
+                        </div>
                         <Image onClick={() => handleShowUserOptions('.user-box', 158, 160)} className="w-10 h-10 object-cover cursor-pointer" src="/images/user-icon.png" width={500} height={500} alt="icone de usuário" />
                     </div>
                    <UserBox />

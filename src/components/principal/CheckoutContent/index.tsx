@@ -32,7 +32,7 @@ export function CheckoutContent() {
                                     <h5 className="font-bold">{FormatPrice(item.product.price)} x {item.quantity}</h5>
                                 </div>
                             </div>
-                            {/* <p className="mt-3 text-center text-gray-500">Sem salada</p> */}
+                            <p className="mt-3 text-center text-gray-500">{item.observation}</p>
                         </div>
                         ))}            
                     </div>
@@ -70,15 +70,15 @@ export function CheckoutContent() {
                             </span>
                         </div>
                     </div>
-                    <div className="flex justify-center">
+                    {/* <div className="flex justify-center">
                         <button className="mt-5 font-bold p-3 text-white bg-orange-500 rounded-md max-w-72 w-full transition-all duration-500 hover:bg-orange-600">Ir para o pagamento</button>
-                    </div>
+                    </div> */}
                 </div>
                     : 
                 <div>
-                    {paymentValue === 'Pix' && <QrCode />}
-                    {paymentValue === 'Cartão' && <Card />}
-                    {paymentValue === 'Dinheiro' && <Money />}
+                    {paymentValue === 'Pix' && <QrCode setPaymentValue = {setPaymentValue} />}
+                    {paymentValue === 'Cartão' && <Card setPaymentValue = {setPaymentValue} />}
+                    {paymentValue === 'Dinheiro' && <Money setPaymentValue = {setPaymentValue} />}
                     
                 </div>
              }

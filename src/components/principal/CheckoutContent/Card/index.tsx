@@ -1,8 +1,14 @@
+import { Dispatch, SetStateAction } from "react"
+import { RiArrowGoBackFill } from "react-icons/ri"
 
+interface CardProps {
+    setPaymentValue:Dispatch<SetStateAction<string>>
+}
 
-export function Card() {
+export function Card({ setPaymentValue }:CardProps) {
     return (
-        <div>
+        <div className="relative">
+            <RiArrowGoBackFill onClick={() => setPaymentValue('')} className="absolute text-xl -right-4 -top-2 cursor-pointer" />
             <h2 className="text-2xl font-bold text-center">Informe os dados do seu cartão</h2>
             <form className="mt-5">
                 <div className="flex justify-between flex-col lg:flex-row gap-0">
