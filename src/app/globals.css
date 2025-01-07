@@ -10,3 +10,9 @@
   cursor: grabbing;
   cursor: -webkit-grabbing;
 }
+
+@layer components {
+  .button {
+    @apply p-3 rounded-md bg-orange-500 font-bold text-white transition-all duration-500 hover:bg-orange-600
+  }
+}
