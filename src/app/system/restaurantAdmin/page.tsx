@@ -10,9 +10,10 @@ export default function RestaurantAdmin() {
                 <Header />
                 <div className="px-5 py-8">
                     <Banner />
-                    <div className="mt-7 grid grid-cols-1 lg:grid-cols-3">
+                    <div className="mt-7 grid gap-10 grid-cols-1 lg:grid-cols-3">
+                    <Form />
                         <Products />
-                        <Form />
+                        
                     </div>
                 </div>
             </div>

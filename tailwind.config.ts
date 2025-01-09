@@ -14,7 +14,8 @@ const config: Config = {
       },
       backgroundImage: {
         "home-bg": "url(/images/home-bg.webp)",
-        "restaurant-bg": "url(/images/restaurant-photo.webp)"
+        "restaurant-bg": "url(/images/restaurant-photo.webp)",
+        "vector-bg": "url(/images/vector-bg.webp)"
       }
     },
   },

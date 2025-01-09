@@ -2,7 +2,7 @@
 
 export function Form() {
     return (
-        <div>
+        <div className="flex-shrink-0">
             <h2 className="font-bold text-xl">Atualizar informações</h2>
             <form action="" className="max-w-96 w-full mt-7 flex flex-col gap-3">
                 <div className="flex flex-col gap-3">

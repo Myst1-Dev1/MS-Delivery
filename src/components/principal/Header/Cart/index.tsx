@@ -11,8 +11,6 @@ interface CartProps {
 export function Cart({ handleShowUserOptions }:CartProps) {
     const { cart, handleRemoveToCart, totalCart } = useCart();
 
-    console.log(cart);
-
     return (
         <>
             <div className="z-50 cart opacity-0 hidden h-screen lg:h-[500px] bg-white lg:max-w-80 fixed lg:absolute top-0 lg:top-20 right-0 w-full p-3 rounded-lg border border-[#ededed]">

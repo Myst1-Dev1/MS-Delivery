@@ -1,12 +1,19 @@
+'use client'
+
+import * as Dialog from "@radix-ui/react-dialog";
+import { Modal } from "@/components/global/Modal";
 import Image from "next/image";
-import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
+import { FaCloudUploadAlt, FaPencilAlt, FaTrashAlt } from "react-icons/fa";
+import { useState } from "react";
 
 export function Products() {
+    const [openProductModal, setOpenProductModal] = useState(false);
+
     return (
         <>
             <div className="col-span-2">
                 <h2 className="font-bold text-xl">Gerenciar produtos</h2>
-                <div className="mt-7 flex gap-9 flex-wrap">
+                <div className="mt-7 flex justify-between gap-9 flex-wrap">
                     <div className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2">
                         <Image className="w-20 h-20 rounded-md object-cover" src="/images/cheddar-burguer.jpg" width={500} height={500} alt="foto do alimento" />
                         <div className="flex flex-col gap-1">
@@ -72,9 +79,47 @@ export function Products() {
                         </div>
                     </div>
                 </div>
-                <button className="button max-w-56 mt-7 w-full">+Adicionar novo produto</button>
+                <div className="flex justify-end items-end">
+                    <button onClick={() => setOpenProductModal(true)} className="button max-w-56 mt-7 w-full">+Adicionar novo produto</button>
+                </div>
             </div>
-            
+            <Modal open={openProductModal} setOpen={setOpenProductModal}>
+                <Dialog.Title className="text-2xl text-center font-bold py-3">Criar novo produto</Dialog.Title>
+                <form action="" className="p-5 flex flex-col gap-3">
+                    <div className="flex justify-between flex-wrap">
+                        <div className="flex flex-col gap-3">
+                            <Image className="w-[50px] h-[50px] object-cover" src="/images/uploadProduct.jpg" width={50} height={50} alt="imagem de upload do produto" />
+                            <label htmlFor="product-image" className="cursor-pointer flex items-center gap-3">
+                                <FaCloudUploadAlt /> Enviar imagem
+                            </label>
+                            <input className="hidden" id="product-image" type="file" />
+                        </div>
+                        <div className="flex flex-col gap-3">
+                            <label htmlFor="productName" className="font-bold">Nome do produto</label>
+                            <input placeholder="Burguer" id="productName" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                        </div>
+                    </div>
+                    <div className="flex justify-between flex-wrap">
+                        <div className="flex flex-col gap-3">
+                            <label htmlFor="productPrice" className="font-bold">Preço do produto</label>
+                            <input placeholder="R$:12,90" id="productPrice" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                        </div>
+                        <div className="flex flex-col gap-3">
+                            <label htmlFor="productCategory" className="font-bold">Categoria do produto</label>
+                            <select id="productCategory" className="text-gray-500 border border-gray-300 rounded-md p-3 w-52 outline-none">
+                                <option value="Artesanais">Artesanais</option>
+                                <option value="Batatas">Batatas</option>
+                                <option value="Bebidas">Bebidas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        <label htmlFor="productDescription" className="font-bold">Descrição do produto</label>
+                        <textarea id="productDescription" className="resize-none border border-gray-300 h-20 rounded-md p-3 w-full outline-none" placeholder="carne, alface, etc" />
+                    </div>
+                    <button className="button">Adicionar produto</button>
+                </form>
+            </Modal>
         </>
     )
 }

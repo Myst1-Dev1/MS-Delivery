@@ -7,10 +7,7 @@ import { getRestaurants } from "@/services/graphql/graphql";
 import Link from "next/link";
 
 export default async function Home() {
-
     const restaurants = await getRestaurants();
-
-    // console.log(restaurants.map((rt:any) => rt.banner?.url));
 
     return (
         <>

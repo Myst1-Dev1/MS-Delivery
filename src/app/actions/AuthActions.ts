@@ -1,31 +1,20 @@
 'use server';
 
-import { signIn, signOut } from "@/services/auth";
-import { AuthError } from "next-auth";
+import { signIn } from "next-auth/react";
 
 export async function handleCredentialsSignin({ email, password }: {
     email: string,
     password: string
 }) {
+
+    const data = { email, password }
+
     try {
-        await signIn("credentials", { email, password, redirectTo: "/" });
-    } catch (error) {
-        if (error instanceof AuthError) {
-            switch (error.type) {
-                case 'CredentialsSignin':
-                    return {
-                        message: 'Invalid credentials',
-                    }
-                default:
-                    return {
-                        message: 'Something went wrong.',
-                    }
-            }
+        await signIn("credentials", { ...data, redirectTo: "/" });
+    } catch (error:any) {
+        if (error) {
+            console.log(error);
         }
         throw error;
     }
-}
-
-export async function handleSignOut() {
-    await signOut();
 }

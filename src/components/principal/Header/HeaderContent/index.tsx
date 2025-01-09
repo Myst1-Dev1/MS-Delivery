@@ -3,7 +3,6 @@
 import { SignIn } from "../SignIn";
 import { SignUp } from "../SignUp";
 import { useState } from "react";
-import { Session } from "next-auth";
 import { FaShoppingBag } from "react-icons/fa";
 import Image from "next/image";
 import { UserBox } from "../UserBox";
@@ -13,15 +12,24 @@ import { useCart } from "@/hooks/useCart";
 import { usePathname } from "next/navigation";
 import { useGSAP } from "@gsap/react";
 import { Logo } from "../Logo";
+import { useSession } from "next-auth/react";
 
-interface HeaderContentProps {
-    session:Session | null;
-}
-
-export function HeaderContent({ session }:HeaderContentProps) {
+export function HeaderContent() {
     const { cart } = useCart();
     const pathname = usePathname();
+
+    const {data: session, status } = useSession();
+
+    // if (status === "loading") {
+    //     return <p>Carregando...</p>;
+    //   }
+    
+    // if (!session) {
+    // return <p>Você não está logado. Faça login para continuar.</p>;
+    // }
  
+    console.log(session);
+
     const [openSignInModal, setSignInModal] = useState(false);
     const [openSignUpModal, setSignUpModal] = useState(false);
     const [showUserOption, setShowUserOption] = useState(false);
@@ -78,7 +86,7 @@ export function HeaderContent({ session }:HeaderContentProps) {
         <>
             <header className="px-4 lg:px-16 py-6 flex justify-between items-center w-full">
                 <Logo />
-                {!session ? 
+                {status !== 'authenticated' ? 
                 <div className="flex gap-5 items-center">
                     <button onClick={() => setSignInModal(true)} className="p-3 border border-orange-500 rounded-md max-w-72 w-full transition-all duration-500 hover:bg-orange-500 hover:text-white">Login</button>
                     <button onClick={() => setSignUpModal(true)} className="p-3 text-white bg-orange-500 rounded-md max-w-72 w-full transition-all duration-500 hover:bg-orange-600">Cadastro</button>

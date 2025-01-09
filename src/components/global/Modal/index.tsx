@@ -21,7 +21,7 @@ export function Modal({ open, setOpen, children }:ModaLProps) {
                 <Dialog.Root open={open} onOpenChange={setOpen}>
                     <Dialog.Portal>
                     <Dialog.Overlay className="bg-black/50 fixed inset-0" />
-                    <Dialog.Content aria-modal="true" role="dialog" autoFocus className="fixed top-[50%] left-[50%] max-w-md w-full bg-white rounded-md shadow-md translate-x-[-50%] translate-y-[-50%]">
+                    <Dialog.Content aria-modal="true" role="dialog" autoFocus className="fixed top-[50%] left-[50%] max-w-xl w-full bg-white rounded-md shadow-md translate-x-[-50%] translate-y-[-50%]">
                         {children}
                     </Dialog.Content>
                     </Dialog.Portal>
