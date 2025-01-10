@@ -11,32 +11,25 @@ const UserSchema = new Schema({
 
 export const User = models.User || model("User", UserSchema);
 
+const CategorySchema = new mongoose.Schema({
+  name: { type: String, required: true },
+});
+
+const ProductSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  description: { type: String, required: true },
+  category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
+});
+
 const RestaurantSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  about: { type: String, default: "" },
-  address: { type: String },
-  type: { type: String },
+  about: { type: String, required: true },
+  address: { type: String, required: true },
+  type: { type: String, required: true },
   banner: { type: String, default: "" },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  categories: [
-    {
-      categoryTitle: { type: String, required: true },
-      products: [
-        {
-          name: { type: String, required: true },
-          price: { type: Number, required: true },
-          description: { type: String, required: true },
-          image: { type: String },
-          additionals: [
-            {
-              additionalName: { type: String },
-              additionalPrice: { type: Number },
-            },
-          ],
-        },
-      ],
-    },
-  ],
+  categories: { type: [CategorySchema], default: [] },
 });
 
 export const Restaurant =

@@ -1,4 +1,5 @@
 import { request, gql } from 'graphql-request';
+import { api } from '../axios';
 
 const graphqlAPI:any = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
 
@@ -63,3 +64,18 @@ export const getRestaurantDetails = async(title:any) => {
     const results:any = await request(graphqlAPI, query, { title });
     return results.restaurants;
 }
+
+export const createRestaurant = async(obj:any) => {
+    try {
+      const response = await api.post('/api/user/restaurant', obj, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      return response.data;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+  }
