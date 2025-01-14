@@ -44,7 +44,7 @@ export function Categories({ data, type }: CategoriesProps) {
         <>
             <div className="categories flex w-full flex-col lg:flex-row justify-between lg:gap-0 gap-8 mt-7 m-auto">
                 <div className="flex flex-col gap-2">
-                    {type?.foodType?.map((typeItem:any) => (
+                    {type?.map((typeItem:any) => (
                         <h6 onClick={() => setSelectedType(typeItem.type)} className={`${selectedType === typeItem.type ? 'text-orange-500' : ''} cursor-pointer font-bold transition-all duration-500 hover:text-orange-500`} key={typeItem.type}>
                             {typeItem.type}
                         </h6>

@@ -30,6 +30,7 @@ export type FoodType = {
 export type RestaurantDetails = {
     banner: {
         url: string;
+        id:string;
     };
     about: string;
     address: string;

@@ -43,13 +43,18 @@ export default function Home() {
       setIsLoading(true);
       setIsSubmited(true);
 
+      const foodTypes = data.foodTypes.map((type: string) => ({
+        type,
+      }));
+
       await createRestaurant({
         title: data.title,
         address: data.address,
         about: data.about,
         type: data.type,
-        foodTypes: data.foodTypes.join(", "),
-        bannerUrl: data.bannerUrl
+        foodTypes,
+        bannerUrl: data.bannerUrl,
+        userId: session?.user.id
       });
 
       setTimeout(() => {
@@ -67,7 +72,7 @@ export default function Home() {
     return (
         <>
             <div className="bg-vector-bg w-full min-h-screen bg-cover flex justify-center items-center">
-                <div className="rounded-md mt-10 mb-10 p-5 bg-white max-w-xl w-full">
+                <div className="rounded-md p-5 bg-white max-w-xl w-full">
                     {!isSubmited ? ( 
                       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 m-auto">
                         <h1 className="text-xl text-center font-bold">Crie o seu restaurante</h1>

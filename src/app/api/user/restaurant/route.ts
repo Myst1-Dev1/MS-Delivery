@@ -3,16 +3,16 @@ import { NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 const graphqlAPI:any = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
-const graphCMSToken = process.env.GRAPHCMS_TOKEN
+const graphCMSToken = process.env.NEXT_PUBLIC_GRAPHCMS_TOKEN;
 
 export async function POST(req:NextRequest , res:NextApiResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Método não permitido" });
   }
 
-  const { title, address, about, type, foodTypes, bannerUrl } = await req.json();
+  const { title, address, about, type, foodTypes, bannerUrl, userId } = await req.json();
 
-  if (!title || !address || !about || !type || !foodTypes || !bannerUrl) {
+  if (!title || !address || !about || !type || !foodTypes || !bannerUrl || !userId) {
     return res.status(400).json({ message: "Todos os campos são obrigatórios." });
   }
   
@@ -28,8 +28,9 @@ export async function POST(req:NextRequest , res:NextApiResponse) {
       $address: String!
       $about: String!
       $type: String!
-      $foodTypes: String!
+      $foodTypes: Json!
       $bannerUrl: String!
+      $userId: String!
     ) {
       createRestaurant(
         data: {
@@ -39,6 +40,7 @@ export async function POST(req:NextRequest , res:NextApiResponse) {
           type: $type
           foodTypes: $foodTypes
           banner: { create: { uploadUrl: $bannerUrl } }
+          userId: $userId
         }
       ) {
         id
@@ -54,6 +56,7 @@ export async function POST(req:NextRequest , res:NextApiResponse) {
       type,
       foodTypes,
       bannerUrl,
+      userId
     });
 
     return NextResponse.json({

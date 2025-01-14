@@ -1,4 +1,5 @@
 import { SideBar } from "@/components/system/SideBar";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,9 +13,11 @@ export const metadata: Metadata = {
     children: React.ReactNode;
   }) {
     return (
-      <div className="flex">
-          <SideBar />
-          {children}
-      </div>
+      <EdgeStoreProvider>
+        <div className="flex">
+            <SideBar />
+            {children}
+        </div>
+        </EdgeStoreProvider>
     );
   }

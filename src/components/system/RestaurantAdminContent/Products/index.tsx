@@ -5,8 +5,16 @@ import { Modal } from "@/components/global/Modal";
 import Image from "next/image";
 import { FaCloudUploadAlt, FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import { useState } from "react";
+import { Category } from "@/types/restaurantDetails";
+import { FormatPrice } from "@/utils/formatPrice";
+import { handleCurrency } from "@/utils/masks";
 
-export function Products() {
+interface ProductsProps {
+    foodType:[] | any;
+    categorie:Category[];
+}
+
+export function Products({ foodType, categorie }:ProductsProps) {
     const [openProductModal, setOpenProductModal] = useState(false);
 
     return (
@@ -14,70 +22,24 @@ export function Products() {
             <div className="col-span-2">
                 <h2 className="font-bold text-xl">Gerenciar produtos</h2>
                 <div className="mt-7 flex justify-between gap-9 flex-wrap">
-                    <div className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2">
-                        <Image className="w-20 h-20 rounded-md object-cover" src="/images/cheddar-burguer.jpg" width={500} height={500} alt="foto do alimento" />
-                        <div className="flex flex-col gap-1">
-                            <h5 className="font-bold">Cheddar Burguer</h5>
-                            <h6 className="font-bold text-sm">R$:18,90</h6>
-                            <p className="text-gray-500 text-sm max-w-[25ch] overflow-hidden text-ellipsis whitespace-nowrap">Lorem ipsum is simply dummy about the industry of the burguers.</p>
-                            <div className="flex gap-3">
-                                <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-green-300 hover:border-none">
-                                    <FaPencilAlt className="text-green-600 text-sm flex-shrink-0" />
-                                </div>
-                                <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-red-300 hover:border-none">
-                                    <FaTrashAlt className="text-red-600 text-sm flex-shrink-0" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2">
-                        <Image className="w-20 h-20 rounded-md object-cover" src="/images/cheddar-burguer.jpg" width={500} height={500} alt="foto do alimento" />
-                        <div className="flex flex-col gap-1">
-                            <h5 className="font-bold">Cheddar Burguer</h5>
-                            <h6 className="font-bold text-sm">R$:18,90</h6>
-                            <p className="text-gray-500 text-sm max-w-[25ch] overflow-hidden text-ellipsis whitespace-nowrap">Lorem ipsum is simply dummy about the industry of the burguers.</p>
-                            <div className="flex gap-3">
-                                <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-green-300 hover:border-none">
-                                    <FaPencilAlt className="text-green-600 text-sm flex-shrink-0" />
-                                </div>
-                                <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-red-300 hover:border-none">
-                                    <FaTrashAlt className="text-red-600 text-sm flex-shrink-0" />
+                    {categorie.length === 0 ? 'Você ainda não tem produtos' : categorie.map(item => (
+                        <div key={item.id} className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2">
+                            <Image className="w-20 h-20 rounded-md object-cover" src={item.image.url || '/images/cheddar-burguer.jpg'} width={500} height={500} alt="foto do alimento" />
+                            <div className="flex flex-col gap-1">
+                                <h5 className="font-bold">{item.name}</h5>
+                                <h6 className="font-bold text-sm">{FormatPrice(item.price)}</h6>
+                                <p className="text-gray-500 text-sm max-w-[25ch] overflow-hidden text-ellipsis whitespace-nowrap">{item.description}</p>
+                                <div className="flex gap-3">
+                                    <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-green-300 hover:border-none">
+                                        <FaPencilAlt className="text-green-600 text-sm flex-shrink-0" />
+                                    </div>
+                                    <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-red-300 hover:border-none">
+                                        <FaTrashAlt className="text-red-600 text-sm flex-shrink-0" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2">
-                        <Image className="w-20 h-20 rounded-md object-cover" src="/images/cheddar-burguer.jpg" width={500} height={500} alt="foto do alimento" />
-                        <div className="flex flex-col gap-1">
-                            <h5 className="font-bold">Cheddar Burguer</h5>
-                            <h6 className="font-bold text-sm">R$:18,90</h6>
-                            <p className="text-gray-500 text-sm max-w-[25ch] overflow-hidden text-ellipsis whitespace-nowrap">Lorem ipsum is simply dummy about the industry of the burguers.</p>
-                            <div className="flex gap-3">
-                                <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-green-300 hover:border-none">
-                                    <FaPencilAlt className="text-green-600 text-sm flex-shrink-0" />
-                                </div>
-                                <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-red-300 hover:border-none">
-                                    <FaTrashAlt className="text-red-600 text-sm flex-shrink-0" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2">
-                        <Image className="w-20 h-20 rounded-md object-cover" src="/images/cheddar-burguer.jpg" width={500} height={500} alt="foto do alimento" />
-                        <div className="flex flex-col gap-1">
-                            <h5 className="font-bold">Cheddar Burguer</h5>
-                            <h6 className="font-bold text-sm">R$:18,90</h6>
-                            <p className="text-gray-500 text-sm max-w-[25ch] overflow-hidden text-ellipsis whitespace-nowrap">Lorem ipsum is simply dummy about the industry of the burguers.</p>
-                            <div className="flex gap-3">
-                                <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-green-300 hover:border-none">
-                                    <FaPencilAlt className="text-green-600 text-sm flex-shrink-0" />
-                                </div>
-                                <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-red-300 hover:border-none">
-                                    <FaTrashAlt className="text-red-600 text-sm flex-shrink-0" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
                 <div className="flex justify-end items-end">
                     <button onClick={() => setOpenProductModal(true)} className="button max-w-56 mt-7 w-full">+Adicionar novo produto</button>
@@ -102,15 +64,17 @@ export function Products() {
                     <div className="flex justify-between flex-wrap">
                         <div className="flex flex-col gap-3">
                             <label htmlFor="productPrice" className="font-bold">Preço do produto</label>
-                            <input placeholder="R$:12,90" id="productPrice" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                            <input onInput={handleCurrency} placeholder="R$:12,90" id="productPrice" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
                         </div>
                         <div className="flex flex-col gap-3">
                             <label htmlFor="productCategory" className="font-bold">Categoria do produto</label>
+                            
                             <select id="productCategory" className="text-gray-500 border border-gray-300 rounded-md p-3 w-52 outline-none">
-                                <option value="Artesanais">Artesanais</option>
-                                <option value="Batatas">Batatas</option>
-                                <option value="Bebidas">Bebidas</option>
-                            </select>
+                                {foodType.map((type:any, index:number) => (
+                                    <option key={index} value={type.type}>{type.type}</option>
+                                ))}
+                             </select>
+                            
                         </div>
                     </div>
                     <div className="flex flex-col gap-3">

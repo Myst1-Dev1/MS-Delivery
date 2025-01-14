@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@edgestore/react": "^0.2.2",
+    "@edgestore/server": "^0.2.2",
     "@gsap/react": "^2.1.1",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-dialog": "^1.1.2",
