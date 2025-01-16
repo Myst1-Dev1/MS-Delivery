@@ -92,6 +92,7 @@ export const getRestaurantAdminDetails = async(userId:any) => {
               price
               image {
                   url
+                  id
               }
               id
               }
@@ -140,6 +141,57 @@ export const createRestaurant = async(obj:any) => {
   }
 `;
 
+const CREATE_PRODUCT = gql`
+  mutation createRestaurant($categoryTitle: String!, $name: String!, $price: Float!, $uploadImg: String!, $userId: String!, $description: String!) {
+  createRestaurant(
+    data: {categorie: {create: {categoryTitle: $categoryTitle, name: $name, price: $price, image: {create: {uploadUrl: $uploadImg}}, restaurant: {connect: {userId: $userId}}, description: $description}}}
+  ) {
+    id
+  }
+}
+`
+
+const UPDATE_PRODUCT = gql`
+  mutation updateProduct($categoryTitle: String!, $name: String!, $price: Float!, $uploadImg: String!, $imgId: ID!, $productId: ID! $description: String!) {
+  updateCategorie(
+    data: {categoryTitle: $categoryTitle, name: $name, price: $price , image: {update: {where: {id: $imgId}, data: {uploadUrl: $uploadImg, reUpload: true}}}, description: $description}
+    where: {id: $productId}
+  ) {
+    name
+    price
+    description
+  }
+  publishCategorie(where: {id: $productId}) {
+    id
+  }
+}
+`
+
+export async function createNewProduct(categoryTitle:string, name:string, price:number, uploadImg:string, userId:string, description:string) {
+  try {
+    const response = await graphQLClient.request(CREATE_PRODUCT, {
+      categoryTitle, name, price, uploadImg, userId, description
+    })
+
+    console.log('Produto criado com sucesso', response);
+  } catch (error) {
+    console.log('Erro ao criar produto', error);
+  }
+}
+
+export async function updateProduct(categoryTitle:string, name:string, price:number, uploadImg:string, imgId:string, productId:string, description:string) {
+  try {
+    const response = await graphQLClient.request(UPDATE_PRODUCT, {
+      categoryTitle, name, price, uploadImg, imgId, productId, description
+    })
+
+    console.log('Produto atualizado com sucesso', response);
+  } catch (error) {
+    console.log('Erro ao atualizado produto', error);
+  }
+}
+
+
 export async function updateRestaurantBanner(userId: string, bannerId: string, uploadUrl: string) {
   try {
     const response = await graphQLClient.request(UPDATE_RESTAURANT_BANNER, {
@@ -150,5 +202,83 @@ export async function updateRestaurantBanner(userId: string, bannerId: string, u
     console.log("Restaurante atualizado com sucesso:", response);
   } catch (error) {
     console.error("Erro ao atualizar o banner do restaurante:", error);
+  }
+}
+
+export async function handleUpdateRestaurant(
+  title: string,
+  address:string,
+  about: string,
+  type: string
+) {
+  try {
+    const existingData: any = await graphQLClient.request(`
+      query GetRestaurant {
+        restaurant(where: { userId: "677ec336ae29166373b2758b" }) {
+          foodTypes
+        }
+      }
+    `);
+
+    const existingCategories =
+      existingData?.restaurant?.foodTypes && Array.isArray(existingData.restaurant.foodTypes)
+        ? existingData.restaurant.foodTypes
+        : [];
+
+    const updatedCategories = [
+      ...existingCategories,
+      { type }
+    ];
+
+    await graphQLClient.request(
+      `
+      mutation UpdateRestaurant($title: String!, $address: String!, $about: String!, $categories: Json!) {
+        updateRestaurant(
+          data: {
+            title: $title,
+            address: $address
+            about: $about,
+            foodTypes: $categories
+          }
+          where: { userId: "677ec336ae29166373b2758b" }
+        ) {
+          title
+          address
+          about
+          foodTypes
+        }
+      }
+    `,
+      {
+        title,
+        address,
+        about,
+        categories: updatedCategories,
+      }
+    );
+
+    console.log("Restaurante atualizado com sucesso!");
+  } catch (error) {
+    console.error("Erro ao atualizar o restaurante:", error);
+  }
+}
+
+export async function handleDeleteProduct(id:string) {
+  try {
+    await graphQLClient.request(
+      `
+        mutation deleteProduct($id: ID!) {
+          deleteCategorie(where: {id: $id}) {
+            id
+          }
+      }  
+      `, {
+        id
+      }
+    );
+
+    console.log('Produto deletado com sucesso');
+  } catch (error) {
+    console.log('Erro ao deletar o produto', error);
   }
 }

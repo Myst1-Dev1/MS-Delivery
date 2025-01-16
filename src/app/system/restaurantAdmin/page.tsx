@@ -19,7 +19,7 @@ export default async function RestaurantAdmin() {
                     <div key={admin.id} className="px-5 py-8">
                         <Banner banner={admin.banner.url} id={admin.banner.id} />
                         <div className="mt-7 grid gap-10 grid-cols-1 lg:grid-cols-3">
-                            <Form title={admin.title} about={admin.about} />
+                            <Form title={admin.title} about={admin.about} address={admin.address} />
                             <Products foodType={admin.foodTypes} categorie={admin.categorie} />    
                         </div>
                     </div>

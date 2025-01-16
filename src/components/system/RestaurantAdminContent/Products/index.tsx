@@ -8,6 +8,12 @@ import { useState } from "react";
 import { Category } from "@/types/restaurantDetails";
 import { FormatPrice } from "@/utils/formatPrice";
 import { handleCurrency } from "@/utils/masks";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { productSchema } from "@/lib/zod";
+import { useEdgeStore } from "@/lib/edgestore";
+import { createNewProduct, handleDeleteProduct } from "@/services/graphql/graphql";
+import { UpdateProduct } from "./updateProduct";
 
 interface ProductsProps {
     foodType:[] | any;
@@ -16,6 +22,54 @@ interface ProductsProps {
 
 export function Products({ foodType, categorie }:ProductsProps) {
     const [openProductModal, setOpenProductModal] = useState(false);
+    const [openUpdateProductModal, setOpenUpdateProductModal] = useState(false);
+    const [updateProductData, setUpdateProductData] = useState<Category[]>([]);
+    const [file, setFile] = useState<File | any>();
+
+     const { edgestore } = useEdgeStore();
+
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver:zodResolver(productSchema),
+        defaultValues: {
+            productImage: {
+                file: [
+                  new File(["conteúdo do arquivo"], "example.png", { type: "image/png" }),
+                ],
+              },
+            productName: "",
+            productPrice: "",
+            productCategory: foodType[0]?.type,
+            productDescription: "",
+          },
+    });
+
+    async function handleCreateNewProduct(data:any) {
+        try {
+            if(file) {
+                const res = await edgestore.myPublicImages.upload({ file });
+
+                if(res?.url) {
+                    await createNewProduct(data.productCategory, data.productName, data.productPrice, res.url, "677ec336ae29166373b2758b", data.productDescription);
+                    console.log('Produto criado com sucesso.');
+                } else {
+                    throw new Error("Falha ao gerar a URL do arquivo.");
+                }
+            }
+
+            console.log(data);
+        } catch (error) {
+            console.log('Falha ao criar novo produto', error);
+        }
+    }
+
+    const categorieDataById = (id:string) => { 
+        const data = categorie.filter(item => item.id === id);
+        setUpdateProductData(data);
+
+        setOpenUpdateProductModal(true);
+    }
+
+    console.log(updateProductData);
 
     return (
         <>
@@ -31,9 +85,9 @@ export function Products({ foodType, categorie }:ProductsProps) {
                                 <p className="text-gray-500 text-sm max-w-[25ch] overflow-hidden text-ellipsis whitespace-nowrap">{item.description}</p>
                                 <div className="flex gap-3">
                                     <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-green-300 hover:border-none">
-                                        <FaPencilAlt className="text-green-600 text-sm flex-shrink-0" />
+                                        <FaPencilAlt onClick={() => categorieDataById(item.id)} className="text-green-600 text-sm flex-shrink-0" />
                                     </div>
-                                    <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-red-300 hover:border-none">
+                                    <div onClick={() => handleDeleteProduct(item.id)}  className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-red-300 hover:border-none">
                                         <FaTrashAlt className="text-red-600 text-sm flex-shrink-0" />
                                     </div>
                                 </div>
@@ -47,43 +101,56 @@ export function Products({ foodType, categorie }:ProductsProps) {
             </div>
             <Modal open={openProductModal} setOpen={setOpenProductModal}>
                 <Dialog.Title className="text-2xl text-center font-bold py-3">Criar novo produto</Dialog.Title>
-                <form action="" className="p-5 flex flex-col gap-3">
+                <form onSubmit={handleSubmit(handleCreateNewProduct)} className="p-5 flex flex-col gap-3">
                     <div className="flex justify-between flex-wrap">
                         <div className="flex flex-col gap-3">
-                            <Image className="w-[50px] h-[50px] object-cover" src="/images/uploadProduct.jpg" width={50} height={50} alt="imagem de upload do produto" />
+                            <Image className="w-16 h-16 object-cover rounded-full aspect-square" src={`${!file ? '/images/uploadProduct.jpg' : URL.createObjectURL(file)}`} width={50} height={50} alt="imagem de upload do produto" />
                             <label htmlFor="product-image" className="cursor-pointer flex items-center gap-3">
                                 <FaCloudUploadAlt /> Enviar imagem
                             </label>
-                            <input className="hidden" id="product-image" type="file" />
+                            <input {...register("productImage")} className="hidden" id="product-image" type="file" onChange={(e) => setFile(e.target.files?.[0])}  />
+                            {errors.productImage && <p className="text-red-500">{errors.productImage.message}</p>}
                         </div>
                         <div className="flex flex-col gap-3">
                             <label htmlFor="productName" className="font-bold">Nome do produto</label>
-                            <input placeholder="Burguer" id="productName" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                            <input {...register("productName")} placeholder="Burguer" id="productName" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                            {errors.productName && <p className="text-red-500">{errors.productName.message}</p>}
                         </div>
                     </div>
                     <div className="flex justify-between flex-wrap">
                         <div className="flex flex-col gap-3">
                             <label htmlFor="productPrice" className="font-bold">Preço do produto</label>
-                            <input onInput={handleCurrency} placeholder="R$:12,90" id="productPrice" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                            <input {...register("productPrice", {
+                                setValueAs: (value) => {
+                                    if(typeof value !== "string") return value;
+
+                                    const rawValue = value?.replace(/[^\d]/g, "");
+                                    return parseFloat(rawValue) / 100;
+                                },
+                                })} onInput={handleCurrency} placeholder="R$:12,90" id="productPrice" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                            {errors.productPrice && <p className="text-red-500">{errors.productPrice.message}</p>}
                         </div>
                         <div className="flex flex-col gap-3">
                             <label htmlFor="productCategory" className="font-bold">Categoria do produto</label>
                             
-                            <select id="productCategory" className="text-gray-500 border border-gray-300 rounded-md p-3 w-52 outline-none">
+                            <select {...register("productCategory")} id="productCategory" className="text-gray-500 border border-gray-300 rounded-md p-3 w-52 outline-none">
                                 {foodType.map((type:any, index:number) => (
                                     <option key={index} value={type.type}>{type.type}</option>
                                 ))}
                              </select>
-                            
+                             {errors.productCategory && <p className="text-red-500">{String(errors.productCategory.message)}</p>}
                         </div>
                     </div>
                     <div className="flex flex-col gap-3">
                         <label htmlFor="productDescription" className="font-bold">Descrição do produto</label>
-                        <textarea id="productDescription" className="resize-none border border-gray-300 h-20 rounded-md p-3 w-full outline-none" placeholder="carne, alface, etc" />
+                        <textarea {...register("productDescription")} id="productDescription" className="resize-none border border-gray-300 h-20 rounded-md p-3 w-full outline-none" placeholder="carne, alface, etc" />
+                        {errors.productDescription && <p className="text-red-500">{errors.productDescription.message}</p>}
                     </div>
-                    <button className="button">Adicionar produto</button>
+                    <button type="submit" className="button">Adicionar produto</button>
                 </form>
             </Modal>
+
+            <UpdateProduct foodType={foodType} open={openUpdateProductModal} setOpen={setOpenUpdateProductModal} data={updateProductData} />
         </>
     )
 }

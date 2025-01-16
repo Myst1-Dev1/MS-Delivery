@@ -15,6 +15,7 @@ export type Category = {
     price: number;
     image: {
         url: string;
+        id:string;
     };
     id:string;
 }

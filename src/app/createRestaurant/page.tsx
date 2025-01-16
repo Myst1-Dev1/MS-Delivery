@@ -33,7 +33,7 @@ export default function Home() {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<any>({
     control,
     name: "foodTypes",
   });

@@ -14,7 +14,6 @@ interface BannerProps {
 
 export function Banner({ banner, id }:BannerProps) {
     const [openBannerModal, setOpenBannerModal] = useState(false);
-    const [previewUrl, setPreviewUrl] = useState<string | null | any>(null);
     const [file, setFile] = useState<File>();
 
     const { edgestore } = useEdgeStore();
@@ -28,7 +27,6 @@ export function Banner({ banner, id }:BannerProps) {
     
           if (res?.url) {
             await updateRestaurantBanner("677ec336ae29166373b2758b", id, res.url);
-            setPreviewUrl(res.url);
 
             console.log('Sucesso');
           } else {
@@ -56,8 +54,8 @@ export function Banner({ banner, id }:BannerProps) {
                     <div>
                         <label htmlFor="banner-file">
                             <div className="flex justify-center items-center bg-zinc-100 cursor-pointer w-full h-24 rounded-md">
-                                {previewUrl ? (
-                                    <img src={previewUrl} alt="Preview" className="object-cover w-full h-full rounded-md" />
+                                {file ? (
+                                    <img src={URL.createObjectURL(file)} alt="Preview" className="object-cover w-full h-full rounded-md" />
                                 ) : (
                                     <FaCloudUploadAlt className="text-3xl text-orange-300" />
                                 )}

@@ -1,15 +1,16 @@
 
 
-const currencyMask = (value: string) => {
-    if (!value) return "";
-    value = value.replace(/\D/g, "");
-    value = (parseInt(value, 10) / 100).toFixed(2) + "";
-    value = value.replace(".", ",");
-    value = value.replace(/(\d)(?=(\d{3})+,)/g, "$1.");
-    return `R$ ${value}`;
-};
-
-export const handleCurrency = (e: { target: HTMLInputElement | any }) => {
-    let input = e.target;
-    input.value = currencyMask(input.value);
-};
+const currencyMask = (value: string | number) => {
+    if (value === null || value === undefined || value === "") return "R$ 0,00";
+    const numericValue = parseFloat(
+      value.toString().replace(/[^\d]/g, "")
+    );
+    return `R$ ${(numericValue / 100).toFixed(2).replace(".", ",")}`;
+  };
+  
+  export const handleCurrency = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const rawValue = input.value.replace(/[^\d]/g, "");
+    const maskedValue = currencyMask(rawValue);
+    input.value = maskedValue;
+  };
