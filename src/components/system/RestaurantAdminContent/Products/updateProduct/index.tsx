@@ -21,64 +21,77 @@ interface UpdateProductProps {
 export function UpdateProduct({ foodType, open, setOpen, data }:UpdateProductProps) {
     const [file, setFile] = useState<File | any>();
     
-        const { edgestore } = useEdgeStore();
-    
-        const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
-            resolver: zodResolver(productSchema),
-            defaultValues: {
-              productImage: "",
-              productName: "",
-              productPrice: 0,
-              productCategory: foodType[0]?.type,
-              productDescription: "",
-            },
-          });
-          
-          useEffect(() => {
-            if (data && data.length > 0) {
-              const product = data[0];
-          
-              console.log("Dados do produto:", product);
-          
-              setValue("productImage", product.image?.url || "");
-              setValue("productName", product.name || "");
-              setValue("productPrice", product.price || 0);
-              setValue("productCategory", product.categoryTitle || foodType[0]?.type || "");
-              setValue("productDescription", product.description || "");
-            }
-          }, [data, setValue, foodType]);
-          
-          const imgUrl = data[0]?.image?.url;
-          const imgId = data[0]?.image?.id;
-          const productId = data[0]?.id;
-          
-          const handleUpdateProduct = async (formData: any) => {
-            try {
-              const newImgUrl = formData.productImage !== imgUrl ? formData.productImage : imgUrl;
-          
-              const updatedFields: any = {
-                name: formData.productName,
-                price: formData.productPrice,
-                categoryTitle: formData.productCategory,
-                description: formData.productDescription,
-              };
+    const { edgestore } = useEdgeStore();
 
-              if (newImgUrl !== imgUrl) {
-                updatedFields.image = {
-                  uploadUrl: newImgUrl,
-                  id: imgId,
-                };
-              }
-          
-              console.log("Dados enviados para atualização:", updatedFields);
-    
-              await updateProduct(formData.productCategory, formData.productName, formData.productPrice, imgUrl, imgId, productId, formData.productDescription);
-          
-              console.log("Produto atualizado com sucesso");
-            } catch (error) {
-              console.error("Erro ao atualizar produto:", error);
+    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+        resolver: zodResolver(productSchema),
+        defaultValues: {
+          productImage: "",
+          productName: "",
+          productPrice: 0,
+          productCategory: foodType[0]?.type,
+          productDescription: "",
+        },
+      });
+      
+      useEffect(() => {
+        if (data && data.length > 0) {
+          const product = data[0];
+      
+          console.log("Dados do produto:", product);
+      
+          setValue("productImage", product.image?.url || "");
+          setValue("productName", product.name || "");
+          setValue("productPrice", product.price || 0);
+          setValue("productCategory", product.categoryTitle || foodType[0]?.type || "");
+          setValue("productDescription", product.description || "");
+        }
+      }, [data, setValue, foodType]);
+      
+      const imgUrl = data[0]?.image?.url;
+      const imgId = data[0]?.image?.id;
+      const productId = data[0]?.id;
+      
+      const handleUpdateProduct = async (formData: any) => {
+        try {
+          let updatedImageUrl = imgUrl;
+      
+          if (file) {
+            const res = await edgestore.myPublicImages.upload({ file });
+      
+            if (res.url) {
+              updatedImageUrl = res.url;
+            } else {
+              throw new Error("Falha ao fazer upload da nova imagem.");
             }
+          }
+      
+          const updatedFields: any = {
+            name: formData.productName,
+            price: formData.productPrice,
+            categoryTitle: formData.productCategory,
+            description: formData.productDescription,
+            image: {
+              uploadUrl: updatedImageUrl,
+              id: imgId,
+            },
           };
+      
+          await updateProduct(
+            updatedFields.categoryTitle,
+            updatedFields.name,
+            updatedFields.price,
+            updatedFields.image.uploadUrl,
+            updatedFields.image.id,
+            productId,
+            updatedFields.description
+          );
+      
+          console.log("Produto atualizado com sucesso");
+        } catch (error) {
+          console.error("Erro ao atualizar produto:", error);
+        }
+      };  
 
     return (
         <>
@@ -87,7 +100,7 @@ export function UpdateProduct({ foodType, open, setOpen, data }:UpdateProductPro
                 <form onSubmit={handleSubmit(handleUpdateProduct)} className="p-5 flex flex-col gap-3">
                     <div className="flex justify-between flex-wrap">
                         <div className="flex flex-col gap-3">
-                            <Image className="w-16 h-16 object-cover rounded-full aspect-square" src={`${!file ? watch("productImage") : URL.createObjectURL(file)}`} width={50} height={50} alt="imagem de upload do produto" />
+                            <Image className="w-16 h-16 object-cover rounded-full aspect-square" src={`${!file ? watch("productImage") : URL.createObjectURL(file)}`} width={200} height={200} alt="imagem de upload do produto" />
                             <label htmlFor="product-image" className="cursor-pointer flex items-center gap-3">
                                 <FaCloudUploadAlt /> Enviar imagem
                             </label>

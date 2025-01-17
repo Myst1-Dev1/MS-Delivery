@@ -20,30 +20,33 @@ export const restaurantSchema = z.object({
 });
 
 export const productSchema = z.object({
-  // productImage: z
-  // .object({
-  //   file: z
-  //     .any()
-  //     .refine(
-  //       (file) => file && file.length === 1,
-  //       "É necessário enviar uma imagem."
-  //     )
-  //     .refine(
-  //       (file) =>
-  //         file &&
-  //         file[0] &&
-  //         ["image/jpeg", "image/png", "image/gif"].includes(file[0].type),
-  //       "A imagem deve ser do tipo JPEG, PNG ou GIF."
-  //     )
-  //     .refine(
-  //       (file) => file && file[0] && file[0].size <= 5 * 1024 * 1024,
-  //       "A imagem deve ter no máximo 5MB."
-  //     )
-  //     .optional(),
-  // })
-  // .refine((data) => !!data.file, {
-  //   message: "A imagem é obrigatória.",
-  // }),
+  productImage: z.union([
+    z
+      .object({
+        file: z
+          .any()
+          .refine(
+            (file) => file && file.length === 1,
+            "É necessário enviar uma imagem."
+          )
+          .refine(
+            (file) =>
+              file &&
+              file[0] &&
+              ["image/jpeg", "image/png", "image/gif"].includes(file[0].type),
+            "A imagem deve ser do tipo JPEG, PNG ou GIF."
+          )
+          .refine(
+            (file) => file && file[0] && file[0].size <= 5 * 1024 * 1024,
+            "A imagem deve ter no máximo 5MB."
+          )
+          .optional(),
+      })
+      .refine((data) => !!data.file, {
+        message: "A imagem é obrigatória.",
+      }),
+    z.string().min(10, "URL invalida").optional(),
+  ]),
   productName:z.string().min(1, "O nome é obrigatório"),
   productPrice:z.number().min(1, "O preço é obrigatório"),
   productCategory: z.string({required_error: "Nível de acesso obrigatório para o cadastro!",}).optional(),
@@ -54,5 +57,5 @@ export const infoSchema = z.object({
   title: z.string().min(1, "Informe um titulo.").optional(),
   address: z.string().min(5, "O endereço deve ter pelo menos 5 caracteres."),
   about: z.string().min(10, "A descrição deve ter pelo menos 10 caracteres.").optional(),
-  foodTypes: z.array(z.string().min(1, "Informe um tipo de comida são obrigatórios.")).optional(),
+  foodTypes: z.array(z.string().optional()),
 })

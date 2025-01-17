@@ -247,6 +247,9 @@ export async function handleUpdateRestaurant(
           about
           foodTypes
         }
+        publishRestaurant(where: {userId: "677ec336ae29166373b2758b"}) {
+          id
+        }
       }
     `,
       {

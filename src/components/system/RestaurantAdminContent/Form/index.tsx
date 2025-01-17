@@ -3,16 +3,18 @@
 import { infoSchema } from "@/lib/zod";
 import { handleUpdateRestaurant } from "@/services/graphql/graphql";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
 interface FormProps {
     title:string;
     about:string;
     address:string;
+    foodType: [] | any;
 }
 
-export function Form({ title, about, address }:FormProps) {
-    const { register, control, handleSubmit, formState: { errors } } = useForm({
+export function Form({ title, about, address, foodType }:FormProps) {
+    const { register, control, handleSubmit, formState: { errors }, setValue } = useForm({
         resolver:zodResolver(infoSchema),
         defaultValues: {
         title: "",
@@ -26,6 +28,8 @@ export function Form({ title, about, address }:FormProps) {
         control,
         name: "foodTypes",
       });
+    
+    const data = { title, address, about };
 
     async function handleUpdateRestaurantInformations(data:any) {
         try {
@@ -36,6 +40,12 @@ export function Form({ title, about, address }:FormProps) {
             console.log('Erro ao atualizar informações do restaurante', error);
         }
     }
+
+    useEffect(() => {
+        setValue("title", data.title);
+        setValue("address", data.address);
+        setValue("about", data.about);
+    }, [setValue, data]);
 
     return (
         <div className="flex-shrink-0">
