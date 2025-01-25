@@ -1,9 +1,11 @@
 'use client'
 
+import { useEdgeStore } from "@/lib/edgestore";
 import { restaurantSchema } from "@/lib/zod";
 import { createRestaurant } from "@/services/graphql/graphql";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -14,12 +16,14 @@ export default function Home() {
 
   const [isSubmited, setIsSubmited] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [file, setFile] = useState<File>();
+  
+  const { edgestore } = useEdgeStore();
 
   const {
     register,
     handleSubmit,
     control,
-    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(restaurantSchema),
@@ -47,15 +51,25 @@ export default function Home() {
         type,
       }));
 
-      await createRestaurant({
-        title: data.title,
-        address: data.address,
-        about: data.about,
-        type: data.type,
-        foodTypes,
-        bannerUrl: data.bannerUrl,
-        userId: session?.user.id
-      });
+      if(file) {
+        const res = await edgestore.myPublicImages.upload({ file });
+
+        if(res.url) {
+          await createRestaurant({
+            title: data.title,
+            address: data.address,
+            about: data.about,
+            type: data.type,
+            foodTypes,
+            bannerUrl: res.url,
+            userId: session?.user.id
+          });
+        }else {
+          throw new Error("Falha ao gerar a URL do arquivo.");
+        }
+      }else {
+        throw new Error("Falha ao criar restaurante.");
+      }
 
       setTimeout(() => {
         setIsLoading(false);
@@ -76,23 +90,17 @@ export default function Home() {
                     {!isSubmited ? ( 
                       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 m-auto">
                         <h1 className="text-xl text-center font-bold">Crie o seu restaurante</h1>
-                        {/* <div>
+                        <div>
                             <label htmlFor="banner-file">
                                 <div className="font-bold flex gap-4 justify-center items-center bg-zinc-100 cursor-pointer w-full h-24 rounded-md">
+                                {file ? (
+                                    <Image src={URL.createObjectURL(file)} width={200} height={96} alt="Preview" className="object-cover w-full h-full rounded-md" />
+                                ) : (
                                     <FaCloudUploadAlt className="text-3xl text-orange-300" />
-                                    Enviar imagem do banner
+                                )}
                                 </div>
                             </label>
-                            <input id="banner-file" className="hidden" type="file" {...register("bannerUrl", {
-                                onChange: (e) =>{ 
-                                    const file = e.target.files?.[0] || null;
-                                    setValue("bannerUrl", file)}
-                            })} />
-                            {errors.bannerUrl && <p className="text-red-500">{errors.bannerUrl.message}</p>}
-                        </div> */}
-                        <div className="flex flex-col gap-3">
-                            <label htmlFor="restaurantName" className="font-bold">Url do banner</label>
-                            <input placeholder="Los tacos" id="restaurantName" type="text" {...register("bannerUrl")} className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                            <input id="banner-file" className="hidden" type="file" {...register("bannerUrl")} onChange={(e) => setFile(e.target.files?.[0])}/>
                             {errors.bannerUrl && <p className="text-red-500">{errors.bannerUrl.message}</p>}
                         </div>
                         <div className="flex flex-col gap-3">

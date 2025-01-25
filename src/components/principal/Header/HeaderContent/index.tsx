@@ -20,16 +20,6 @@ export function HeaderContent() {
 
     const {data: session, status } = useSession();
 
-    // if (status === "loading") {
-    //     return <p>Carregando...</p>;
-    //   }
-    
-    // if (!session) {
-    // return <p>Você não está logado. Faça login para continuar.</p>;
-    // }
- 
-    console.log(session);
-
     const [openSignInModal, setSignInModal] = useState(false);
     const [openSignUpModal, setSignUpModal] = useState(false);
     const [showUserOption, setShowUserOption] = useState(false);
@@ -100,7 +90,7 @@ export function HeaderContent() {
                         </div>
                         <Image onClick={() => handleShowUserOptions('.user-box', 158, 160)} className="w-10 h-10 object-cover cursor-pointer" src="/images/user-icon.png" width={500} height={500} alt="icone de usuário" />
                     </div>
-                   <UserBox />
+                    <UserBox id={session.user.id} />
                    <Cart handleShowUserOptions = {handleShowUserOptions} />
                 </>
                 }

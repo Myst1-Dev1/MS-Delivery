@@ -3,6 +3,7 @@ import NextAuth, {NextAuthOptions} from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { User } from "@/services/schema";
 import bcrypt from "bcrypt";
+import { cookies } from "next/headers";
 
 export const authOption:NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -21,6 +22,7 @@ export const authOption:NextAuthOptions = {
         await connectToDatabase();
 
         const user = await User.findOne({ email: credentials.email });
+        (await cookies()).set('user', user?._id);
 
         if (!user) {
           throw new Error("Usuário não encontrado.");
@@ -36,7 +38,8 @@ export const authOption:NextAuthOptions = {
           name: user.name,
           email: user.email,
           role: user.role,
-          restaurant:user.restaurant
+          address: user.address,
+          zipCode: user.zipCode
         };
       },
     }),
@@ -46,6 +49,8 @@ export const authOption:NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.address = user.address;
+        token.zipCode = user.zipCode
       }
       return token;
     },
@@ -55,6 +60,8 @@ export const authOption:NextAuthOptions = {
         email: token.email,
         name: token.name,
         role: token.role,
+        address: token.address,
+        zipCode: token.zipCode
       };
       
       return session;

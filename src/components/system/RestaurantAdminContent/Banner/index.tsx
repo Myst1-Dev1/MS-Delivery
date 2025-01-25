@@ -4,7 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Modal } from "@/components/global/Modal";
 import { useState } from "react";
 import { FaCloudUploadAlt, FaPencilAlt } from "react-icons/fa";
-import { updateRestaurantBanner } from "@/services/graphql/graphql";
+import { updateRestaurantBanner, userId } from "@/services/graphql/graphql";
 import { useEdgeStore } from "@/lib/edgestore";
 
 interface BannerProps {
@@ -15,6 +15,7 @@ interface BannerProps {
 export function Banner({ banner, id }:BannerProps) {
     const [openBannerModal, setOpenBannerModal] = useState(false);
     const [file, setFile] = useState<File>();
+    const [loading, setLoading] = useState(false);
 
     const { edgestore } = useEdgeStore();
     
@@ -22,11 +23,12 @@ export function Banner({ banner, id }:BannerProps) {
       event.preventDefault();
     
       try {
+        setLoading(true);
         if (file) {
           const res = await edgestore.myPublicImages.upload({ file });
     
           if (res?.url) {
-            await updateRestaurantBanner("677ec336ae29166373b2758b", id, res.url);
+            await updateRestaurantBanner(userId, id, res.url);
 
             console.log('Sucesso');
           } else {
@@ -38,6 +40,9 @@ export function Banner({ banner, id }:BannerProps) {
       } catch (error) {
         console.error("Erro ao atualizar o banner:", error);
         alert(`Erro ao atualizar o banner: ${error}`);
+        setLoading(false);
+      }finally {
+        setLoading(false);
       }
     };
 
@@ -53,7 +58,7 @@ export function Banner({ banner, id }:BannerProps) {
                 <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-3">
                     <div>
                         <label htmlFor="banner-file">
-                            <div className="flex justify-center items-center bg-zinc-100 cursor-pointer w-full h-24 rounded-md">
+                            <div className="flex justify-center items-center bg-zinc-100 cursor-pointer w-full h-36 rounded-md">
                                 {file ? (
                                     <img src={URL.createObjectURL(file)} alt="Preview" className="object-cover w-full h-full rounded-md" />
                                 ) : (
@@ -63,7 +68,11 @@ export function Banner({ banner, id }:BannerProps) {
                         </label>
                         <input name="file" id="banner-file" className="hidden" type="file" onChange={(e) => setFile(e.target.files?.[0])} />
                     </div>
-                    <button type="submit" className="button max-w-24 w-full m-auto">Atualizar</button>
+                    <button type="submit" className="button max-w-24 w-full m-auto">
+                      {loading ? <div className="w-5 m-auto h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></div> 
+                      : 
+                      'Atualizar'}
+                    </button>
                 </form>
             </Modal>
         </>

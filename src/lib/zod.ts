@@ -16,7 +16,7 @@ export const restaurantSchema = z.object({
   about: z.string().min(10, "A descrição deve ter pelo menos 10 caracteres."),
   type: z.string().min(1, "O tipo é obrigatório."),
   foodTypes: z.array(z.string().min(1, "Os tipos de comida são obrigatórios.")),
-  bannerUrl: z.string().url("A URL do banner deve ser válida."),
+  // bannerUrl: z.string().url("A URL do banner deve ser válida."),
 });
 
 export const productSchema = z.object({

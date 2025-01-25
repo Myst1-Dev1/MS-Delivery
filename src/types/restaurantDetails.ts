@@ -40,4 +40,5 @@ export type RestaurantDetails = {
     categorie: Category[];
     foodTypes: FoodType[];
     id: string;
+    userId:string;
 }

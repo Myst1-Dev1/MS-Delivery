@@ -10,10 +10,9 @@ interface FormProps {
     title:string;
     about:string;
     address:string;
-    foodType: [] | any;
 }
 
-export function Form({ title, about, address, foodType }:FormProps) {
+export function Form({ title, about, address }:FormProps) {
     const { register, control, handleSubmit, formState: { errors }, setValue } = useForm({
         resolver:zodResolver(infoSchema),
         defaultValues: {
@@ -77,7 +76,7 @@ export function Form({ title, about, address, foodType }:FormProps) {
                     <textarea {...register("about")} placeholder={about} id="restaurantAbout" className="h-32 resize-none border border-gray-300 rounded-md p-3 w-full outline-none" />
                     {errors.about && <p className="text-red-500">{errors.about.message}</p>}
                 </div>
-                <button className="button w-full">Atualizar</button>
+                <button className="button w-full mb-5 lg:mb-0">Atualizar</button>
             </form>
         </div>
     )

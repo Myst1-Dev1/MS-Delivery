@@ -10,15 +10,18 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { handleCurrency } from "@/utils/masks";
 import { Category } from "@/types/restaurantDetails";
 import { updateProduct } from "@/services/graphql/graphql";
+import { toast } from "react-toastify";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 interface UpdateProductProps {
+    router:AppRouterInstance;
     foodType:[] | any;
     open:boolean;
     setOpen:any;
     data:Category[];
 }
 
-export function UpdateProduct({ foodType, open, setOpen, data }:UpdateProductProps) {
+export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdateProductProps) {
     const [file, setFile] = useState<File | any>();
     
     const { edgestore } = useEdgeStore();
@@ -87,7 +90,8 @@ export function UpdateProduct({ foodType, open, setOpen, data }:UpdateProductPro
             updatedFields.description
           );
       
-          console.log("Produto atualizado com sucesso");
+          toast.success('Produto atualizado com sucesso.');
+          router.refresh();
         } catch (error) {
           console.error("Erro ao atualizar produto:", error);
         }
@@ -96,7 +100,7 @@ export function UpdateProduct({ foodType, open, setOpen, data }:UpdateProductPro
     return (
         <>
              <Modal open={open} setOpen={setOpen}>
-                <Dialog.Title className="text-2xl text-center font-bold py-3">Criar novo produto</Dialog.Title>
+                <Dialog.Title className="text-2xl text-center font-bold py-3">Atualizar produto</Dialog.Title>
                 <form onSubmit={handleSubmit(handleUpdateProduct)} className="p-5 flex flex-col gap-3">
                     <div className="flex justify-between flex-wrap">
                         <div className="flex flex-col gap-3">
@@ -142,7 +146,7 @@ export function UpdateProduct({ foodType, open, setOpen, data }:UpdateProductPro
                         <textarea {...register("productDescription")} id="productDescription" className="resize-none border border-gray-300 h-20 rounded-md p-3 w-full outline-none" placeholder="carne, alface, etc" />
                         {errors.productDescription && <p className="text-red-500">{errors.productDescription.message}</p>}
                     </div>
-                    <button type="submit" className="button">Adicionar produto</button>
+                    <button type="submit" className="button">Atualizar produto</button>
                 </form>
             </Modal>
         </>

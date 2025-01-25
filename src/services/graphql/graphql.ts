@@ -1,8 +1,10 @@
 import { request, gql, GraphQLClient } from 'graphql-request';
 import { api } from '../axios';
+import { parseCookies } from 'nookies';
 
 const graphqlAPI:any = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
 const graphCMSToken = process.env.NEXT_PUBLIC_GRAPHCMS_TOKEN;
+export const { 'user': userId } = parseCookies()
 
   const graphQLClient = new GraphQLClient((graphqlAPI), {
     headers: {
@@ -32,12 +34,26 @@ export const getRestaurants = async() => {
                 }
                 }
                 id
+                userId
             }
     }
     `
 
     const results:any = await request(graphqlAPI, query);
     return results.restaurants;
+}
+
+export const getRestaurantUserId = async() => {
+  const query = gql`
+      query Restaurants {
+          restaurants(first: 9999) {
+              userId
+          }
+  }
+  `
+
+  const results:any = await request(graphqlAPI, query);
+  return results.restaurants;
 }
 
 export const getRestaurantDetails = async(title:any) => {
@@ -141,11 +157,58 @@ export const createRestaurant = async(obj:any) => {
   }
 `;
 
+const PUBLISH_ASSET = gql`
+  mutation PublishAsset($bannerId: ID!) {
+    publishAsset(where: { id: $bannerId }) {
+      id
+    }
+  }
+`;
+
+// const CREATE_PRODUCT = gql`
+//   mutation createCategorie($categoryTitle: String!, $name: String!, $price: Float!, $uploadImg: String!, $userId: String!, $description: String!) {
+//   createCategorie(
+//     data: {categorie: {create: {categoryTitle: $categoryTitle, name: $name, price: $price, image: {create: {uploadUrl: $uploadImg}}, restaurant: {connect: {userId: $userId}}, description: $description}}}
+//   ) {
+//     id
+//     image {
+//       id
+//     }
+//   }
+// }
+// `
+
 const CREATE_PRODUCT = gql`
-  mutation createRestaurant($categoryTitle: String!, $name: String!, $price: Float!, $uploadImg: String!, $userId: String!, $description: String!) {
-  createRestaurant(
-    data: {categorie: {create: {categoryTitle: $categoryTitle, name: $name, price: $price, image: {create: {uploadUrl: $uploadImg}}, restaurant: {connect: {userId: $userId}}, description: $description}}}
+  mutation createCategorie(
+    $categoryTitle: String!, 
+    $name: String!, 
+    $price: Float!, 
+    $uploadImg: String!, 
+    $userId: String!, 
+    $description: String!
   ) {
+    createCategorie(
+      data: {
+        categoryTitle: $categoryTitle,
+        name: $name,
+        price: $price,
+        image: { create: { uploadUrl: $uploadImg } },
+        restaurant: { connect: { userId: $userId } },
+        description: $description
+      }
+    ) {
+      id
+      image {
+        id
+      }
+    }
+  }
+`;
+
+
+const PUBLISH_CATEGORIE = gql`
+  mutation PublishCategorie($categorieId: ID!) {
+  publishCategorie(to: PUBLISHED, where: {id: $categorieId}) {
     id
   }
 }
@@ -166,12 +229,49 @@ const UPDATE_PRODUCT = gql`
   }
 }
 `
+const PUBLISH_NEW_ASSETS = gql`
+  mutation publishNewAssets($createdAt: DateTime!) {
+    publishManyAssetsConnection(
+      to: PUBLISHED,
+      where: { createdAt_gte: $createdAt }
+    ) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+`;
+
+function getCurrentDateWithoutTime(): string {
+  const currentDate = new Date();
+  const year = currentDate.getUTCFullYear();
+  const month = String(currentDate.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}T00:00:00Z`;
+}
 
 export async function createNewProduct(categoryTitle:string, name:string, price:number, uploadImg:string, userId:string, description:string) {
   try {
-    const response = await graphQLClient.request(CREATE_PRODUCT, {
+    const response:any = await graphQLClient.request(CREATE_PRODUCT, {
       categoryTitle, name, price, uploadImg, userId, description
     })
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    const categorieId = response.createCategorie.id;
+
+    if (!categorieId) {
+      throw new Error("Erro ao obter IDs da categoria ou da imagem.");
+    }
+
+    await graphQLClient.request(PUBLISH_CATEGORIE, { categorieId });
+    const currentDate = getCurrentDateWithoutTime();
+
+    await graphQLClient.request(PUBLISH_NEW_ASSETS, {
+      createdAt: currentDate,
+    });
 
     console.log('Produto criado com sucesso', response);
   } catch (error) {
@@ -191,7 +291,6 @@ export async function updateProduct(categoryTitle:string, name:string, price:num
   }
 }
 
-
 export async function updateRestaurantBanner(userId: string, bannerId: string, uploadUrl: string) {
   try {
     const response = await graphQLClient.request(UPDATE_RESTAURANT_BANNER, {
@@ -199,6 +298,12 @@ export async function updateRestaurantBanner(userId: string, bannerId: string, u
       bannerId,
       uploadUrl,
     });
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    await graphQLClient.request(PUBLISH_ASSET, {
+      bannerId
+    })
     console.log("Restaurante atualizado com sucesso:", response);
   } catch (error) {
     console.error("Erro ao atualizar o banner do restaurante:", error);
@@ -214,7 +319,7 @@ export async function handleUpdateRestaurant(
   try {
     const existingData: any = await graphQLClient.request(`
       query GetRestaurant {
-        restaurant(where: { userId: "677ec336ae29166373b2758b" }) {
+        restaurant(where: { userId: "${userId}" }) {
           foodTypes
         }
       }
@@ -240,14 +345,14 @@ export async function handleUpdateRestaurant(
             about: $about,
             foodTypes: $categories
           }
-          where: { userId: "677ec336ae29166373b2758b" }
+          where: { userId: "${userId}" }
         ) {
           title
           address
           about
           foodTypes
         }
-        publishRestaurant(where: {userId: "677ec336ae29166373b2758b"}) {
+        publishRestaurant(where: {userId: "${userId}"}) {
           id
         }
       }

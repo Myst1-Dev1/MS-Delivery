@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req:NextRequest) {
     try {
-        const { name, email, password } = await req.json();
+        const { name, email, password, address, zipCode } = await req.json();
 
         await connectToDatabase();
 
@@ -24,7 +24,8 @@ export async function POST(req:NextRequest) {
             name,
             email,
             password: hashedPassword,
-            restaurant: [],
+            address,
+            zipCode
         });
 
         await newUser.save();
