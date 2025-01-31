@@ -8,9 +8,11 @@ import { FaMapLocation } from "react-icons/fa6";
 import { QrCode } from "./QrCode";
 import { Card } from "./Card";
 import { Money } from "./Money";
+import { useSession } from "next-auth/react";
 
 export function CheckoutContent() {
     const [paymentValue, setPaymentValue] = useState('');
+    const { data:session } = useSession();
 
     const { cart } = useCart();
 
@@ -40,7 +42,7 @@ export function CheckoutContent() {
                         <h5 className="text-xl font-bold">Endereço de entrega</h5>
                         <div className="mt-3 flex items-center gap-3">
                             <FaMapLocation />
-                            <p className="text-gray-500">Rua Lorem Silva Av 35</p>
+                            <p className="text-gray-500">{session?.user.address} - {session?.user.zipCode}</p>
                         </div>
                     </div>
                     <div className="mt-5">

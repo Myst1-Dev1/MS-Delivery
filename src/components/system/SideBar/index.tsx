@@ -2,7 +2,9 @@
 
 import { Logo } from "@/components/principal/Header/Logo";
 import gsap from "gsap";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { destroyCookie } from "nookies";
 import { FaBars, FaChartBar, FaClipboardList, FaSignOutAlt, FaTimes, FaUtensils } from "react-icons/fa";
 
 export function SideBar() {
@@ -13,6 +15,11 @@ export function SideBar() {
 
     function handleCloseResponsiveSideBar() {
         gsap.fromTo('.sideBar', { left:0 }, { left:"-100%", duration:0.4, ease:'power1.inOut' })
+    }
+
+    async function handleSignOut() {
+        await signOut();
+        destroyCookie(null, 'user');
     }
 
     return (
@@ -36,9 +43,9 @@ export function SideBar() {
                         <Link href="/system/ordersAdmin" className="transition-all duration-500 hover:text-orange-500">Pedidos</Link>
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="cursor-pointer flex items-center gap-3">
                     <FaSignOutAlt />
-                    <h6 className="transition-all duration-500 hover:text-orange-500">Sair</h6>
+                    <h6 onClick={handleSignOut} className="transition-all duration-500 hover:text-orange-500">Sair</h6>
                 </div>
             </div>
         </div>

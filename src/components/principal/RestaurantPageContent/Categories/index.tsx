@@ -120,7 +120,6 @@ export function Categories({ data, type }: CategoriesProps) {
                             </div>
                         </div>
                     </div>
-                   
             </div>
         </>
     )

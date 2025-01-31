@@ -244,6 +244,40 @@ const PUBLISH_NEW_ASSETS = gql`
   }
 `;
 
+const CREATE_ORDER = gql`
+  mutation createOrder($nomeDoCliente:String!, $endereco: String!, $informacoesAdicionais: String!, $cep: String!, $valorDoPedido: Float!, $pedido: String!) {
+  createOrder(
+    data: {nomeDoCliente: $nomeDoCliente, endereco: $endereco, informacoesAdicionais: $informacoesAdicionais, cep: $cep, valorDoPedido: $valorDoPedido, restaurant: {connect: {userId: "677ec336ae29166373b2758b"}}, pedido: $pedido}
+  ) {
+    cep
+  }
+}
+`
+
+export async function createOrder(
+  nomeDoCliente: string | any,
+  endereco: string,
+  informacoesAdicionais: string,
+  cep: string,
+  valorDoPedido: number,
+  pedido: string
+) {
+  try {
+      const response = await graphQLClient.request(CREATE_ORDER, {
+          nomeDoCliente,
+          endereco,
+          informacoesAdicionais,
+          cep,
+          valorDoPedido,
+          pedido,
+      });
+
+      console.log('Pedido criado com sucesso:', response);
+  } catch (error) {
+      console.log('Erro ao criar pedido:', error);
+  }
+}
+
 function getCurrentDateWithoutTime(): string {
   const currentDate = new Date();
   const year = currentDate.getUTCFullYear();

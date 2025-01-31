@@ -1,8 +1,14 @@
+'use client';
+
 import { Map } from "@/components/principal/Map";
+import { useCart } from "@/hooks/useCart";
+import { FormatPrice } from "@/utils/formatPrice";
 import { FaRocketchat } from "react-icons/fa";
 import { FaPix } from "react-icons/fa6";
 
 export default function OrderInProgress() {
+    const { cart, totalCart } = useCart();
+
     return (
         <>
             <div className="w-full flex flex-col gap-5 py-8 justify-center items-center">
@@ -18,14 +24,14 @@ export default function OrderInProgress() {
                     <div>
                         <h6 className="font-bold">Pedido</h6>
                         <div className="flex flex-col gap-2 mt-2">
-                           <span>1 cheese burguer</span> 
-                           <span>1 batata</span> 
-                           <span>1 coca zero lata</span> 
+                           {cart.map(item => (
+                            <span key={item.product.id}>{item.quantity} {item.product.name}</span>
+                           ))} 
                         </div>
                     </div>
                     <div className="flex justify-between w-full">
                         <h6 className="font-bold">Total</h6>
-                        <h6>R$:33,00</h6>
+                        <h6>{FormatPrice(totalCart)}</h6>
                     </div>
                     <div className="flex justify-between w-full">
                         <h6 className="font-bold">Pagamento</h6>
@@ -38,7 +44,7 @@ export default function OrderInProgress() {
                         <FaRocketchat />
                         Chat
                     </div>
-                    <button className="button">Recebi meu pedido</button>
+                    <button className="button opacity-50 cursor-not-allowed">Recebi meu pedido</button>
                 </div>
             </div>
         </>
