@@ -10,7 +10,7 @@ export default function Home() {
                 <Header />
                 <div className="ml-4 py-5">
                     <div>
-                        <h2 className="text-xl font-bold">Gráfico de vendas</h2>
+                        <h2 className="text-xl font-bold mb-5">Gráfico de vendas</h2>
                         <SalesChart />
                     </div>
                     <OrdersAndSaled />

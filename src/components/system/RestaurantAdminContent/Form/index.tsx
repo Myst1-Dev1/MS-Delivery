@@ -1,18 +1,24 @@
 'use client';
 
 import { infoSchema } from "@/lib/zod";
-import { handleUpdateRestaurant } from "@/services/graphql/graphql";
+import { handleDeleteFoodType, handleUpdateRestaurant } from "@/services/graphql/graphql";
+import { FoodType } from "@/types/restaurantDetails";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { FaTrashAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 interface FormProps {
     title:string;
     about:string;
     address:string;
+    type: FoodType[];
 }
 
-export function Form({ title, about, address }:FormProps) {
+export function Form({ title, about, address, type }:FormProps) {
+    const [isLoading, setIsLoading] = useState(false);
+
     const { register, control, handleSubmit, formState: { errors }, setValue } = useForm({
         resolver:zodResolver(infoSchema),
         defaultValues: {
@@ -31,12 +37,17 @@ export function Form({ title, about, address }:FormProps) {
     const data = { title, address, about };
 
     async function handleUpdateRestaurantInformations(data:any) {
+        setIsLoading(true);
         try {
             await handleUpdateRestaurant(data.title, data.address, data.about, `${data.foodTypes}`);
 
+            toast.success('Restaurante atualizado com sucesso.');
             console.log('Informações atualizadas', data);
         } catch (error) {
+            toast.error('Tivemos um erro ao atualizar o restaurante.');
             console.log('Erro ao atualizar informações do restaurante', error);
+        }finally {
+            setIsLoading(false);
         }
     }
 
@@ -62,10 +73,18 @@ export function Form({ title, about, address }:FormProps) {
                 </div>
                 <div className="flex flex-col gap-3">
                     <label htmlFor="restaurantCategory" className="font-bold">Nova categoria</label>
+                    {type.map((type:any, index:number) => (
+                        <div key={index} className="flex items-center gap-2">
+                            <div className="p-3 w-full bg-zinc-400 font-bold text-white rounded-md">
+                                {type.type}
+                            </div>
+                            <FaTrashAlt onClick={() => handleDeleteFoodType(type.type)} className="text-red-600 cursor-pointer" />
+                        </div>
+                    ))}
                     {fields.map((item, index) => (
                         <div key={item.id} className="flex items-center gap-2">
                         <input className="outline-none border p-3 rounded-md w-full" {...register(`foodTypes.${index}`)} />
-                        <button type="button" onClick={() => remove(index)} className="text-red-500 font-bold">Remover</button>
+                        <button type="button" onClick={() => remove(index)} className="text-red-500 font-bold"><FaTrashAlt /></button>
                         </div>
                     ))}
                     <button type="button" onClick={() => append("")} className="mt-2 text-blue-500 font-bold">+ Adicionar categoria</button>
@@ -76,7 +95,12 @@ export function Form({ title, about, address }:FormProps) {
                     <textarea {...register("about")} placeholder={about} id="restaurantAbout" className="h-32 resize-none border border-gray-300 rounded-md p-3 w-full outline-none" />
                     {errors.about && <p className="text-red-500">{errors.about.message}</p>}
                 </div>
-                <button className="button w-full mb-5 lg:mb-0">Atualizar</button>
+                <button className="button w-full mb-5 lg:mb-0">
+                    {isLoading ? <div className="w-5 m-auto h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></div> 
+                        :
+                        'Atualizar'
+                    }
+                </button>
             </form>
         </div>
     )

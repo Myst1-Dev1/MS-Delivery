@@ -6,6 +6,8 @@ import { useState } from "react";
 import { FaCloudUploadAlt, FaPencilAlt } from "react-icons/fa";
 import { updateRestaurantBanner, userId } from "@/services/graphql/graphql";
 import { useEdgeStore } from "@/lib/edgestore";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 interface BannerProps {
     banner:string;
@@ -16,6 +18,8 @@ export function Banner({ banner, id }:BannerProps) {
     const [openBannerModal, setOpenBannerModal] = useState(false);
     const [file, setFile] = useState<File>();
     const [loading, setLoading] = useState(false);
+
+    const router = useRouter()
 
     const { edgestore } = useEdgeStore();
     
@@ -31,6 +35,8 @@ export function Banner({ banner, id }:BannerProps) {
             await updateRestaurantBanner(userId, id, res.url);
 
             console.log('Sucesso');
+            toast.success('Banner atualizado com sucesso.');
+            router.refresh();
           } else {
             throw new Error("Falha ao gerar a URL do arquivo.");
           }
@@ -39,6 +45,7 @@ export function Banner({ banner, id }:BannerProps) {
         }
       } catch (error) {
         console.error("Erro ao atualizar o banner:", error);
+        toast.error('Tivemos um erro ao atualizar o banner.');
         alert(`Erro ao atualizar o banner: ${error}`);
         setLoading(false);
       }finally {

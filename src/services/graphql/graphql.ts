@@ -365,8 +365,7 @@ export async function handleUpdateRestaurant(
         : [];
 
     const updatedCategories = [
-      ...existingCategories,
-      { type }
+      ...existingCategories
     ];
 
     await graphQLClient.request(
@@ -404,6 +403,44 @@ export async function handleUpdateRestaurant(
     console.error("Erro ao atualizar o restaurante:", error);
   }
 }
+
+export async function handleDeleteFoodType(typeToDelete: string) {
+  try {
+    const existingData: any = await graphQLClient.request(`
+      query GetRestaurant {
+        restaurant(where: { userId: "${userId}" }) {
+          foodTypes
+        }
+      }
+    `);
+
+    const updatedCategories = existingData?.restaurant?.foodTypes?.filter(
+      (item: { type: string }) => item.type !== typeToDelete
+    ) || [];
+
+    await graphQLClient.request(
+      `
+      mutation UpdateRestaurant($categories: Json!) {
+        updateRestaurant(
+          data: { foodTypes: $categories }
+          where: { userId: "${userId}" }
+        ) {
+          foodTypes
+        }
+        publishRestaurant(where: { userId: "${userId}" }) {
+          id
+        }
+      }
+    `,
+      { categories: updatedCategories }
+    );
+
+    console.log(`Categoria "${typeToDelete}" removida com sucesso!`);
+  } catch (error) {
+    console.error("Erro ao remover a categoria:", error);
+  }
+}
+
 
 export async function handleDeleteProduct(id:string) {
   try {

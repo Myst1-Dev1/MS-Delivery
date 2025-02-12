@@ -10,7 +10,7 @@ export function TestimonialsAndSatisfaction() {
             <div className="py-10 ml-5 grid grid-cols-1 lg:grid-cols-3">
                 <div className="lg:col-span-2">
                     <h2 className="text-xl font-bold">Últimas avaliações</h2>
-                    <div className="mt-7 grid lg:grid-cols-2 grid-cols-1">
+                    <div className="mt-7 px-5 lg:px-0 grid m-auto lg:grid-cols-2 grid-cols-1 gap-4 lg:gap-0">
                         <div className="lg:max-w-72 w-full p-5 rounded-md border border-gray-300">
                             <div className="flex items-center gap-4">
                                 <Image className="w-14 h-14 rounded-full object-cover aspect-square" src="/images/user.jpg" width={50} height={50} alt="foto do usuário" />
@@ -45,7 +45,7 @@ export function TestimonialsAndSatisfaction() {
                         </div>
                     </div>
                 </div>
-                <div>
+                <div className="mt-5">
                     <h2 className="text-xl font-bold mb-4">Gráu de satisfação</h2>
                     <DonutChart />
                 </div>

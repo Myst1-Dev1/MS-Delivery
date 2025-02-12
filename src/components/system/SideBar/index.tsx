@@ -5,9 +5,11 @@ import gsap from "gsap";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { destroyCookie } from "nookies";
+import { useEffect, useState } from "react";
 import { FaBars, FaChartBar, FaClipboardList, FaSignOutAlt, FaTimes, FaUtensils } from "react-icons/fa";
 
 export function SideBar() {
+    const [isMobile, setIsMobile] = useState(false);
 
     function handleOpenResponsiveSideBar() {
         gsap.fromTo('.sideBar', { left:"-100%" }, { left:0, duration:0.4, ease:'power1.inOut' })
@@ -22,6 +24,13 @@ export function SideBar() {
         destroyCookie(null, 'user');
     }
 
+    useEffect(() => {
+        const checkScreenSize = () => setIsMobile(window.innerWidth <= 991);
+        checkScreenSize();
+        window.addEventListener("resize", checkScreenSize);
+        return () => window.removeEventListener("resize", checkScreenSize);
+    }, []);
+
     return (
         <div className="max-w-0 lg:max-w-60 w-full">
             <FaBars onClick={handleOpenResponsiveSideBar} className="flex lg:hidden absolute top-6 left-4 cursor-pointer" />
@@ -32,15 +41,15 @@ export function SideBar() {
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
                         <FaChartBar />
-                        <Link href="/system" className="transition-all duration-500 hover:text-orange-500">Painel</Link>
+                        <Link onClick={isMobile ? handleCloseResponsiveSideBar : undefined} href="/system" className="transition-all duration-500 hover:text-orange-500">Painel</Link>
                     </div>
                     <div className="flex items-center gap-3">
                         <FaUtensils />
-                        <Link href="/system/restaurantAdmin" className="transition-all duration-500 hover:text-orange-500">Restaurante</Link>
+                        <Link onClick={isMobile ? handleCloseResponsiveSideBar : undefined} href="/system/restaurantAdmin" className="transition-all duration-500 hover:text-orange-500">Restaurante</Link>
                     </div>
                     <div className="flex items-center gap-3">
                         <FaClipboardList />
-                        <Link href="/system/ordersAdmin" className="transition-all duration-500 hover:text-orange-500">Pedidos</Link>
+                        <Link onClick={isMobile ? handleCloseResponsiveSideBar : undefined} href="/system/ordersAdmin" className="transition-all duration-500 hover:text-orange-500">Pedidos</Link>
                     </div>
                 </div>
                 <div className="cursor-pointer flex items-center gap-3">
