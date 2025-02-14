@@ -1,5 +1,6 @@
 'use client';
 
+import { Loading } from "@/components/global/Loading";
 import { infoSchema } from "@/lib/zod";
 import { handleDeleteFoodType, handleUpdateRestaurant } from "@/services/graphql/graphql";
 import { FoodType } from "@/types/restaurantDetails";
@@ -96,10 +97,7 @@ export function Form({ title, about, address, type }:FormProps) {
                     {errors.about && <p className="text-red-500">{errors.about.message}</p>}
                 </div>
                 <button className="button w-full mb-5 lg:mb-0">
-                    {isLoading ? <div className="w-5 m-auto h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></div> 
-                        :
-                        'Atualizar'
-                    }
+                    {isLoading ? <Loading /> : 'Atualizar'}
                 </button>
             </form>
         </div>

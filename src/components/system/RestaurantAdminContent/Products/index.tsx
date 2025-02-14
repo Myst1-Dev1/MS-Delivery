@@ -16,6 +16,7 @@ import { createNewProduct, handleDeleteProduct, userId } from "@/services/graphq
 import { UpdateProduct } from "./updateProduct";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { Loading } from "@/components/global/Loading";
 
 interface ProductsProps {
     foodType:[] | any;
@@ -153,10 +154,7 @@ export function Products({ foodType, categorie }:ProductsProps) {
                         {errors.productDescription && <p className="text-red-500">{errors.productDescription.message}</p>}
                     </div>
                     <button type="submit" className="button">
-                        {loading ? <div className="w-5 m-auto h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></div> 
-                        :
-                        'Enviar'
-                        }
+                        {loading ? <Loading /> : 'Enviar'}
                     </button>
                 </form>
             </Modal>

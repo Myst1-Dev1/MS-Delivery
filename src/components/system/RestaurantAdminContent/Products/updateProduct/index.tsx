@@ -12,6 +12,7 @@ import { Category } from "@/types/restaurantDetails";
 import { updateProduct } from "@/services/graphql/graphql";
 import { toast } from "react-toastify";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { Loading } from "@/components/global/Loading";
 
 interface UpdateProductProps {
     router:AppRouterInstance;
@@ -23,6 +24,7 @@ interface UpdateProductProps {
 
 export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdateProductProps) {
     const [file, setFile] = useState<File | any>();
+    const [loading, setLoading] = useState(false);
     
     const { edgestore } = useEdgeStore();
 
@@ -146,7 +148,9 @@ export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdatePr
                         <textarea {...register("productDescription")} id="productDescription" className="resize-none border border-gray-300 h-20 rounded-md p-3 w-full outline-none" placeholder="carne, alface, etc" />
                         {errors.productDescription && <p className="text-red-500">{errors.productDescription.message}</p>}
                     </div>
-                    <button type="submit" className="button">Atualizar produto</button>
+                    <button type="submit" className="button">
+                      {loading ? <Loading /> : 'Atualizar produto'}
+                    </button>
                 </form>
             </Modal>
         </>

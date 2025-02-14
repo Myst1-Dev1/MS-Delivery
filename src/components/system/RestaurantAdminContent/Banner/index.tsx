@@ -8,6 +8,7 @@ import { updateRestaurantBanner, userId } from "@/services/graphql/graphql";
 import { useEdgeStore } from "@/lib/edgestore";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { Loading } from "@/components/global/Loading";
 
 interface BannerProps {
     banner:string;
@@ -76,9 +77,7 @@ export function Banner({ banner, id }:BannerProps) {
                         <input name="file" id="banner-file" className="hidden" type="file" onChange={(e) => setFile(e.target.files?.[0])} />
                     </div>
                     <button type="submit" className="button max-w-24 w-full m-auto">
-                      {loading ? <div className="w-5 m-auto h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></div> 
-                      : 
-                      'Atualizar'}
+                      {loading ? <Loading /> : 'Atualizar'}
                     </button>
                 </form>
             </Modal>

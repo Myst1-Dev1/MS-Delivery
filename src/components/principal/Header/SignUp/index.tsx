@@ -1,6 +1,10 @@
+'use client';
+
 import * as Dialog from "@radix-ui/react-dialog";
 import { Modal } from '@/components/global/Modal';
-import { Dispatch, FormEvent, SetStateAction } from 'react';
+import { Dispatch, FormEvent, SetStateAction, useState } from 'react';
+import { toast } from "react-toastify";
+import { Loading } from "@/components/global/Loading";
 
 interface SignUpProps {
     open:boolean;
@@ -8,10 +12,11 @@ interface SignUpProps {
 }
 
 export function SignUp({ open, setOpen }:SignUpProps) {
+    const [loading, setLoading] = useState(false);
 
     async function handleSignUp(e: FormEvent | any) {
         e.preventDefault();
-      
+        setLoading(true);
         try {
           const formData = new FormData(e.target);
           const formEntries = Object.fromEntries(formData.entries());
@@ -28,14 +33,17 @@ export function SignUp({ open, setOpen }:SignUpProps) {
           if (!response.ok) {
             const error = await response.json();
             console.error("Erro:", error.error);
+            toast.error('Tivemos um erro na criação de sua conta.');
             return;
           }
       
           const result = await response.json();
           console.log(result.message);
+          toast.success('Sua conta foi criada com sucesso');
+          setOpen(false);
         } catch (error) {
           console.error("Erro no cliente:", error);
-        }
+        } finally { setLoading(false) }
       }
 
     return (
@@ -74,7 +82,9 @@ export function SignUp({ open, setOpen }:SignUpProps) {
                               <input name="confirm_password" id="confirm_password" type="password" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
                           </div>
                         </div>
-                        <button className="p-3 w-full rounded-md bg-orange-500 font-bold text-white transition-all duration-500 hover:bg-orange-600">Criar Conta</button>
+                        <button className="p-3 w-full rounded-md bg-orange-500 font-bold text-white transition-all duration-500 hover:bg-orange-600">
+                          {loading ? <Loading /> : 'Criar Conta'}
+                        </button>
                     </form>
                 </div>
             </Modal>

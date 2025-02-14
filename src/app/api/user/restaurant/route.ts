@@ -48,6 +48,14 @@ export async function POST(req:NextRequest , res:NextApiResponse) {
     }
   `;
 
+  const publishRestaurant = gql`
+  mutation publishRestaurant($userId: ID!) {
+    publishRestaurant(to: PUBLISHED, where: { userId: $userId }) {
+      id
+    }
+  }
+`;
+
   try {
     const result:any = await graphQLClient.request(query, {
       title,
@@ -58,6 +66,10 @@ export async function POST(req:NextRequest , res:NextApiResponse) {
       bannerUrl,
       userId
     });
+
+    await new Promise((resolve) => setTimeout(resolve, 7000));
+
+    await graphQLClient.request(publishRestaurant, { userId });
 
     return NextResponse.json({
       message: "Restaurante criado com sucesso.",

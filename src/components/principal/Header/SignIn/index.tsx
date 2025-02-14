@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
+import { Loading } from "@/components/global/Loading";
 
 interface SignInProps {
     open: boolean;
@@ -14,6 +15,7 @@ interface SignInProps {
 
 export function SignIn({ open, setOpen }: SignInProps) {
     const [globalError, setGlobalError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof signInSchema>>({
         resolver: zodResolver(signInSchema),
@@ -24,6 +26,7 @@ export function SignIn({ open, setOpen }: SignInProps) {
     });
 
     async function handleSignIn(values: z.infer<typeof signInSchema>) {
+        setLoading(true);
         try {
             await signIn("credentials", { ...values, redirect: false }).then(
                 ({ error }: any) => {
@@ -38,7 +41,7 @@ export function SignIn({ open, setOpen }: SignInProps) {
 
         } catch (error) {
             console.log("An unexpected error occurred. Please try again.");
-        }
+        }finally { setLoading(false) }
     }
 
     return (
@@ -74,7 +77,9 @@ export function SignIn({ open, setOpen }: SignInProps) {
                             {errors.password && <span className="text-red-600">{errors.password.message}</span>}
                         </div>
                         {globalError && <span className="text-red-600 font-bold">{globalError}</span>}
-                        <button type="submit" className="p-3 w-full rounded-md bg-orange-500 font-bold text-white transition-all duration-500 hover:bg-orange-600">Entrar</button>
+                        <button type="submit" className="p-3 w-full rounded-md bg-orange-500 font-bold text-white transition-all duration-500 hover:bg-orange-600">
+                            {loading ? <Loading /> : 'Entrar'}
+                        </button>
                     </form>
                 </div>
             </Modal>
