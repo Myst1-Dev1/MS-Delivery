@@ -30,7 +30,7 @@ export default async function Home() {
                         <Image className="rounded-md w-full object-cover h-36" src={restaurant.banner?.url || '/images/restaurant-photo.webp'} width={500} height={500} alt="foto do restaurante" />
                         <h6 className="font-bold">{restaurant.title}</h6>
                         <div className="flex justify-between items-center">
-                            <span className="flex items-center text-gray-500 gap-2"><FaStar className="text-yellow-500" /> 5.0</span>
+                            <span className="flex items-center text-gray-500 gap-2"><FaStar className="text-yellow-400" /> 5.0</span>
                             <span className="text-orange-500 font-bold">{restaurant.type}</span>
                         </div>
                     </Link>

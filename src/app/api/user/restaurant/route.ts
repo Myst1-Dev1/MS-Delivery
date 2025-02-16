@@ -2,10 +2,10 @@ import { gql, GraphQLClient } from "graphql-request";
 import { NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
-const graphqlAPI:any = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
+const graphqlAPI: any = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
 const graphCMSToken = process.env.NEXT_PUBLIC_GRAPHCMS_TOKEN;
 
-export async function POST(req:NextRequest , res:NextApiResponse) {
+export async function POST(req: NextRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Método não permitido" });
   }
@@ -15,68 +15,100 @@ export async function POST(req:NextRequest , res:NextApiResponse) {
   if (!title || !address || !about || !type || !foodTypes || !bannerUrl || !userId) {
     return res.status(400).json({ message: "Todos os campos são obrigatórios." });
   }
-  
-  const graphQLClient = new GraphQLClient((graphqlAPI), {
+
+  const graphQLClient = new GraphQLClient(graphqlAPI, {
     headers: {
       authorization: `Bearer ${graphCMSToken}`,
     },
   });
 
-  const query = gql`
-    mutation createRestaurant(
-      $title: String!
-      $address: String!
-      $about: String!
-      $type: String!
-      $foodTypes: Json!
-      $bannerUrl: String!
-      $userId: String!
-    ) {
-      createRestaurant(
-        data: {
-          title: $title
-          address: $address
-          about: $about
-          type: $type
-          foodTypes: $foodTypes
-          banner: { create: { uploadUrl: $bannerUrl } }
-          userId: $userId
-        }
-      ) {
-        id
-      }
-    }
-  `;
-
-  const publishRestaurant = gql`
-  mutation publishRestaurant($userId: ID!) {
-    publishRestaurant(to: PUBLISHED, where: { userId: $userId }) {
-      id
-    }
-  }
-`;
-
   try {
-    const result:any = await graphQLClient.request(query, {
-      title,
-      address,
-      about,
-      type,
-      foodTypes,
-      bannerUrl,
-      userId
-    });
+    const bannerResult: any = await graphQLClient.request(
+      gql`
+        mutation createBanner($bannerUrl: String!) {
+          createAsset(data: { uploadUrl: $bannerUrl }) {
+            id
+          }
+        }
+      `,
+      { bannerUrl }
+    );
 
-    await new Promise((resolve) => setTimeout(resolve, 7000));
+    const bannerId = bannerResult.createAsset.id;
 
-    await graphQLClient.request(publishRestaurant, { userId });
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    return NextResponse.json({
-      message: "Restaurante criado com sucesso.",
-      restaurantId: result.createRestaurant.id,
-    }, { status: 200 });
+    const restaurantResult: any = await graphQLClient.request(
+      gql`
+        mutation createRestaurant(
+          $title: String!
+          $address: String!
+          $about: String!
+          $type: String!
+          $foodTypes: Json!
+          $bannerId: ID!
+          $userId: String!
+        ) {
+          createRestaurant(
+            data: {
+              title: $title
+              address: $address
+              about: $about
+              type: $type
+              foodTypes: $foodTypes
+              banner: { connect: { id: $bannerId } }
+              userId: $userId
+            }
+          ) {
+            id
+            banner {
+              id
+            }
+          }
+        }
+      `,
+      { title, address, about, type, foodTypes, bannerId, userId }
+    );
+
+    const restaurantId = restaurantResult.createRestaurant.id;
+
+    await graphQLClient.request(
+      gql`
+        mutation publishBanner($bannerId: ID!) {
+          publishAsset(to: PUBLISHED, where: { id: $bannerId }) {
+            id
+          }
+        }
+      `,
+      { bannerId }
+    );
+
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  await graphQLClient.request(
+    gql`
+      mutation publishRestaurant($id: ID!) {
+        publishRestaurant(to: PUBLISHED, where: { id: $id }) {
+          id
+          banner {
+            id
+          }
+        }
+      }
+    `,
+    { id: restaurantId }
+  );
+
+    return NextResponse.json(
+      {
+        message: "Restaurante criado com sucesso.",
+        restaurantId,
+        bannerId,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Erro ao criar restaurante:", error);
-    return NextResponse.json({ message: "Erro interno no servidor." });
+    return NextResponse.json({ message: `erro interno no servidor: ${error}` }, { status: 500 });
   }
 }

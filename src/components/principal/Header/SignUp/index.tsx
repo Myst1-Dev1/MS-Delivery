@@ -13,6 +13,7 @@ interface SignUpProps {
 
 export function SignUp({ open, setOpen }:SignUpProps) {
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     async function handleSignUp(e: FormEvent | any) {
         e.preventDefault();
@@ -20,8 +21,10 @@ export function SignUp({ open, setOpen }:SignUpProps) {
         try {
           const formData = new FormData(e.target);
           const formEntries = Object.fromEntries(formData.entries());
-          const { name, email, password, address, zipCode } = formEntries as { [key: string]: string };
+          const { name, email, password, confirm_password, address, zipCode } = formEntries as { [key: string]: string };
       
+          if(password !== confirm_password) { return setError('As senhas não coincidem'); }
+
           const response = await fetch('/api/auth/signUp', {
             method: 'POST',
             headers: {
@@ -41,6 +44,7 @@ export function SignUp({ open, setOpen }:SignUpProps) {
           console.log(result.message);
           toast.success('Sua conta foi criada com sucesso');
           setOpen(false);
+          setError('');
         } catch (error) {
           console.error("Erro no cliente:", error);
         } finally { setLoading(false) }
@@ -85,6 +89,7 @@ export function SignUp({ open, setOpen }:SignUpProps) {
                         <button className="p-3 w-full rounded-md bg-orange-500 font-bold text-white transition-all duration-500 hover:bg-orange-600">
                           {loading ? <Loading /> : 'Criar Conta'}
                         </button>
+                        {error !== '' ? <span className="text-center text-red-600 font-bold">{error}</span> : ''}
                     </form>
                 </div>
             </Modal>
