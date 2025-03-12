@@ -5,8 +5,10 @@ import { signInSchema } from "@/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
 import { Loading } from "@/components/global/Loading";
+import { api } from "@/services/axios";
+import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 interface SignInProps {
     open: boolean;
@@ -14,8 +16,10 @@ interface SignInProps {
 }
 
 export function SignIn({ open, setOpen }: SignInProps) {
-    const [globalError, setGlobalError] = useState('');
+    const { user } = useUser();
     const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
 
     const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof signInSchema>>({
         resolver: zodResolver(signInSchema),
@@ -28,20 +32,18 @@ export function SignIn({ open, setOpen }: SignInProps) {
     async function handleSignIn(values: z.infer<typeof signInSchema>) {
         setLoading(true);
         try {
-            await signIn("credentials", { ...values, redirect: false }).then(
-                ({ error }: any) => {
-                    if (!error) {
-                        console.log('Login feito com sucesso');
-                        setOpen(false);
-                    } else {
-                        setGlobalError('Credenciais erradas');
-                    }
-                }
+            const res = await api.post("/auth/login", { email: values.email, password: values.password },
+                { withCredentials: true }
             );
+            localStorage.setItem('token', JSON.stringify(res.data));
 
+            setOpen(false);
+            router.push(`/${user.iAdmin === true ? 'createRestaurant' : '/'}`);
         } catch (error) {
             console.log("An unexpected error occurred. Please try again.");
-        }finally { setLoading(false) }
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -49,10 +51,6 @@ export function SignIn({ open, setOpen }: SignInProps) {
             <Modal open={open} setOpen={setOpen}>
                 <div className="p-4 flex flex-col gap-3">
                     <Dialog.Title className="text-2xl text-center font-bold">Login</Dialog.Title>
-                    {/* <div className="rounded-md border border-gray-300 p-2 flex justify-center items-center gap-4 cursor-pointer transition-all duration-500 hover:bg-orange-500 hover:text-white">
-                        <Image className="object-cover w-10" src="/images/google-logo.webp" width={300} height={300} alt="logo do google" />
-                        <h6 className="font-bold">Continuar com o google</h6>
-                    </div> */}
                     <form onSubmit={handleSubmit(handleSignIn)} className="flex flex-col gap-3">
                         <div className="flex flex-col gap-3">
                             <label htmlFor="email" className="font-bold">Endereço de email</label>
@@ -76,7 +74,6 @@ export function SignIn({ open, setOpen }: SignInProps) {
                             />
                             {errors.password && <span className="text-red-600">{errors.password.message}</span>}
                         </div>
-                        {globalError && <span className="text-red-600 font-bold">{globalError}</span>}
                         <button type="submit" className="p-3 w-full rounded-md bg-orange-500 font-bold text-white transition-all duration-500 hover:bg-orange-600">
                             {loading ? <Loading /> : 'Entrar'}
                         </button>

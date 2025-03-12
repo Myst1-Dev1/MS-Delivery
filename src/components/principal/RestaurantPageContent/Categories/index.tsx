@@ -5,27 +5,27 @@ import gsap from "gsap";
 import Image from "next/image";
 import { useState } from "react";
 import { FaMinus, FaPlus, FaRocketchat, FaTimes } from "react-icons/fa";
-import { Category } from "@/types/restaurantDetails";
+import { Dishes } from "@/types/restaurantDetails";
 import { FormatPrice } from "@/utils/formatPrice";
 import { useCart } from "@/hooks/useCart";
 
 interface CategoriesProps {
-    data: Category[];
-    type:any;
+    options: String[];
+    dishes: Dishes[];
 }
 
-export function Categories({ data, type }: CategoriesProps) {
-    const [selectedType, setSelectedType] = useState<string | null>(type?.foodType?.[0]?.type || null);
+export function Categories({ options, dishes }: CategoriesProps) {
+    const [selectedType, setSelectedType] = useState<string | any>(() => options?.[0] || "");
     const [selectedItem, setSelectedItem] = useState<null | any>(null);
     const [quantity, setQuantity] = useState(1);
 
     const { handleAddToCart, handleObservationChange, observation } = useCart();
 
     const filteredData = selectedType
-        ? data.filter(dataItem => dataItem.categoryTitle === selectedType)
-        : data;
+        ? dishes.filter(dishe => dishe.menuOption === selectedType)
+        : dishes;
 
-    function handleCart(id: string, data: Category[]) {
+    function handleCart(id: string, data: Dishes[]) {
         handleAddToCart(id, data, quantity);
         
         setSelectedItem(null);
@@ -44,9 +44,9 @@ export function Categories({ data, type }: CategoriesProps) {
         <>
             <div className="categories flex w-full flex-col lg:flex-row justify-between lg:gap-0 gap-8 mt-7 m-auto">
                 <div className="flex flex-col gap-2">
-                    {type?.map((typeItem:any) => (
-                        <h6 onClick={() => setSelectedType(typeItem.type)} className={`${selectedType === typeItem.type ? 'text-orange-500' : ''} cursor-pointer font-bold transition-all duration-500 hover:text-orange-500`} key={typeItem.type}>
-                            {typeItem.type}
+                    {options?.map((option, index:number) => (
+                        <h6 onClick={() => setSelectedType(option)} className={`${selectedType === option ? 'text-orange-500' : ''} cursor-pointer font-bold transition-all duration-500 hover:text-orange-500`} key={index}>
+                            {option}
                         </h6>
                     ))}
                 </div>
@@ -61,40 +61,22 @@ export function Categories({ data, type }: CategoriesProps) {
                                     : filteredData.map((data, index) => (
                                     <div key={index}>
                                         <div onClick={() => setSelectedItem(data)}  className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2 cursor-pointer transition-all duration-500 hover:bg-orange-300 hover:text-white">
-                                            <Image className="w-20 h-28 rounded-md object-cover" src={data.image.url} width={500} height={500} alt="foto do alimento" />
+                                            <Image className="w-20 h-28 rounded-md object-cover" src={data.image} width={500} height={500} alt="foto do alimento" />
                                             <div className="flex flex-col gap-3">
                                                 <h5 className="font-bold">{data.name}</h5>
                                                 <h6 className="font-bold text-sm">{FormatPrice(data.price)}</h6>
                                                 <p className="text-gray-500 text-sm max-w-[25ch] overflow-hidden text-ellipsis whitespace-nowrap">{data.description}</p>
-                                                {/* <div onClick={() => handleAddToCart(data.id, filteredData)} className="z-20 cursor-pointer w-5 h-5 flex justify-center items-center p-2 border border-black font-bold transition-all duration-500 hover:bg-orange-500 hover:border-none hover:text-white"><FaPlus className="flex-shrink-0 text-xs" /></div> */}
                                             </div>
                                         </div>
                                         {selectedItem && (
                                         <Modal open={!!selectedItem} setOpen={() => setSelectedItem(null)}>
                                             <div className="lg:h-[576px]">
                                                 <div onClick={() => setSelectedItem(null)} className="cursor-pointer bg-white rounded-full w-10 h-10 flex justify-center items-center absolute top-[18.5rem] lg:top-2 right-2 transition-all duration-500 hover:bg-orange-600 hover:text-white"><FaTimes /></div>
-                                                <Image className="mt-60 lg:mt-0 w-full object-contain lg:object-cover h-80 lg:h-48 object-center" src={selectedItem.image.url} width={500} height={500} alt="imagem do lanche" />
+                                                <Image className="mt-60 lg:mt-0 w-full object-contain lg:object-cover h-80 lg:h-48 object-center" src={selectedItem.image} width={500} height={500} alt="imagem do lanche" />
                                                 <div className="px-5 py-3 flex flex-col gap-4 overflow-y-scroll scrollDontShow h-screen lg:h-96">
                                                     <Dialog.Title className="text-2xl font-bold">{selectedItem.name}</Dialog.Title>
                                                     <h5 className="font-bold text-xl">{FormatPrice(selectedItem.price)}</h5>
                                                     <p className="text-gray-500 text-sm">{selectedItem.description}</p>
-                                                    {/* <div className="flex flex-col gap-4">
-                                                        {selectedItem.additionals.flatMap((additionalGroup:any) =>
-                                                            additionalGroup.Additionals.map((additional:any) => (
-                                                                <div className="border-b border-gray-200 pb-2 flex justify-between items-center w-full" key={additional.additionalName}>
-                                                                    <div className="flex flex-col gap-1">
-                                                                        <h6>{additional.additionalName}</h6>
-                                                                        <h6>{FormatPrice(additional.additionalPrice)}</h6>
-                                                                    </div>
-                                                                    <div className="border border-gray-300 p-1 flex items-center gap-3">
-                                                                        <FaMinus className="text-orange-400 cursor-pointer text-sm" />
-                                                                        <span>1</span>
-                                                                        <FaPlus className="text-orange-400 cursor-pointer text-sm" />
-                                                                    </div>
-                                                                </div>
-                                                            ))
-                                                        )}
-                                                    </div> */}
                                                     <div className="flex flex-col gap-3">
                                                         <div className="flex items-center gap-3">
                                                             <FaRocketchat />

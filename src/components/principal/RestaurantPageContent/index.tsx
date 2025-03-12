@@ -3,12 +3,13 @@
 import { About } from "@/components/principal/RestaurantPageContent/About";
 import { Categories } from "@/components/principal/RestaurantPageContent/Categories";
 import { Testimonials } from "@/components/principal/RestaurantPageContent/Testimonials";
-import { RestaurantDetails } from "@/types/restaurantDetails";
+import { Restaurant, RestaurantDetails } from "@/types/restaurantDetails";
+import Image from "next/image";
 import { useState } from "react";
 import { FaMapMarkerAlt, FaStar } from "react-icons/fa";
 
 interface RestaurantPageContentProps {
-    restaurantDetails:RestaurantDetails[];
+    restaurantDetails:Restaurant;
 }
 
 export function RestaurantPageContent({ restaurantDetails }:RestaurantPageContentProps) {
@@ -16,18 +17,20 @@ export function RestaurantPageContent({ restaurantDetails }:RestaurantPageConten
 
     return (
         <>
-            {restaurantDetails?.map(detail => (
-            <div key={detail.id} className="px-4 lg:px-16 py-10">
-                <div style={{backgroundImage: `url(${detail.banner.url})`}} className="bg-center w-full h-60 bg-cover rounded-md"></div>
+            <div className="px-4 lg:px-16 py-10">
+                <div style={{backgroundImage: `url(${restaurantDetails.banner})`}} className="bg-center w-full h-60 bg-cover rounded-md"></div>
                 <div className="mt-5 flex flex-col gap-2">
-                    <h2 className="text-xl font-bold">{detail.title}</h2>
+                    <div className="flex items-center gap-4">
+                        <Image src={restaurantDetails.logo} className="w-16 h-16 object-cover rounded-full" width={200} height={200} alt="logo do restaurante"/>
+                        <h2 className="text-xl font-bold">{restaurantDetails.name}</h2>
+                    </div>
                     <div className="flex gap-3 items-center">
                         <FaStar className="text-yellow-500" />
                         <span className="text-gray-500">5.0 (3)</span>
                     </div>
                     <div className="flex gap-3 items-center text-gray-500">
                         <FaMapMarkerAlt />
-                        <h6 className="font-bold">{detail.address}</h6>
+                        <h6 className="font-bold">{restaurantDetails.address}</h6>
                     </div>
                 </div>
 
@@ -40,11 +43,11 @@ export function RestaurantPageContent({ restaurantDetails }:RestaurantPageConten
                         </div>
                     </div>
 
-                    {activeMenu === 'categories' ? <Categories data={detail.categorie} type={detail.foodTypes} /> : ''}
-                    {activeMenu === 'about' ? <About about={detail.about} /> : ''}
+                    {activeMenu === 'categories' ? <Categories options={restaurantDetails.menuOptions} dishes={restaurantDetails.dishes} /> : ''}
+                    {activeMenu === 'about' ? <About about={restaurantDetails.description} /> : ''}
                     {activeMenu === 'testimonials' ? <Testimonials /> : ''}
                 </div>
-            </div>))}
+            </div>
         </>
     )
 }

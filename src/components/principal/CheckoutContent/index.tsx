@@ -28,7 +28,7 @@ export function CheckoutContent() {
                     {cart.map(item => (
                         <div key={item.product.id} className="w-full">
                             <div className="flex items-center gap-3">
-                                <Image className="rounded-md w-20 h-20 object-cover" src={item.product.image.url} width={100} height={100} alt="foto do pedido" />
+                                <Image className="rounded-md w-20 h-20 object-cover" src={item.product.image} width={100} height={100} alt="foto do pedido" />
                                 <div className="flex flex-col gap-2">
                                     <h6>{item.product.name}</h6>
                                     <h5 className="font-bold">{FormatPrice(item.product.price)} x {item.quantity}</h5>

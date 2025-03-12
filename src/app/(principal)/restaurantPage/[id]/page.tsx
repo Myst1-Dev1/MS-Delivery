@@ -1,13 +1,14 @@
 'use server'
 
 import { RestaurantPageContent } from "@/components/principal/RestaurantPageContent";
-import { getRestaurantDetails } from "@/services/graphql/graphql";
+import { FetchSingleRestaurant } from "@/services/fetchData/fetchSingleRestaurant";
 
 export default async function RestaurantPage({ params }:any) {
-    const { title } = await params;
-    const decodedTitle = decodeURIComponent(title);
+    const { id } = await params;
 
-    const restaurantDetails = await getRestaurantDetails(decodedTitle);
+    const restaurantDetails = await FetchSingleRestaurant(id);
+
+    console.log(restaurantDetails);
     
     return (
         <>

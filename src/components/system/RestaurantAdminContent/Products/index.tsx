@@ -34,7 +34,7 @@ export function Products({ foodType, categorie }:ProductsProps) {
 
     const router = useRouter();
 
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver:zodResolver(productSchema),
         defaultValues: {
             productImage: {
@@ -64,7 +64,7 @@ export function Products({ foodType, categorie }:ProductsProps) {
                 }
             }
 
-            console.log(data);
+            reset();
         } catch (error) {
             console.log('Falha ao criar novo produto', error);
             setLoading(false);
@@ -91,8 +91,8 @@ export function Products({ foodType, categorie }:ProductsProps) {
                                 <h6 className="font-bold text-sm">{FormatPrice(item.price)}</h6>
                                 <p className="text-gray-500 text-sm max-w-[25ch] overflow-hidden text-ellipsis whitespace-nowrap">{item.description}</p>
                                 <div className="flex gap-3">
-                                    <div className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-green-300 hover:border-none">
-                                        <FaPencilAlt onClick={() => categorieDataById(item.id)} className="text-green-600 text-sm flex-shrink-0" />
+                                    <div onClick={() => categorieDataById(item.id)} className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-green-300 hover:border-none">
+                                        <FaPencilAlt className="text-green-600 text-sm flex-shrink-0" />
                                     </div>
                                     <div onClick={() => handleDeleteProduct(item.id)}  className="border p-2 border-zinc-500 rounded-md w-7 h-7 cursor-pointer flex justify-center items-center transition-all duration-500 hover:bg-red-300 hover:border-none">
                                         <FaTrashAlt className="text-red-600 text-sm flex-shrink-0" />

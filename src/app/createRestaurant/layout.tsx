@@ -1,3 +1,4 @@
+import { UserProvider } from "@/hooks/useUser";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 import type { Metadata } from "next";
 
@@ -13,9 +14,11 @@ export const metadata: Metadata = {
   }) {
     return (
         <>
-          <EdgeStoreProvider>
-            {children}
-          </EdgeStoreProvider>
+          <UserProvider>
+            <EdgeStoreProvider>
+              {children}
+            </EdgeStoreProvider>
+          </UserProvider>
         </>
     );
   }

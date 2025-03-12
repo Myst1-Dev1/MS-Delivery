@@ -3,11 +3,12 @@
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
 import { FoodType } from "@/components/principal/FoodType";
-import { getRestaurants } from "@/services/graphql/graphql";
 import Link from "next/link";
+import { FetchRestaurants } from "@/services/fetchData/fetchRestaurants";
+import { Restaurant } from "@/types/restaurantDetails";
 
 export default async function Home() {
-    const restaurants = await getRestaurants();
+    const restaurants = await FetchRestaurants();
 
     return (
         <>
@@ -25,10 +26,10 @@ export default async function Home() {
                 <h2 className="text-xl font-bold">Todos os Restaurantes</h2>
                 <span className="text-orange-500 font-bold mt-3">{restaurants?.length} Resultados</span>
                 <div className="mt-10 grid place-items-center grid-cols-1 lg:grid-cols-4 gap-10">
-                    {restaurants?.map((restaurant:any) => (
-                    <Link href={`/restaurantPage/${restaurant.title}`} key={restaurant.id} className="max-w-[300px] w-full flex flex-col gap-2">
-                        <Image className="rounded-md w-full object-cover h-36" src={restaurant.banner?.url || '/images/restaurant-photo.webp'} width={500} height={500} alt="foto do restaurante" />
-                        <h6 className="font-bold">{restaurant.title}</h6>
+                    {restaurants?.map((restaurant:Restaurant) => (
+                    <Link href={`/restaurantPage/${restaurant.id}`} key={restaurant.id} className="max-w-[300px] w-full flex flex-col gap-2">
+                        <Image className="rounded-md w-full object-cover h-36" src={restaurant.banner || '/images/restaurant-photo.webp'} width={500} height={500} alt="foto do restaurante" />
+                        <h6 className="font-bold">{restaurant.name}</h6>
                         <div className="flex justify-between items-center">
                             <span className="flex items-center text-gray-500 gap-2"><FaStar className="text-yellow-400" /> 5.0</span>
                             <span className="text-orange-500 font-bold">{restaurant.type}</span>

@@ -1,18 +1,18 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction, FormEvent, useEffect } from "react";
-import { Category } from "@/types/restaurantDetails";
+import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
+import { Category, Dishes } from "@/types/restaurantDetails";
 import { getRestaurantUserId } from "@/services/graphql/graphql";
 
 type CartItem = {
   quantity: number;
-  product: Category;
+  product: Dishes;
   observation:string;
 };
 
 type CartContextType = {
   cart: CartItem[];
-  handleAddToCart: (id: string, data: Category[], quantity:number) => void;
+  handleAddToCart: (id: string, data: Dishes[], quantity:number) => void;
   handleRemoveToCart: (id: string) => void;
   handleObservationChange:(e:any) => void;
   totalCart:number;
@@ -34,7 +34,7 @@ export function CartProvider({ children }:CartProvicerProps) {
   const [observation, setObservation] = useState('');
   const [userId, setUserId] = useState('');
 
-  function handleAddToCart(id: string, data: Category[], quantity = 1) {
+  function handleAddToCart(id: string, data: Dishes[], quantity = 1) {
     const productItem = data?.find((item) => item.id === id);
     if (!productItem) return;
   

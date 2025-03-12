@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'us-west-2.graphassets.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.freepik.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 's3-sa-east-1.amazonaws.com',
+      },
     ],
   },
 };

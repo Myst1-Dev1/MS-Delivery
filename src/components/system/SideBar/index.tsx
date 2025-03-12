@@ -20,8 +20,17 @@ export function SideBar() {
     }
 
     async function handleSignOut() {
-        await signOut();
-        destroyCookie(null, 'user');
+        try {
+            destroyCookie(null, 'user', {
+                path: '/',
+            });
+    
+            await signOut({ redirect: false });
+            
+            window.location.href = '/';
+        } catch (error) {
+            console.error("Erro ao deslogar:", error);
+        }
     }
 
     useEffect(() => {

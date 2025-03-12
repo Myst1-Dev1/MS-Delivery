@@ -16,8 +16,6 @@ export function Modal({ open, setOpen, children }:ModaLProps) {
     return (
         <>
            <div className={open ? "inert-parent" : ""}>
-            {/* Outros conteúdos da aplicação */}
-            
                 <Dialog.Root open={open} onOpenChange={setOpen}>
                     <Dialog.Portal>
                     <Dialog.Overlay className="bg-black/40 fixed inset-0" />

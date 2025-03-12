@@ -5,6 +5,7 @@ import { infoSchema } from "@/lib/zod";
 import { handleDeleteFoodType, handleUpdateRestaurant } from "@/services/graphql/graphql";
 import { FoodType } from "@/types/restaurantDetails";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { FaTrashAlt } from "react-icons/fa";
@@ -19,6 +20,8 @@ interface FormProps {
 
 export function Form({ title, about, address, type }:FormProps) {
     const [isLoading, setIsLoading] = useState(false);
+
+    const router = useRouter();
 
     const { register, control, handleSubmit, formState: { errors }, setValue } = useForm({
         resolver:zodResolver(infoSchema),
@@ -44,6 +47,7 @@ export function Form({ title, about, address, type }:FormProps) {
 
             toast.success('Restaurante atualizado com sucesso.');
             console.log('Informações atualizadas', data);
+            router.refresh();
         } catch (error) {
             toast.error('Tivemos um erro ao atualizar o restaurante.');
             console.log('Erro ao atualizar informações do restaurante', error);

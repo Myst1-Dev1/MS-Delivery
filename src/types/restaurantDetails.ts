@@ -42,3 +42,26 @@ export type RestaurantDetails = {
     id: string;
     userId:string;
 }
+
+export type Restaurant = {
+    id:string,
+    name:string,
+    logo:string,
+    banner:string,
+    address:string,
+    description:string,
+    type:string,
+    menuOptions:string[],
+    userId:string,
+    dishes: Dishes[]
+}
+
+export type Dishes = {
+    id:string,
+    name:string,
+    description:string,
+    price:number,
+    image:string,
+    menuOption:string,
+    restaurantId:string
+}

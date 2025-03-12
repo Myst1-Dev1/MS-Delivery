@@ -365,7 +365,8 @@ export async function handleUpdateRestaurant(
         : [];
 
     const updatedCategories = [
-      ...existingCategories
+      ...existingCategories,
+      {type}
     ];
 
     await graphQLClient.request(
