@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { handleCurrency } from "@/utils/masks";
-import { Category } from "@/types/restaurantDetails";
+import { Dishes } from "@/types/restaurantDetails";
 import { updateProduct } from "@/services/graphql/graphql";
 import { toast } from "react-toastify";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -16,10 +16,10 @@ import { Loading } from "@/components/global/Loading";
 
 interface UpdateProductProps {
     router:AppRouterInstance;
-    foodType:[] | any;
+    foodType:String[];
     open:boolean;
     setOpen:any;
-    data:Category[];
+    data:Dishes[];
 }
 
 export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdateProductProps) {
@@ -34,7 +34,7 @@ export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdatePr
           productImage: "",
           productName: "",
           productPrice: 0,
-          productCategory: foodType[0]?.type,
+          productCategory: foodType[0],
           productDescription: "",
         },
       });
@@ -45,19 +45,20 @@ export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdatePr
       
           console.log("Dados do produto:", product);
       
-          setValue("productImage", product.image?.url || "");
+          setValue("productImage", product.image || "");
           setValue("productName", product.name || "");
           setValue("productPrice", product.price || 0);
-          setValue("productCategory", product.categoryTitle || foodType[0]?.type || "");
+          setValue("productCategory", product.menuOption || foodType[0] || "");
           setValue("productDescription", product.description || "");
         }
       }, [data, setValue, foodType]);
       
-      const imgUrl = data[0]?.image?.url;
-      const imgId = data[0]?.image?.id;
+      const imgUrl = data[0]?.image;
       const productId = data[0]?.id;
       
       const handleUpdateProduct = async (formData: any) => {
+        setLoading(true);
+
         try {
           let updatedImageUrl = imgUrl;
       
@@ -78,7 +79,6 @@ export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdatePr
             description: formData.productDescription,
             image: {
               uploadUrl: updatedImageUrl,
-              id: imgId,
             },
           };
       
@@ -96,7 +96,7 @@ export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdatePr
           router.refresh();
         } catch (error) {
           console.error("Erro ao atualizar produto:", error);
-        }
+        }finally { setLoading(false) }
       };  
 
     return (
@@ -137,9 +137,9 @@ export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdatePr
                             
                             <select {...register("productCategory")} id="productCategory" className="text-gray-500 border border-gray-300 rounded-md p-3 w-52 outline-none">
                                 {foodType.map((type:any, index:number) => (
-                                    <option key={index} value={type.type}>{type.type}</option>
+                                    <option key={index} value={type}>{type}</option>
                                 ))}
-                                </select>
+                            </select>
                                 {errors.productCategory && <p className="text-red-500">{String(errors.productCategory.message)}</p>}
                         </div>
                     </div>

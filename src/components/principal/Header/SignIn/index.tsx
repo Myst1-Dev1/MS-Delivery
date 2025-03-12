@@ -9,6 +9,7 @@ import { Loading } from "@/components/global/Loading";
 import { api } from "@/services/axios";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
+import { setCookie } from "nookies";
 
 interface SignInProps {
     open: boolean;
@@ -35,7 +36,10 @@ export function SignIn({ open, setOpen }: SignInProps) {
             const res = await api.post("/auth/login", { email: values.email, password: values.password },
                 { withCredentials: true }
             );
-            localStorage.setItem('token', JSON.stringify(res.data));
+            setCookie(undefined, 'user-token', JSON.stringify(res.data), {
+                maxAge: 604800, // 7 dias em segundos
+                path: '/', // Garante que o cookie seja acessível em todo o site
+            });
 
             setOpen(false);
             router.push(`/${user.iAdmin === true ? 'createRestaurant' : '/'}`);

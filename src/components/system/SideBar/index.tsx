@@ -1,8 +1,8 @@
 'use client';
 
 import { Logo } from "@/components/principal/Header/Logo";
+import { api } from "@/services/axios";
 import gsap from "gsap";
-import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { destroyCookie } from "nookies";
 import { useEffect, useState } from "react";
@@ -21,11 +21,11 @@ export function SideBar() {
 
     async function handleSignOut() {
         try {
-            destroyCookie(null, 'user', {
+            destroyCookie(null, 'user-token', {
                 path: '/',
             });
     
-            await signOut({ redirect: false });
+            await api.post("/auth/logout");
             
             window.location.href = '/';
         } catch (error) {

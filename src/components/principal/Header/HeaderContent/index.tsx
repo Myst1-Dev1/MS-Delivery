@@ -71,6 +71,8 @@ export function HeaderContent() {
         }
       }, [pathname]);
 
+      console.log(user);
+
     return (
         <>
             <header className="px-4 lg:px-16 py-6 flex justify-between items-center w-full">

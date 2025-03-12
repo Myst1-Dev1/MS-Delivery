@@ -1,16 +1,19 @@
 import Link from "next/link";
 import { FaSignOutAlt } from "react-icons/fa";
 import { api } from "@/services/axios";
-import { useRouter } from "next/navigation";
+import { destroyCookie } from "nookies";
 
 export function UserBox() {
-    const router = useRouter();
 
     async function handleSignOut() {
         try {
+            destroyCookie(null, 'user-token', {
+                path: '/',
+            });
+    
             await api.post("/auth/logout");
-            localStorage.removeItem("token");
-            router.refresh();
+            
+            window.location.href = '/';
         } catch (error) {
             console.error("Erro ao deslogar:", error);
         }

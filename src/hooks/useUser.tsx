@@ -1,5 +1,6 @@
 'use client';
 
+import { parseCookies } from "nookies";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface UserContextProps {
@@ -14,7 +15,7 @@ export const UserContext = createContext({} as UserContextProps);
 
 export function UserProvider({children}:UserProviderProps) {
     const [user, setUser] = useState(() => {
-        const storedUser = localStorage.getItem('token');
+        const {'user-token': storedUser} = parseCookies();
         return storedUser ? JSON.parse(storedUser) : null;
     });
 

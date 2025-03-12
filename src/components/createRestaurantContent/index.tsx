@@ -53,7 +53,7 @@ export default function CreateRestaurantContent({ token }:CreateRestaurantConten
         setIsLoading(true);
         setIsSubmited(true);
 
-        const foodTypes = data.foodTypes.map((type: string) => ({ type }));
+        const foodTypes = data.foodTypes.map((item: any) => item.type || item);
 
         if (file && logo) {
             const bannerUpload = await edgestore.myPublicImages.upload({ file });

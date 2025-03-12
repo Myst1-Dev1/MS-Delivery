@@ -3,22 +3,25 @@
 import { Loading } from "@/components/global/Loading";
 import { infoSchema } from "@/lib/zod";
 import { handleDeleteFoodType, handleUpdateRestaurant } from "@/services/graphql/graphql";
-import { FoodType } from "@/types/restaurantDetails";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt, FaUpload } from "react-icons/fa";
+import { FaPencil } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import { LogoUpdate } from "../LogoUpdate";
 
 interface FormProps {
+    logo:string;
     title:string;
     about:string;
     address:string;
-    type: FoodType[];
+    type: String[];
 }
 
-export function Form({ title, about, address, type }:FormProps) {
+export function Form({ logo, title, about, address, type }:FormProps) {
     const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
@@ -65,6 +68,7 @@ export function Form({ title, about, address, type }:FormProps) {
     return (
         <div className="flex-shrink-0">
             <h2 className="font-bold text-xl">Atualizar informações</h2>
+            <LogoUpdate logo={logo} />
             <form onSubmit={handleSubmit(handleUpdateRestaurantInformations)} className="max-w-96 w-full mt-7 flex flex-col gap-3">
                 <div className="flex flex-col gap-3">
                     <label htmlFor="restaurantName" className="font-bold">Nome do restaurante</label>
@@ -81,9 +85,9 @@ export function Form({ title, about, address, type }:FormProps) {
                     {type.map((type:any, index:number) => (
                         <div key={index} className="flex items-center gap-2">
                             <div className="p-3 w-full bg-zinc-400 font-bold text-white rounded-md">
-                                {type.type}
+                                {type}
                             </div>
-                            <FaTrashAlt onClick={() => handleDeleteFoodType(type.type)} className="text-red-600 cursor-pointer" />
+                            <FaTrashAlt onClick={() => handleDeleteFoodType(type)} className="text-red-600 cursor-pointer" />
                         </div>
                     ))}
                     {fields.map((item, index) => (

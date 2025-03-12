@@ -5,28 +5,31 @@ import { Modal } from "@/components/global/Modal";
 import Image from "next/image";
 import { FaCloudUploadAlt, FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import { useState } from "react";
-import { Category } from "@/types/restaurantDetails";
+import { Dishes } from "@/types/restaurantDetails";
 import { FormatPrice } from "@/utils/formatPrice";
 import { handleCurrency } from "@/utils/masks";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "@/lib/zod";
 import { useEdgeStore } from "@/lib/edgestore";
-import { createNewProduct, handleDeleteProduct, userId } from "@/services/graphql/graphql";
+import { handleDeleteProduct } from "@/services/graphql/graphql";
 import { UpdateProduct } from "./updateProduct";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Loading } from "@/components/global/Loading";
+import { api } from "@/services/axios";
 
 interface ProductsProps {
-    foodType:[] | any;
-    categorie:Category[];
+    foodType:String[];
+    categorie:Dishes[];
+    id: string;
+    token:string | undefined;
 }
 
-export function Products({ foodType, categorie }:ProductsProps) {
+export function Products({ foodType, categorie, id, token }:ProductsProps) {
     const [openProductModal, setOpenProductModal] = useState(false);
     const [openUpdateProductModal, setOpenUpdateProductModal] = useState(false);
-    const [updateProductData, setUpdateProductData] = useState<Category[]>([]);
+    const [updateProductData, setUpdateProductData] = useState<Dishes[]>([]);
     const [file, setFile] = useState<File | any>();
     const [loading, setLoading] = useState(false);
 
@@ -44,7 +47,7 @@ export function Products({ foodType, categorie }:ProductsProps) {
               },
             productName: "",
             productPrice: "",
-            productCategory: foodType[0]?.type,
+            productCategory: foodType[0],
             productDescription: "",
           },
     });
@@ -56,7 +59,19 @@ export function Products({ foodType, categorie }:ProductsProps) {
                 const res = await edgestore.myPublicImages.upload({ file });
 
                 if(res?.url) {
-                    await createNewProduct(data.productCategory, data.productName, data.productPrice, res.url, userId, data.productDescription);
+                    await api.post("/dishes",{
+                        name: data.productName,
+                        description: data.productDescription,
+                        price: data.productPrice,
+                        image: res.url,
+                        menuOption: data.productCategory,
+                        restaurantId: id 
+                    }, {
+                        headers: {
+                          Authorization: `Bearer ${token}`
+                        },
+                        withCredentials: true
+                      });
                     toast.success('Produto criado com sucesso.');
                     router.refresh();
                 } else {
@@ -85,7 +100,7 @@ export function Products({ foodType, categorie }:ProductsProps) {
                 <div className="mt-7 flex justify-between gap-9 flex-wrap">
                     {categorie.length === 0 ? 'Você ainda não tem produtos' : categorie.map(item => (
                         <div key={item.id} className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2">
-                            <Image className="w-20 h-20 rounded-md object-cover" src={item.image?.url || '/images/cheddar-burguer.jpg'} width={500} height={500} alt="foto do alimento" />
+                            <Image className="w-20 h-20 rounded-md object-cover" src={item.image || '/images/cheddar-burguer.jpg'} width={500} height={500} alt="foto do alimento" />
                             <div className="flex flex-col gap-1">
                                 <h5 className="font-bold text-sm">{item.name}</h5>
                                 <h6 className="font-bold text-sm">{FormatPrice(item.price)}</h6>
@@ -142,7 +157,7 @@ export function Products({ foodType, categorie }:ProductsProps) {
                             
                             <select {...register("productCategory")} id="productCategory" className="text-gray-500 border border-gray-300 rounded-md p-3 w-52 outline-none">
                                 {foodType.map((type:any, index:number) => (
-                                    <option key={index} value={type.type}>{type.type}</option>
+                                    <option key={index} value={type}>{type}</option>
                                 ))}
                              </select>
                              {errors.productCategory && <p className="text-red-500">{String(errors.productCategory.message)}</p>}

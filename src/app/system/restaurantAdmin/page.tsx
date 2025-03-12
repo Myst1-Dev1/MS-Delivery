@@ -4,14 +4,19 @@ import { Header } from "@/components/system/Header";
 import { Banner } from "@/components/system/RestaurantAdminContent/Banner";
 import { Form } from "@/components/system/RestaurantAdminContent/Form";
 import { Products } from "@/components/system/RestaurantAdminContent/Products";
-import { getRestaurantAdminDetails } from "@/services/graphql/graphql";
-import { RestaurantDetails } from "@/types/restaurantDetails";
+import { fetchRestaurantByUserId } from "@/services/fetchData/fetchRestaurantByUserId";
+import { Restaurant } from "@/types/restaurantDetails";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
 export default async function RestaurantAdmin() {
-    const userId = (await cookies()).get('user');
-    const getAdminDetails = await getRestaurantAdminDetails(userId?.value);
+    const cookie = await cookies();
+    const id:any = cookie.get('user-token')
+
+    const token = cookie.get('token')
+
+    const user = JSON.parse(id?.value);
+    const getAdminDetails = await fetchRestaurantByUserId(user.id);
 
     return (
         <>
@@ -25,12 +30,12 @@ export default async function RestaurantAdmin() {
                         </Link>
                     </div>
                 :
-                getAdminDetails.map((admin:RestaurantDetails) => (
+                getAdminDetails.map((admin:Restaurant) => (
                     <div key={admin.id} className="px-5 py-8">
-                        <Banner banner={admin.banner.url} id={admin.banner.id} />
+                        <Banner banner={admin.banner} />
                         <div className="mt-7 grid gap-0 lg:gap-10 grid-cols-1 lg:grid-cols-3">
-                            <Form title={admin.title} about={admin.about} address={admin.address} type={admin.foodTypes} />
-                            <Products foodType={admin.foodTypes} categorie={admin.categorie} />    
+                            <Form logo={admin.logo} title={admin.name} about={admin.description} address={admin.address} type={admin.menuOptions} />
+                            <Products foodType={admin.menuOptions} categorie={admin.dishes} id={admin.id} token={token?.value} />    
                         </div>
                     </div>
                 ))}

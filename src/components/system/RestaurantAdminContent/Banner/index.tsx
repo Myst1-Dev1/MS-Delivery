@@ -4,7 +4,6 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Modal } from "@/components/global/Modal";
 import { useState } from "react";
 import { FaCloudUploadAlt, FaPencilAlt } from "react-icons/fa";
-import { updateRestaurantBanner, userId } from "@/services/graphql/graphql";
 import { useEdgeStore } from "@/lib/edgestore";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -12,10 +11,9 @@ import { Loading } from "@/components/global/Loading";
 
 interface BannerProps {
     banner:string;
-    id:string;
 }
 
-export function Banner({ banner, id }:BannerProps) {
+export function Banner({ banner }:BannerProps) {
     const [openBannerModal, setOpenBannerModal] = useState(false);
     const [file, setFile] = useState<File>();
     const [loading, setLoading] = useState(false);
@@ -24,35 +22,7 @@ export function Banner({ banner, id }:BannerProps) {
 
     const { edgestore } = useEdgeStore();
     
-    const handleSubmit = async (event: React.FormEvent) => {
-      event.preventDefault();
-    
-      try {
-        setLoading(true);
-        if (file) {
-          const res = await edgestore.myPublicImages.upload({ file });
-    
-          if (res?.url) {
-            await updateRestaurantBanner(userId, id, res.url);
 
-            console.log('Sucesso');
-            toast.success('Banner atualizado com sucesso.');
-            router.refresh();
-          } else {
-            throw new Error("Falha ao gerar a URL do arquivo.");
-          }
-        } else {
-          throw new Error("Nenhum arquivo foi selecionado.");
-        }
-      } catch (error) {
-        console.error("Erro ao atualizar o banner:", error);
-        toast.error('Tivemos um erro ao atualizar o banner.');
-        alert(`Erro ao atualizar o banner: ${error}`);
-        setLoading(false);
-      }finally {
-        setLoading(false);
-      }
-    };
 
     return (
         <>
@@ -63,7 +33,7 @@ export function Banner({ banner, id }:BannerProps) {
             </div>
             <Modal open={openBannerModal} setOpen={setOpenBannerModal}>
                 <Dialog.Title className="text-2xl text-center font-bold py-3">Atualizar banner</Dialog.Title>
-                <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-3">
+                <form className="p-5 flex flex-col gap-3">
                     <div>
                         <label htmlFor="banner-file">
                             <div className="flex justify-center items-center bg-zinc-100 cursor-pointer w-full h-36 rounded-md">

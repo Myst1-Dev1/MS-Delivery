@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 's3-sa-east-1.amazonaws.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'files.edgestore.dev',
+      },
     ],
   },
 };
