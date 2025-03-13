@@ -13,6 +13,7 @@ import { updateProduct } from "@/services/graphql/graphql";
 import { toast } from "react-toastify";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { Loading } from "@/components/global/Loading";
+import { api } from "@/services/axios";
 
 interface UpdateProductProps {
     router:AppRouterInstance;
@@ -20,15 +21,16 @@ interface UpdateProductProps {
     open:boolean;
     setOpen:any;
     data:Dishes[];
+    restaurantId:string;
 }
 
-export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdateProductProps) {
+export function UpdateProduct({ router, foodType, open, setOpen, data, restaurantId }:UpdateProductProps) {
     const [file, setFile] = useState<File | any>();
     const [loading, setLoading] = useState(false);
     
     const { edgestore } = useEdgeStore();
 
-    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+    const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm({
         resolver: zodResolver(productSchema),
         defaultValues: {
           productImage: "",
@@ -54,13 +56,13 @@ export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdatePr
       }, [data, setValue, foodType]);
       
       const imgUrl = data[0]?.image;
-      const productId = data[0]?.id;
+      const id = data.map(id => id.id);
       
       const handleUpdateProduct = async (formData: any) => {
         setLoading(true);
 
         try {
-          let updatedImageUrl = imgUrl;
+          let updatedImageUrl:any = imgUrl;
       
           if (file) {
             const res = await edgestore.myPublicImages.upload({ file });
@@ -72,28 +74,18 @@ export function UpdateProduct({ router, foodType, open, setOpen, data }:UpdatePr
             }
           }
       
-          const updatedFields: any = {
+          await api.put("/dishes/" + id, {
             name: formData.productName,
-            price: formData.productPrice,
-            categoryTitle: formData.productCategory,
             description: formData.productDescription,
-            image: {
-              uploadUrl: updatedImageUrl,
-            },
-          };
-      
-          await updateProduct(
-            updatedFields.categoryTitle,
-            updatedFields.name,
-            updatedFields.price,
-            updatedFields.image.uploadUrl,
-            updatedFields.image.id,
-            productId,
-            updatedFields.description
-          );
+            price: formData.productPrice,
+            image: file ? updatedImageUrl : imgUrl,
+            menuOption: formData.productCategory,
+            restaurantId: restaurantId
+          });
       
           toast.success('Produto atualizado com sucesso.');
           router.refresh();
+          reset();
         } catch (error) {
           console.error("Erro ao atualizar produto:", error);
         }finally { setLoading(false) }

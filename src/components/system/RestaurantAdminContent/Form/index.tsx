@@ -2,31 +2,30 @@
 
 import { Loading } from "@/components/global/Loading";
 import { infoSchema } from "@/lib/zod";
-import { handleDeleteFoodType, handleUpdateRestaurant } from "@/services/graphql/graphql";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { FaTrashAlt, FaUpload } from "react-icons/fa";
-import { FaPencil } from "react-icons/fa6";
+import { FaTrashAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { LogoUpdate } from "../LogoUpdate";
+import { api } from "@/services/axios";
 
 interface FormProps {
     logo:string;
     title:string;
     about:string;
     address:string;
-    type: String[];
+    type: string[];
+    id:string;
 }
 
-export function Form({ logo, title, about, address, type }:FormProps) {
+export function Form({ logo, title, about, address, type, id }:FormProps) {
     const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
 
-    const { register, control, handleSubmit, formState: { errors }, setValue } = useForm({
+    const { register, control, handleSubmit, reset, formState: { errors }, setValue } = useForm({
         resolver:zodResolver(infoSchema),
         defaultValues: {
         title: "",
@@ -41,21 +40,47 @@ export function Form({ logo, title, about, address, type }:FormProps) {
         name: "foodTypes",
       });
     
-    const data = { title, address, about };
+    const data = { title, address, about, type };
 
     async function handleUpdateRestaurantInformations(data:any) {
         setIsLoading(true);
         try {
-            await handleUpdateRestaurant(data.title, data.address, data.about, `${data.foodTypes}`);
+            const menuOptions = [
+                ...type,
+                ...(Array.isArray(data.foodTypes) ? data.foodTypes : [data.foodTypes])
+            ];
+
+            await api.put("/restaurant/info/" + id, {
+                name: data.title,
+                address: data.address,
+                description: data.about,
+                menuOptions
+            })
 
             toast.success('Restaurante atualizado com sucesso.');
             console.log('Informações atualizadas', data);
             router.refresh();
+            reset();
         } catch (error) {
             toast.error('Tivemos um erro ao atualizar o restaurante.');
             console.log('Erro ao atualizar informações do restaurante', error);
         }finally {
             setIsLoading(false);
+        }
+    }
+
+    async function handleDeleteFoodType(typeName:string) {
+        try {
+            const menuOptions = type.filter(option => option !== typeName);
+
+            await api.put("/restaurant/info/" + id, {
+                menuOptions
+            });
+
+            router.refresh();
+            toast.success('Opção de prato removida com sucesso');
+        } catch (error) {
+            console.log('Falha ao deletar o tipo de prato', error);
         }
     }
 
@@ -67,12 +92,12 @@ export function Form({ logo, title, about, address, type }:FormProps) {
 
     return (
         <div className="flex-shrink-0">
+             <LogoUpdate logo={logo} id={id} />
             <h2 className="font-bold text-xl">Atualizar informações</h2>
-            <LogoUpdate logo={logo} />
             <form onSubmit={handleSubmit(handleUpdateRestaurantInformations)} className="max-w-96 w-full mt-7 flex flex-col gap-3">
                 <div className="flex flex-col gap-3">
                     <label htmlFor="restaurantName" className="font-bold">Nome do restaurante</label>
-                    <input {...register("title")} placeholder={title} id="restaurantName" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                    <input defaultValue={title} {...register("title")} placeholder={title} id="restaurantName" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
                     {errors.title && <p className="text-red-500">{errors.title.message}</p>}
                 </div>
                 <div className="flex flex-col gap-3">

@@ -2,27 +2,52 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { Modal } from "@/components/global/Modal";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { FaCloudUploadAlt, FaPencilAlt } from "react-icons/fa";
 import { useEdgeStore } from "@/lib/edgestore";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { Loading } from "@/components/global/Loading";
+import { api } from "@/services/axios";
 
 interface BannerProps {
     banner:string;
+    id:string;
 }
 
-export function Banner({ banner }:BannerProps) {
+export function Banner({ banner, id }:BannerProps) {
     const [openBannerModal, setOpenBannerModal] = useState(false);
-    const [file, setFile] = useState<File>();
+    const [file, setFile] = useState<File | null>();
     const [loading, setLoading] = useState(false);
 
     const router = useRouter()
 
     const { edgestore } = useEdgeStore();
     
+    const handleUpdateBanner = async(e:FormEvent) => {
+        e.preventDefault();
 
+        try {
+            setLoading(true);
+
+            if (file) {
+            const res = await edgestore.myPublicImages.upload({ file });
+        
+            if (res.url) {
+                await api.put("/restaurant/banner/" + id, { banner: res.url });
+
+                router.refresh();
+                toast.success("Banner do restaurante atualizado com sucesso.");
+                setFile(null);
+            } else {
+                throw new Error("Falha ao fazer upload da nova imagem.");
+            }
+            }
+            
+        } catch (error) {
+            console.log("Falha ao atualizar o banner", error);
+        } finally { setLoading(false); }
+    }
 
     return (
         <>
@@ -33,7 +58,7 @@ export function Banner({ banner }:BannerProps) {
             </div>
             <Modal open={openBannerModal} setOpen={setOpenBannerModal}>
                 <Dialog.Title className="text-2xl text-center font-bold py-3">Atualizar banner</Dialog.Title>
-                <form className="p-5 flex flex-col gap-3">
+                <form onSubmit={handleUpdateBanner} className="p-5 flex flex-col gap-3">
                     <div>
                         <label htmlFor="banner-file">
                             <div className="flex justify-center items-center bg-zinc-100 cursor-pointer w-full h-36 rounded-md">

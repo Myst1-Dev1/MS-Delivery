@@ -12,7 +12,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "@/lib/zod";
 import { useEdgeStore } from "@/lib/edgestore";
-import { handleDeleteProduct } from "@/services/graphql/graphql";
 import { UpdateProduct } from "./updateProduct";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -74,12 +73,12 @@ export function Products({ foodType, categorie, id, token }:ProductsProps) {
                       });
                     toast.success('Produto criado com sucesso.');
                     router.refresh();
+                    reset();
+                    setFile(null);
                 } else {
                     throw new Error("Falha ao gerar a URL do arquivo.");
                 }
             }
-
-            reset();
         } catch (error) {
             console.log('Falha ao criar novo produto', error);
             setLoading(false);
@@ -93,6 +92,17 @@ export function Products({ foodType, categorie, id, token }:ProductsProps) {
         setOpenUpdateProductModal(true);
     }
 
+    const handleDeleteProduct = async(id:string) => {
+        try {
+            await api.delete("/dishes/" + id);
+            
+            toast.success("Produto deletado com sucesso");
+            router.refresh();
+        } catch (error) {
+            console.log('Falha ao deletar o produto', error);
+        }
+    }
+
     return (
         <>
             <div className="col-span-2">
@@ -100,7 +110,7 @@ export function Products({ foodType, categorie, id, token }:ProductsProps) {
                 <div className="mt-7 flex justify-between gap-9 flex-wrap">
                     {categorie.length === 0 ? 'Você ainda não tem produtos' : categorie.map(item => (
                         <div key={item.id} className="flex-shrink-0 flex gap-2 items-center lg:max-w-[300px] w-full border rounded-md border-gray-300 p-2">
-                            <Image className="w-20 h-20 rounded-md object-cover" src={item.image || '/images/cheddar-burguer.jpg'} width={500} height={500} alt="foto do alimento" />
+                            <Image className="w-20 h-28 rounded-md object-cover" src={item.image || '/images/cheddar-burguer.jpg'} width={500} height={500} alt="foto do alimento" />
                             <div className="flex flex-col gap-1">
                                 <h5 className="font-bold text-sm">{item.name}</h5>
                                 <h6 className="font-bold text-sm">{FormatPrice(item.price)}</h6>
@@ -174,7 +184,7 @@ export function Products({ foodType, categorie, id, token }:ProductsProps) {
                 </form>
             </Modal>
 
-            <UpdateProduct router={router} foodType={foodType} open={openUpdateProductModal} setOpen={setOpenUpdateProductModal} data={updateProductData} />
+            <UpdateProduct router={router} foodType={foodType} open={openUpdateProductModal} setOpen={setOpenUpdateProductModal} data={updateProductData} restaurantId={id} />
         </>
     )
 }
