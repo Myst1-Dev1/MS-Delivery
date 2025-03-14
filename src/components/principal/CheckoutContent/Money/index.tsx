@@ -1,6 +1,9 @@
 import { useCart } from "@/hooks/useCart";
+import { useUser } from "@/hooks/useUser";
+import { api } from "@/services/axios";
 import { createOrder } from "@/services/graphql/graphql";
 import { useSession } from "next-auth/react";
+import { revalidatePath } from "next/cache";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react"
 import { RiArrowGoBackFill } from "react-icons/ri"
@@ -11,24 +14,28 @@ interface MoneyProps {
 
 export function Money({ setPaymentValue }:MoneyProps) {
     const { cart, totalCart } = useCart();
-
-    const { data:session } = useSession();
+    const { user } = useUser();
 
     const router = useRouter();
 
+    const id = "67d494cfb882ae0b953823d2";
+
     async function handleCreateOrder() {
         try {
-            const res = await createOrder(
-                session?.user.name,
-                session?.user.address,
-                cart.map(item => item.observation).join(", "),
-                session?.user.zipCode,
-                totalCart,
-                cart.map(item => item.product.name).join(", ")
-            );
+            await api.post("/orders/" + id, {
+                userName: user.name,
+                address: user.address,
+                orderItems: cart.map(item => item.product.name),
+                additionalInformations: cart.map(info => info.observation),
+                zipCode: user.zipCode,
+                orderValue: totalCart,
+                restaurantId: id,
+                status: false,
+                userId: user.id
+            });
             
             router.push('/orderInProgress');
-            console.log('sucesso', res);
+            revalidatePath('http://localhost:3000/system/ordersAdmin');
         } catch (error) {
             console.log('Erro ao criar pedido:', error);
         }

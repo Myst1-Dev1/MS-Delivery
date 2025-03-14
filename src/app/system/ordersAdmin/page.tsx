@@ -1,7 +1,14 @@
+'user server';
+
 import { Header } from "@/components/system/Header";
+import { FetchOrders } from "@/services/fetchData/fetchOrders";
+import { Orders } from "@/types/restaurantDetails";
 import { FaCheck, FaTimes } from "react-icons/fa";
 
-export default function OrdersAdmin() {
+export default async function OrdersAdmin() {
+    const id = "67d494cfb882ae0b953823d2";
+    const orders = await FetchOrders(id);
+
     return (
         <>
             <div className="flex-1">
@@ -23,52 +30,38 @@ export default function OrdersAdmin() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr className="border-b hover:bg-gray-50">
-                                <td className="px-4 py-2 text-sm text-gray-800">John Doe</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">Rua lorem silva</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">Cheddar burguer</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">Sem salada, por favor</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">13545-90</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">R$:17,90</td>
-                                <td className="px-4 py-2 flex gap-2">
-                                    <div className="cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-green-500 text-white rounded-xl">
-                                        <FaCheck className="flex-shrink-0 text-xs" />
-                                        <span>Aceitar</span>
-                                    </div>
-                                    <div className="cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-red-600 text-white rounded-xl">
-                                        <FaTimes className="flex-shrink-0 text-xs" />
-                                        <span>Recusar</span>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr className="border-b hover:bg-gray-50">
-                                <td className="px-4 py-2 text-sm text-gray-800">John Doe</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">Rua lorem silva</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">Cheddar burguer</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">Sem salada, por favor</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">13545-90</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">R$:17,90</td>
-                                <td className="px-4 py-2 flex flex-col gap-2">
-                                    <div className="flex p-2 gap-2 items-center">
-                                        <div className="w-5 h-5 bg-red-600 rounded-full" />
-                                        <span>Pedido recusado</span>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr className="border-b hover:bg-gray-50">
-                                <td className="px-4 py-2 text-sm text-gray-800">John Doe</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">Rua lorem silva</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">Cheddar burguer</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">Sem salada, por favor</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">13545-90</td>
-                                <td className="px-4 py-2 text-sm text-gray-800">R$:17,90</td>
-                                <td className="px-4 py-2 flex flex-col gap-2">
-                                    <div className="flex p-2 gap-2 items-center">
-                                        <div className="w-5 h-5 bg-green-500 rounded-full" />
-                                        <span>Pedido aceito</span>
-                                    </div>
-                                </td>
-                                </tr>
+                                {!orders || orders.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} className="px-4 py-2 text-center text-sm text-gray-800">
+                                            Você não possui pedidos
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    orders.map((order: Orders, index: number) => (
+                                        <tr key={index} className="border-b hover:bg-gray-50">
+                                            <td className="px-4 py-2 text-sm text-gray-800">{order.userName}</td>
+                                            <td className="px-4 py-2 text-sm text-gray-800">{order.address}</td>
+                                            <td className="px-4 py-2 text-sm text-gray-800">
+                                                {order.orderItems.map((item, idx) => (
+                                                    <span key={idx}>{item}</span>
+                                                ))}
+                                            </td>
+                                            <td className="px-4 py-2 text-sm text-gray-800">{order.additionalInformations}</td>
+                                            <td className="px-4 py-2 text-sm text-gray-800">{order.zipCode}</td>
+                                            <td className="px-4 py-2 text-sm text-gray-800">{order.orderValue}</td>
+                                            <td className="px-4 py-2 flex gap-2">
+                                                <div className="cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-green-500 text-white rounded-xl">
+                                                    <FaCheck className="flex-shrink-0 text-xs" />
+                                                    <span>Aceitar</span>
+                                                </div>
+                                                <div className="cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-red-600 text-white rounded-xl">
+                                                    <FaTimes className="flex-shrink-0 text-xs" />
+                                                    <span>Recusar</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>

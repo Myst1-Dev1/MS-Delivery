@@ -53,7 +53,8 @@ export type Restaurant = {
     type:string,
     menuOptions:string[],
     userId:string,
-    dishes: Dishes[]
+    dishes: Dishes[],
+    orders: Orders[]
 }
 
 export type Dishes = {
@@ -64,4 +65,14 @@ export type Dishes = {
     image:string,
     menuOption:string,
     restaurantId:string
+}
+
+export type Orders = {
+    userName:string,
+    address:string,
+    orderItems:string[],
+    additionalInformations:string,
+    zipCode:string,
+    orderValue:number,
+    status:boolean
 }
