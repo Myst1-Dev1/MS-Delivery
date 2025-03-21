@@ -5,6 +5,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 
 interface UserContextProps {
     user:any;
+    setUser:any;
 }
 
 interface UserProviderProps {
@@ -20,7 +21,7 @@ export function UserProvider({children}:UserProviderProps) {
     });
 
     return (
-        <UserContext.Provider value={{user}}>
+        <UserContext.Provider value={{user, setUser}}>
             {children}
         </UserContext.Provider>
     )

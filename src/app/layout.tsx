@@ -1,6 +1,5 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import Session from "@/components/Session";
 import { ToastContainer } from 'react-toastify';
 
 const geistSans = localFont({
@@ -20,7 +19,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Session>
       <html lang="en">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -29,6 +27,5 @@ export default function RootLayout({
           <ToastContainer position="top-right" theme="light" />
         </body>
       </html>
-    </Session>
   );
 }

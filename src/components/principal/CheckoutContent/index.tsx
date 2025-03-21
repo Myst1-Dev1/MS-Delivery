@@ -9,10 +9,11 @@ import { QrCode } from "./QrCode";
 import { Card } from "./Card";
 import { Money } from "./Money";
 import { useSession } from "next-auth/react";
+import { useUser } from "@/hooks/useUser";
 
 export function CheckoutContent() {
     const [paymentValue, setPaymentValue] = useState('');
-    const { data:session } = useSession();
+    const { user } = useUser();
 
     const { cart } = useCart();
 
@@ -42,7 +43,7 @@ export function CheckoutContent() {
                         <h5 className="text-xl font-bold">Endereço de entrega</h5>
                         <div className="mt-3 flex items-center gap-3">
                             <FaMapLocation />
-                            <p className="text-gray-500">{session?.user.address} - {session?.user.zipCode}</p>
+                            <p className="text-gray-500">{user?.address} - {user?.zipCode}</p>
                         </div>
                     </div>
                     <div className="mt-5">

@@ -2,14 +2,14 @@
 
 import { SignIn } from "../SignIn";
 import { SignUp } from "../SignUp";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaShoppingBag } from "react-icons/fa";
 import Image from "next/image";
 import { UserBox } from "../UserBox";
 import gsap from "gsap";
 import { Cart } from "../Cart";
 import { useCart } from "@/hooks/useCart";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useGSAP } from "@gsap/react";
 import { Logo } from "../Logo";
 import { useUser } from "@/hooks/useUser";
@@ -18,6 +18,7 @@ export function HeaderContent() {
     const { cart } = useCart();
     const { user } = useUser();
     const pathname = usePathname();
+    const router = useRouter();
 
     const [openSignInModal, setSignInModal] = useState(false);
     const [openSignUpModal, setSignUpModal] = useState(false);
@@ -71,17 +72,18 @@ export function HeaderContent() {
         }
       }, [pathname]);
 
-      console.log(user);
+    useEffect(() => {
+        if (user.isAdmin === true) {
+            router.push("/system/restaurantAdmin");
+        }
+    }, [user, router]);
 
     return (
         <>
             <header className="px-4 lg:px-16 py-6 flex justify-between items-center w-full">
                 <Logo />
                 {user === null ? 
-                <div className="flex gap-5 items-center">
-                    <button onClick={() => setSignInModal(true)} className="p-3 border border-orange-500 rounded-md max-w-72 w-full transition-all duration-500 hover:bg-orange-500 hover:text-white">Login</button>
-                    <button onClick={() => setSignUpModal(true)} className="p-3 text-white bg-orange-500 rounded-md max-w-72 w-full transition-all duration-500 hover:bg-orange-600">Cadastro</button>
-                </div>
+                <p>Carregando...</p>
                 :
                 <>
                     <div className="flex items-center gap-5">

@@ -18,12 +18,14 @@ export default async function RestaurantAdmin() {
     const user = JSON.parse(id?.value);
     const getAdminDetails = await fetchRestaurantByUserId(user.id);
 
+    console.log(token);
+
     return (
         <>
             <div className="flex-1">
                 <Header />
-                {getAdminDetails.lenght === 0 ? 
-                    <div className="flex justify-center items-center">
+                {getAdminDetails.length === 0 ? 
+                    <div className="flex flex-col gap-3 m-auto justify-center items-center">
                         <p className="text-xl font-bold">Voce ainda não possui um restaurante</p>
                         <Link className="button" href="/createRestaurant">
                             Criar restaurante

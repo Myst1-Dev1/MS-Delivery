@@ -4,7 +4,7 @@ import { createContext, useContext, useState, ReactNode, Dispatch, SetStateActio
 import { Category, Dishes } from "@/types/restaurantDetails";
 import { getRestaurantUserId } from "@/services/graphql/graphql";
 
-type CartItem = {
+export type CartItem = {
   quantity: number;
   product: Dishes;
   observation:string;

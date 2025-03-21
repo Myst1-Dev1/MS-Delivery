@@ -7,11 +7,11 @@ export function UserBox() {
 
     async function handleSignOut() {
         try {
-            destroyCookie(null, 'user-token', {
-                path: '/',
+            const res = await api.post('auth/logout', {}, {
+                withCredentials: true
             });
-    
-            await api.post("/auth/logout");
+            destroyCookie(null,'user-token');
+            console.log('Logout success', res.data);
             
             window.location.href = '/';
         } catch (error) {

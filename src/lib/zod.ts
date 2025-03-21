@@ -10,6 +10,30 @@ export const signInSchema = object({
         .max(32, "Password must be less than 32 characters"),
 });
 
+export const signUpSchema = z.object({
+  name:z.string().min(3, "O nome deve ter até 3 letras"),
+  email: string({ required_error: "Email is required" })
+        .min(1, "Email is required")
+        .email("Invalid email"),
+  password: string({ required_error: "Password is required" })
+      .min(1, "Password is required")
+      .min(6, "Password must be more than 6 characters")
+      .max(32, "Password must be less than 32 characters"),
+  address:z.string().min(15, "O Endereço deve ter até 15 letras"),
+  zipCode:z.string().min(8, "O CEP deve ter até 8 números"),
+});
+
+export const signUpRestaurantSchema = z.object({
+  name:z.string().min(3, "O nome deve ter até 3 letras"),
+  email: string({ required_error: "Email is required" })
+        .min(1, "Email is required")
+        .email("Invalid email"),
+  password: string({ required_error: "Password is required" })
+      .min(1, "Password is required")
+      .min(6, "Password must be more than 6 characters")
+      .max(32, "Password must be less than 32 characters")
+});
+
 export const restaurantSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
   address: z.string().min(1, "O endereço é obrigatório."),

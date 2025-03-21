@@ -1,4 +1,7 @@
+import { HaveRestaurant } from "@/components/system/HaveRestaurant";
 import { SideBar } from "@/components/system/SideBar";
+import { OrdersProvider } from "@/hooks/useOrders";
+import { QueryProvider } from "@/hooks/useQuery";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 import type { Metadata } from "next";
 
@@ -12,12 +15,19 @@ export const metadata: Metadata = {
   }:{
     children: React.ReactNode;
   }) {
+    
     return (
-      <EdgeStoreProvider>
-        <div className="flex">
-            <SideBar />
-            {children}
-        </div>
-        </EdgeStoreProvider>
+      <QueryProvider>
+        <OrdersProvider>
+          <EdgeStoreProvider>
+            <HaveRestaurant>
+              <div className="flex">
+                  <SideBar />
+                  {children}
+              </div>
+            </HaveRestaurant>
+            </EdgeStoreProvider>
+        </OrdersProvider>
+      </QueryProvider>
     );
   }

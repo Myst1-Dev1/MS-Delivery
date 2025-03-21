@@ -1,6 +1,8 @@
 import { Footer } from "@/components/principal/Footer";
 import { Header } from "@/components/principal/Header";
 import { CartProvider } from "@/hooks/useCart";
+import { OrdersProvider } from "@/hooks/useOrders";
+import { QueryProvider } from "@/hooks/useQuery";
 import { UserProvider } from "@/hooks/useUser";
 import type { Metadata } from "next";
 
@@ -16,13 +18,17 @@ export const metadata: Metadata = {
   }) {
     return (
       <>
-        <UserProvider>
-          <CartProvider>
-            <Header />
-            {children}
-            <Footer /> 
-          </CartProvider>
-        </UserProvider>
+      <QueryProvider>
+          <UserProvider>
+            <CartProvider>
+              <OrdersProvider>
+                <Header />
+                {children}
+                <Footer /> 
+              </OrdersProvider>
+            </CartProvider>
+          </UserProvider>
+        </QueryProvider>
       </>
     );
   }

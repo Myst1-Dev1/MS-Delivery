@@ -5,14 +5,17 @@ import { Map } from "../Map";
 import { FormatPrice } from "@/utils/formatPrice";
 import { FaPix } from "react-icons/fa6";
 import { FaRocketchat } from "react-icons/fa";
+import { useOrders } from "@/hooks/useOrders";
 
 interface OrderInProgressContentProps {
     data:any;
 }
 
 export function OrderInProgressContent({ data }:OrderInProgressContentProps) {
-
     const { cart, totalCart } = useCart();
+    const { order } = useOrders();
+
+    console.log(order.data,'aqui');
     
         return (
             <>
@@ -23,7 +26,24 @@ export function OrderInProgressContent({ data }:OrderInProgressContentProps) {
                     </div>
                     <div className="px-6 lg:px-0 max-w-md flex flex-col gap-3">
                         <div className="flex items-center gap-3">
-                            <span className="animate-ping bg-yellow-400 w-5 h-5 rounded-full"></span>
+                            {order?.data?.length > 0 && (() => {
+                                const latestOrder = [...order.data].sort((a, b) => 
+                                    new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime()
+                                )[0];
+                                return (
+                                    <span 
+                                    className={`animate-ping ${
+                                        latestOrder?.status === 'Pending'
+                                          ? 'bg-yellow-400'
+                                          : latestOrder?.status === 'Recused'
+                                          ? 'bg-red-600'
+                                          : latestOrder?.status === 'Accepted'
+                                          ? 'bg-green-500'
+                                          : 'bg-gray-400'
+                                      } w-5 h-5 rounded-full`}
+                                    ></span>
+                                );
+                            })()}
                             <h6 className="font-bold">Pedido sendo preparado em breve sairá para entrega</h6>
                         </div>
                         <div>
@@ -49,7 +69,29 @@ export function OrderInProgressContent({ data }:OrderInProgressContentProps) {
                             <FaRocketchat />
                             Chat
                         </div>
-                        <button className="button opacity-50 cursor-not-allowed">Recebi meu pedido</button>
+                        <button 
+                            className={`button transition-all duration-500 
+                                ${order?.data?.length > 0 && (() => {
+                                    const latestOrder = [...order.data].sort((a, b) => 
+                                        new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime()
+                                    )[0];
+
+                                    return (
+                                        latestOrder?.status === 'Pending' || latestOrder?.status === 'Recused'
+                                            ? 'opacity-50 cursor-not-allowed'
+                                            : 'opacity-100 cursor-pointer'
+                                    );
+                                })()}
+                            `}
+                            disabled={order?.data?.length > 0 && (() => {
+                                const latestOrder = [...order.data].sort((a, b) => 
+                                    new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime()
+                                )[0];
+                                return latestOrder?.status === 'Pending' || latestOrder?.status === 'Recused';
+                            })()}
+                        >
+                            Recebi meu pedido
+                        </button>
                     </div>
                 </div>
             </>

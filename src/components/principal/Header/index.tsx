@@ -1,13 +1,16 @@
-'use server';
+"use client";
 
+import { usePathname } from "next/navigation";
 import { HeaderContent } from "./HeaderContent";
 
-export async function Header() {
-    // const session = await auth();
+export function Header() {
+    const pathname = usePathname();
 
-    return (
-        <>
-            <HeaderContent />
-        </>
-    )
+    const hideOnPages = ["/"];
+
+    if (hideOnPages.includes(pathname)) {
+        return null;
+    }
+
+    return <HeaderContent />;
 }

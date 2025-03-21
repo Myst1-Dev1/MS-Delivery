@@ -68,11 +68,13 @@ export type Dishes = {
 }
 
 export type Orders = {
+    id:string,
     userName:string,
     address:string,
-    orderItems:string[],
-    additionalInformations:string,
+    orderProductsName:string[],
+    orderProductsImages:string[],
+    orderProductsObservation:string[],
     zipCode:string,
     orderValue:number,
-    status:boolean
+    status:string
 }
