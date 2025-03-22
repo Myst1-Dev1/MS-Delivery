@@ -53,7 +53,7 @@ export function Banner({ banner, id }:BannerProps) {
         <>
             <div style={{backgroundImage: `url(${banner})`}} className="relative bg-center bg-cover w-full h-48 rounded-md">
                 <div onClick={() => setOpenBannerModal(true)} className="transition-all duration-500 hover:bg-orange-500 cursor-pointer hover:text-white rounded-full aspect-square bg-white w-10 h-10 flex justify-center items-center absolute top-2 right-2">
-                    <FaPencilAlt />
+                    <FaPencilAlt className="text-black" />
                 </div>
             </div>
             <Modal open={openBannerModal} setOpen={setOpenBannerModal}>

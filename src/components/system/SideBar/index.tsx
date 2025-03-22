@@ -1,6 +1,7 @@
 'use client';
 
 import { Logo } from "@/components/principal/Header/Logo";
+import { useTheme } from "@/hooks/useTheme";
 import { api } from "@/services/axios";
 import gsap from "gsap";
 import Link from "next/link";
@@ -9,6 +10,7 @@ import { useEffect, useState } from "react";
 import { FaBars, FaChartBar, FaClipboardList, FaSignOutAlt, FaTimes, FaUtensils } from "react-icons/fa";
 
 export function SideBar() {
+    const { theme } = useTheme();
     const [isMobile, setIsMobile] = useState(false);
 
     function handleOpenResponsiveSideBar() {
@@ -21,11 +23,11 @@ export function SideBar() {
 
     async function handleSignOut() {
         try {
-            destroyCookie(null, 'user-token', {
-                path: '/',
+            const res = await api.post('auth/logout', {}, {
+                withCredentials: true
             });
-    
-            await api.post("/auth/logout");
+            destroyCookie(null,'user-token');
+            console.log('Logout success', res.data);
             
             window.location.href = '/';
         } catch (error) {
@@ -43,8 +45,8 @@ export function SideBar() {
     return (
         <div className="max-w-0 lg:max-w-60 w-full">
             <FaBars onClick={handleOpenResponsiveSideBar} className="flex lg:hidden absolute top-6 left-4 cursor-pointer" />
-            <div className="sideBar z-50 lg:z-0 fixed top-0 -left-full lg:left-0 bg-white flex-1 flex flex-col justify-between h-screen max-w-60 border-r border-gray-300 w-full p-4">
-                <Logo />
+            <div className={`sideBar transition-all duration-500 z-50 lg:z-0 fixed top-0 -left-full lg:left-0 ${theme === 'dark' ? 'bg-[#202020] text-white' : 'bg-white'} flex-1 flex flex-col justify-between h-screen max-w-60 border-r border-gray-300 w-full p-4`}>
+                <Logo color={`${theme === 'dark' ? 'text-white' : 'text-black'}`} />
                 <FaTimes onClick={handleCloseResponsiveSideBar} className="flex lg:hidden absolute top-6 right-2 cursor-pointer transition-all duration-500 hover:text-orange-500" />
 
                 <div className="flex flex-col gap-2">

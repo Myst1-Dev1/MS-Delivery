@@ -7,5 +7,6 @@ export async function fetchRestaurantByUserId(id:string) {
         return res.data
     } catch (error) {
         console.log('Falha ao buscar dados do restaurante do usuário', error);
+        return null;
     }
 }

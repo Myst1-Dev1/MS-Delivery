@@ -12,7 +12,8 @@ export function Money({ setPaymentValue }:MoneyProps) {
     const { cart, totalCart } = useCart();
     const { user } = useUser();
     const { createOrder } = useOrders();
-    const id = "67d494cfb882ae0b953823d2";
+
+    const id = '67dd93593a93ced30563d957';
 
     return (
         <div className="flex flex-col gap-3 relative">

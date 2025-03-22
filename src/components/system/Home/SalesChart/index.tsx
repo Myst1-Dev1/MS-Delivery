@@ -14,28 +14,29 @@ import {
 import { useOrders } from '@/hooks/useOrders';
 import dayjs from "dayjs";
 import { useMemo } from 'react';
+import { useTheme } from '@/hooks/useTheme';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export function SalesChart() {
   const { order } = useOrders();
+  const { theme } = useTheme();
+
+  const isDarkMode = theme === 'dark' ? '#fff': '#333';
 
   const monthlySales = useMemo(() => {
     const salesData: Record<string, number> = {};
 
-    // ✅ Soma os valores por mês dinamicamente
     order.data?.forEach((item: any) => {
-      const month = dayjs(item.createdAt).format("MMM"); // 'Jan', 'Feb', etc.
+      const month = dayjs(item.createdAt).locale("pt-br").format("MMM");
       if (!salesData[month]) {
         salesData[month] = 0;
       }
-      salesData[month] += item.totalValue;
+      salesData[month] += item.orderValue;
     });
 
-    // ✅ Define a ordem correta dos meses
     const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-    // ✅ Garante que todos os meses estejam presentes (mesmo com valor 0)
     const labels = monthOrder;
     const data = labels.map((month) => salesData[month] || 0);
 
@@ -67,7 +68,7 @@ export function SalesChart() {
       legend: {
         position: 'top',
         labels: {
-          color: '#333',
+          color: isDarkMode,
           font: {
             size: 14,
             weight: 'bold',
@@ -81,13 +82,13 @@ export function SalesChart() {
           size: 18,
           weight: 'bold',
         },
-        color: '#444',
+        color: theme === 'dark' ? '#fff' : '#444',
       },
     },
     scales: {
       x: {
         ticks: {
-          color: '#333',
+          color: isDarkMode,
         },
         grid: {
           display: false,
@@ -95,7 +96,7 @@ export function SalesChart() {
       },
       y: {
         ticks: {
-          color: '#333',
+          color: isDarkMode,
           callback: (value: number) => `R$ ${value.toFixed(2)}`, // Formata valores com R$
         },
         grid: {
@@ -106,7 +107,7 @@ export function SalesChart() {
   };
 
   return (
-    <div className="m-auto max-w-[350px] lg:max-w-full w-full h-80 bg-white p-4 rounded-lg shadow-md">
+    <div className={`transiton-all duration-500 m-auto max-w-[350px] lg:max-w-full w-full h-80 ${theme === 'dark' ? 'bg-[#202020]' : 'bg-white'} p-4 rounded-lg shadow-md`}>
       <Line data={data} options={options} />
     </div>
   );

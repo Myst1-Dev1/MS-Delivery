@@ -96,7 +96,7 @@ export function UpdateProduct({ router, foodType, open, setOpen, data, restauran
              <Modal open={open} setOpen={setOpen}>
                 <Dialog.Title className="text-2xl text-center font-bold py-3">Atualizar produto</Dialog.Title>
                 <form onSubmit={handleSubmit(handleUpdateProduct)} className="p-5 flex flex-col gap-3">
-                    <div className="flex justify-between flex-wrap">
+                    <div className="flex justify-between flex-col gap-3 lg:flex-row lg:gap-0">
                         <div className="flex flex-col gap-3">
                             <Image className="w-16 h-16 object-cover rounded-full aspect-square" src={`${!file ? watch("productImage") : URL.createObjectURL(file)}`} width={200} height={200} alt="imagem de upload do produto" />
                             <label htmlFor="product-image" className="cursor-pointer flex items-center gap-3">
@@ -111,7 +111,7 @@ export function UpdateProduct({ router, foodType, open, setOpen, data, restauran
                             {errors.productName && <p className="text-red-500">{errors.productName.message}</p>}
                         </div>
                     </div>
-                    <div className="flex justify-between flex-wrap">
+                    <div className="flex justify-between flex-col gap-3 lg:flex-row lg:gap-0">
                         <div className="flex flex-col gap-3">
                             <label htmlFor="productPrice" className="font-bold">Preço do produto</label>
                             <input {...register("productPrice", {
@@ -127,7 +127,7 @@ export function UpdateProduct({ router, foodType, open, setOpen, data, restauran
                         <div className="flex flex-col gap-3">
                             <label htmlFor="productCategory" className="font-bold">Categoria do produto</label>
                             
-                            <select {...register("productCategory")} id="productCategory" className="text-gray-500 border border-gray-300 rounded-md p-3 w-52 outline-none">
+                            <select {...register("productCategory")} id="productCategory" className="text-gray-500 border border-gray-300 rounded-md p-3 w-full lg:w-52 outline-none">
                                 {foodType.map((type:any, index:number) => (
                                     <option key={index} value={type}>{type}</option>
                                 ))}

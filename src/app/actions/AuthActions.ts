@@ -133,7 +133,9 @@ export async function handleSignOut() {
         const cookie = await cookies();
 
         cookie.delete('user-token');
-        await api.post("/auth/logout");
+        await api.post('auth/logout', {}, {
+            withCredentials: true
+        });
     } catch (error) {
         console.log(error);
     }

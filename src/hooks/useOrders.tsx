@@ -1,6 +1,5 @@
 'use client';
 
-import { api } from "@/services/axios";
 import { FetchOrders } from "@/services/fetchData/fetchOrders";
 import { queryClient } from "@/services/queryClient";
 import { Orders } from "@/types/restaurantDetails";
@@ -8,6 +7,8 @@ import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { createContext, ReactNode, useContext } from "react";
 import { CartItem } from "./useCart";
 import { handleCreateOrder, handleUpdateOrder } from "@/app/actions/OrderActions";
+import { useRestaurant } from "./useRestaurant";
+import { useUser } from "./useUser";
 
 interface OrdersContextProps {
     order:UseQueryResult<Orders[], Error> | any;
@@ -22,12 +23,18 @@ interface OrdersProviderProps {
 export const OrdersContext = createContext({} as OrdersContextProps);
 
 export function OrdersProvider({children}:OrdersProviderProps) {
-    const id = "67d494cfb882ae0b953823d2";
+    const { restaurant } = useRestaurant();
+    const { user } = useUser();
+   
+    const findId = restaurant?.filter((userId:any) => userId?.userId === user?.id)
     
+    const id = findId?.[0]?.id;
+
     const order = useQuery({
         queryKey: ['orders'],
         queryFn: async () => FetchOrders(id),
-      });
+        enabled: !!id
+    }) ?? [];
     
     const updateOrder = useMutation({
         mutationFn: ({ id, status }: { id: string; status: string }) => {

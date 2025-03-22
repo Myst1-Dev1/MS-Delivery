@@ -58,7 +58,7 @@ export function LogoUpdate({ logo, id }:LogoUpdateProps) {
                 <label className="cursor-pointer" htmlFor="logo-file"><FaUpload /></label>
                 <input type="file" className="hidden" id="logo-file" onChange={(e) => setFile(e.target.files?.[0])} />
             </div>
-            <button className="button">
+            <button className="button mt-3">
                  {loading ? <Loading /> : 'Atualizar logo'}
             </button>
         </form>

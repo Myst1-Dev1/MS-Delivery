@@ -1,14 +1,14 @@
 'use client';
 
 import { useOrders } from "@/hooks/useOrders";
+import { useTheme } from "@/hooks/useTheme";
 import { Orders } from "@/types/restaurantDetails";
 import { FormatPrice } from "@/utils/formatPrice";
 import Image from "next/image";
 
 export function OrdersAndSaled() {
     const { order } = useOrders();
-
-    console.log(order.data);
+    const { theme } = useTheme();
 
     return (
         <>
@@ -17,41 +17,41 @@ export function OrdersAndSaled() {
                     <h2 className="text-xl font-bold mb-5">Últimos pedidos</h2>
                     <div className="w-full overflow-x-auto">
                         <table className="min-w-full border-collapse border border-gray-300 shadow-md">
-                            <thead className="bg-gray-100 border-b border-gray-300">
+                            <thead className={`transition-all duration-500 ${theme === 'dark' ? 'bg-[#303030]' : 'bg-gray-100'} border-b border-gray-300`}>
                             <tr>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Usuário</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Endereço</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Pedido</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Adicionais</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Cep</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Valor do pedido</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Status</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Usuário</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Endereço</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Pedido</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Adicionais</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Cep</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Valor do pedido</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Status</th>
                             </tr>
                             </thead>
                             <tbody>
                                 {!order.data || order.data.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="px-4 py-2 text-center text-sm text-gray-800">
+                                        <td colSpan={7} className="px-4 py-2 text-center text-sm text-gray-300">
                                             Você não possui pedidos
                                         </td>
                                     </tr>
                                 ) : (
                                     order.data.map((order: Orders, index: number) => (
-                                        <tr key={index} className="border-b hover:bg-gray-50">
-                                            <td className="px-4 py-2 text-sm text-gray-800">{order.userName}</td>
-                                            <td className="px-4 py-2 text-sm text-gray-800">{order.address}</td>
-                                            <td className="px-4 py-2 text-sm text-gray-800">
+                                        <tr key={index} className="border-b hover:brightness-90">
+                                            <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.userName}</td>
+                                            <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.address}</td>
+                                            <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>
                                                 {order.orderProductsName.map((item, idx) => (
                                                     <span key={idx}>{item}</span>
                                                 ))}
                                             </td>
-                                            <td className="px-4 py-2 text-sm text-gray-800">
+                                            <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>
                                                 {order.orderProductsObservation.length === 0 ? '' : order.orderProductsObservation.map((item, idx) => (
                                                     <span key={idx}>{item}</span>
                                                 ))}
                                             </td>
-                                            <td className="px-4 py-2 text-sm text-gray-800">{order.zipCode}</td>
-                                            <td className="px-4 py-2 text-sm text-gray-800">{FormatPrice(order.orderValue)}</td>
+                                            <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.zipCode}</td>
+                                            <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{FormatPrice(order.orderValue)}</td>
                                             <td className="px-4 py-2 flex gap-2">{order.status}</td>
                                         </tr>
                                     ))

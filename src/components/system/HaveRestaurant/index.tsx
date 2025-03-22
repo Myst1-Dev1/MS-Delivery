@@ -14,8 +14,6 @@ export async function HaveRestaurant({ children }:HaveRestaurantProps) {
 
     const token = cookie.get('token')
 
-    console.log(token);
-
     const user = JSON.parse(id?.value);
     const getAdminDetails = await fetchRestaurantByUserId(user.id);
     

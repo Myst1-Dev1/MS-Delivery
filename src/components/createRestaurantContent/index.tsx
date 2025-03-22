@@ -4,6 +4,7 @@ import { useUser } from "@/hooks/useUser";
 import { useEdgeStore } from "@/lib/edgestore";
 import { restaurantSchema } from "@/lib/zod";
 import { api } from "@/services/axios";
+import { Restaurant } from "@/types/restaurantDetails";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,9 +14,10 @@ import { FaCheck, FaCloudUploadAlt } from "react-icons/fa";
 
 interface CreateRestaurantContentProps {
     token:string | undefined;
+    restaurant: Restaurant;
 }
 
-export default function CreateRestaurantContent({ token }:CreateRestaurantContentProps) {
+export default function CreateRestaurantContent({ token, restaurant }:CreateRestaurantContentProps) {
   const { user } = useUser();
 
   const [isSubmited, setIsSubmited] = useState(false);
@@ -96,7 +98,15 @@ export default function CreateRestaurantContent({ token }:CreateRestaurantConten
 
     return (
         <>
-            <div className="bg-vector-bg w-full min-h-screen bg-cover flex justify-center items-center">
+            {restaurant !== undefined ?
+              <div className="bg-vector-bg w-full min-h-screen bg-cover flex justify-center items-center">
+                  <div className="bg-white max-w-xl p-3 rounded-md mt-5 mb-5 flex flex-col justify-center items-center gap-4">
+                    <h2 className="font-bold text-xl">Você já possui um restaurante, acesse o painel e comece a gerencia-lo</h2>
+                    <Link className="button" href="/system/restaurantAdmin">Acessar restaurante</Link>
+                </div>
+              </div>
+              :
+              <div className="bg-vector-bg w-full min-h-screen bg-cover flex justify-center items-center">
                 <div className="rounded-md p-5 bg-white max-w-xl w-full">
                     {!isSubmited ? ( 
                       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 m-auto">
@@ -166,8 +176,9 @@ export default function CreateRestaurantContent({ token }:CreateRestaurantConten
                     ) : (
                       <div>
                         {isLoading ? (
-                          <div className="flex justify-center items-center">
-                            <div className="dots"></div>
+                          <div className="flex flex-col gap-5 justify-center items-center">
+                            <h5 className="font-thin text-xl">O seu restaurante está sendo criado, por favor aguarde!</h5>
+                            <div className="loader-create"/>
                           </div>
                           ) : (
                         <div className="mt-5 mb-5 flex flex-col justify-center items-center gap-4">
@@ -183,6 +194,7 @@ export default function CreateRestaurantContent({ token }:CreateRestaurantConten
                     )}
                 </div>
             </div>
+            }
         </>
     )
 }

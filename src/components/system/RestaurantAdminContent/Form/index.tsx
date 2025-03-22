@@ -92,24 +92,24 @@ export function Form({ logo, title, about, address, type, id }:FormProps) {
 
     return (
         <div className="flex-shrink-0">
-             <LogoUpdate logo={logo} id={id} />
+            <LogoUpdate logo={logo} id={id} />
             <h2 className="font-bold text-xl">Atualizar informações</h2>
             <form onSubmit={handleSubmit(handleUpdateRestaurantInformations)} className="max-w-96 w-full mt-7 flex flex-col gap-3">
                 <div className="flex flex-col gap-3">
                     <label htmlFor="restaurantName" className="font-bold">Nome do restaurante</label>
-                    <input defaultValue={title} {...register("title")} placeholder={title} id="restaurantName" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                    <input defaultValue={title} {...register("title")} placeholder={title} id="restaurantName" type="text" className="input bg-transparent" />
                     {errors.title && <p className="text-red-500">{errors.title.message}</p>}
                 </div>
                 <div className="flex flex-col gap-3">
                     <label htmlFor="restaurantName" className="font-bold">Endereço do restaurante</label>
-                    <input {...register("address")} placeholder={address} id="restaurantName" type="text" className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                    <input {...register("address")} placeholder={address} id="restaurantName" type="text" className="input bg-transparent" />
                     {errors.address && <p className="text-red-500">{errors.address.message}</p>}
                 </div>
                 <div className="flex flex-col gap-3">
                     <label htmlFor="restaurantCategory" className="font-bold">Nova categoria</label>
                     {type.map((type:any, index:number) => (
                         <div key={index} className="flex items-center gap-2">
-                            <div className="p-3 w-full bg-zinc-400 font-bold text-white rounded-md">
+                            <div className="p-3 w-full bg-orange-400 font-bold text-white rounded-md">
                                 {type}
                             </div>
                             <FaTrashAlt onClick={() => handleDeleteFoodType(type)} className="text-red-600 cursor-pointer" />
@@ -126,7 +126,7 @@ export function Form({ logo, title, about, address, type, id }:FormProps) {
                 </div>
                 <div className="flex flex-col gap-3">
                     <label htmlFor="restaurantAbout" className="font-bold">Sobre o restaurante</label>
-                    <textarea {...register("about")} placeholder={about} id="restaurantAbout" className="h-32 resize-none border border-gray-300 rounded-md p-3 w-full outline-none" />
+                    <textarea {...register("about")} placeholder={about} id="restaurantAbout" className="h-32 resize-none input bg-transparent" />
                     {errors.about && <p className="text-red-500">{errors.about.message}</p>}
                 </div>
                 <button className="button w-full mb-5 lg:mb-0">

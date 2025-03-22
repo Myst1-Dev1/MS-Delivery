@@ -3,7 +3,7 @@
 import { About } from "@/components/principal/RestaurantPageContent/About";
 import { Categories } from "@/components/principal/RestaurantPageContent/Categories";
 import { Testimonials } from "@/components/principal/RestaurantPageContent/Testimonials";
-import { Restaurant, RestaurantDetails } from "@/types/restaurantDetails";
+import { Restaurant } from "@/types/restaurantDetails";
 import Image from "next/image";
 import { useState } from "react";
 import { FaMapMarkerAlt, FaStar } from "react-icons/fa";
