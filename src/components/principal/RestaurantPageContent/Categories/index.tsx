@@ -12,9 +12,10 @@ import { useCart } from "@/hooks/useCart";
 interface CategoriesProps {
     options: String[];
     dishes: Dishes[];
+    id:string;
 }
 
-export function Categories({ options, dishes }: CategoriesProps) {
+export function Categories({ options, dishes, id }: CategoriesProps) {
     const [selectedType, setSelectedType] = useState<string | any>(() => options?.[0] || "");
     const [selectedItem, setSelectedItem] = useState<null | any>(null);
     const [quantity, setQuantity] = useState(1);
@@ -25,8 +26,8 @@ export function Categories({ options, dishes }: CategoriesProps) {
         ? dishes.filter(dishe => dishe.menuOption === selectedType)
         : dishes;
 
-    function handleCart(id: string, data: Dishes[]) {
-        handleAddToCart(id, data, quantity);
+    function handleCart(productId: string, id:string, data: Dishes[]) {
+        handleAddToCart(productId , id, data, quantity);
         
         setSelectedItem(null);
         setQuantity(1);
@@ -93,7 +94,7 @@ export function Categories({ options, dishes }: CategoriesProps) {
                                                                 <span>{quantity}</span>
                                                                 <FaPlus onClick={() => setQuantity((prev) => prev + 1)} className="text-orange-400 cursor-pointer" />
                                                             </div>
-                                                            <button onClick={() => handleCart(selectedItem.id, filteredData)} className="max-w-60 bg-orange-500 text-white p-2 w-full rounded-md flex justify-between items-center font-bold transition-all duration-500 hover:bg-orange-600">
+                                                            <button onClick={() => handleCart(selectedItem.id, id, filteredData)} className="max-w-60 bg-orange-500 text-white p-2 w-full rounded-md flex justify-between items-center font-bold transition-all duration-500 hover:bg-orange-600">
                                                                 Adicionar <span>{FormatPrice(selectedItem.price * quantity)}</span>
                                                             </button>
                                                         </div>

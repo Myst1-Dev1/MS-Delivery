@@ -69,6 +69,7 @@ export type Dishes = {
 
 export type Orders = {
     id:string,
+    userId:string,
     userName:string,
     address:string,
     orderProductsName:string[],

@@ -43,7 +43,7 @@ export function RestaurantPageContent({ restaurantDetails }:RestaurantPageConten
                         </div>
                     </div>
 
-                    {activeMenu === 'categories' ? <Categories options={restaurantDetails.menuOptions} dishes={restaurantDetails.dishes} /> : ''}
+                    {activeMenu === 'categories' ? <Categories options={restaurantDetails.menuOptions} dishes={restaurantDetails.dishes} id={restaurantDetails.id} /> : ''}
                     {activeMenu === 'about' ? <About about={restaurantDetails.description} /> : ''}
                     {activeMenu === 'testimonials' ? <Testimonials /> : ''}
                 </div>

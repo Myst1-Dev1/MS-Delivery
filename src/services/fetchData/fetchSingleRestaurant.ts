@@ -1,11 +1,21 @@
 import { api } from "../axios";
 
 export async function FetchSingleRestaurant(id:string) {
-    try {
-      const res = await api.get("/restaurant/" + id);
+  try {
+      const res = await fetch(`http://localhost:8800/api/restaurant/${id}`, {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          next: { revalidate: 5, tags: ['orders'] }
+      });
       
-      return res.data;
-    } catch (error) {
-        console.log("Erro ao dar fetch nos restaurantes.",error);
-    }
+      if (!res.ok) {
+          throw new Error(`Erro ao buscar restaurante: ${res.statusText}`);
+      }
+      
+      return await res.json();
+  } catch (error) {
+      console.log("Erro ao dar fetch nos restaurantes.", error);
+  }
 }

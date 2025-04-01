@@ -1,10 +1,14 @@
-import { OrderAdminContent } from "@/components/system/OrderAdminContent";
+'use server';
 
-export default function OrdersAdmin() {
+import { OrderAdminContent } from "@/components/system/OrderAdminContent";
+import { FetchRestaurants } from "@/services/fetchData/fetchRestaurants";
+
+export default async function OrdersAdmin() {
+    const restaurant = await FetchRestaurants();
 
     return (
         <>
-            <OrderAdminContent />
+            <OrderAdminContent restaurant = {restaurant} />
         </>
     )
 }

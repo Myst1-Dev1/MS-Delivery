@@ -4,7 +4,11 @@ export async function FetchOrders(id: string) {
   try {
     if(!id) return console.log('ID is required');
 
-    const res = await api.get("/orders/" + id);
+    const res = await api.get("/orders/" + id, {
+      headers: {
+        'x-next-revalidate-tags': 'orders',
+      }
+    });
 
     if (res.status !== 200 && res.status !== 201) {
       console.error(`Erro: Status de resposta inválido (${res.status})`);

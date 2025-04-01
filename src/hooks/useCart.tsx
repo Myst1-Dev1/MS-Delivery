@@ -6,13 +6,14 @@ import { getRestaurantUserId } from "@/services/graphql/graphql";
 
 export type CartItem = {
   quantity: number;
+  restaurantId:string;
   product: Dishes;
   observation:string;
 };
 
 type CartContextType = {
   cart: CartItem[];
-  handleAddToCart: (id: string, data: Dishes[], quantity:number) => void;
+  handleAddToCart: (id: string, restaurantId:string, data: Dishes[], quantity:number) => void;
   handleRemoveToCart: (id: string) => void;
   handleObservationChange:(e:any) => void;
   totalCart:number;
@@ -34,7 +35,7 @@ export function CartProvider({ children }:CartProvicerProps) {
   const [observation, setObservation] = useState('');
   const [userId, setUserId] = useState('');
 
-  function handleAddToCart(id: string, data: Dishes[], quantity = 1) {
+  function handleAddToCart(id: string, restaurantId:string, data: Dishes[], quantity = 1) {
     const productItem = data?.find((item) => item.id === id);
     if (!productItem) return;
   
@@ -46,7 +47,7 @@ export function CartProvider({ children }:CartProvicerProps) {
             ? { ...cartItem, quantity: cartItem.quantity + quantity }
             : cartItem
         )
-      : [...cart, { product: productItem, quantity, observation }];
+      : [...cart, { product: productItem, restaurantId, quantity, observation }];
   
     setCart(newCart);
     setObservation("");

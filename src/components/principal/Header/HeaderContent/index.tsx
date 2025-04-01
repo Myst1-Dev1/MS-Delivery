@@ -7,7 +7,6 @@ import { FaShoppingBag } from "react-icons/fa";
 import Image from "next/image";
 import { UserBox } from "../UserBox";
 import gsap from "gsap";
-import { Cart } from "../Cart";
 import { useCart } from "@/hooks/useCart";
 import { usePathname, useRouter } from "next/navigation";
 import { useGSAP } from "@gsap/react";
@@ -94,7 +93,6 @@ export function HeaderContent() {
                         <Image onClick={() => handleShowUserOptions('.user-box', 158, 160)} className="w-10 h-10 object-cover cursor-pointer" src="/images/user-icon.png" width={500} height={500} alt="icone de usuário" />
                     </div>
                     <UserBox />
-                   <Cart handleShowUserOptions = {handleShowUserOptions} />
                 </>
                 }
             </header>

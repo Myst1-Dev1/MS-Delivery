@@ -6,6 +6,7 @@ import { FormatPrice } from "@/utils/formatPrice";
 import { FaPix } from "react-icons/fa6";
 import { FaRocketchat } from "react-icons/fa";
 import { useOrders } from "@/hooks/useOrders";
+import { usePathname } from "next/navigation";
 
 interface OrderInProgressContentProps {
     data:any;
@@ -15,7 +16,13 @@ export function OrderInProgressContent({ data }:OrderInProgressContentProps) {
     const { cart, totalCart } = useCart();
     const { order } = useOrders();
 
-    console.log(order.data,'aqui');
+    const pathname = usePathname();
+    const pathSegments = pathname.split("/");
+    const idFromPath = pathSegments[2];
+
+    const dataOrder = order?.data.filter((orderItem: any) => orderItem.restaurantId === idFromPath);
+
+    console.log(dataOrder);
     
         return (
             <>

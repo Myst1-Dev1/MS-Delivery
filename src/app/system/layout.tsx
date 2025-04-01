@@ -1,5 +1,6 @@
 import { HaveRestaurant } from "@/components/system/HaveRestaurant";
 import { SideBar } from "@/components/system/SideBar";
+import { CartProvider } from "@/hooks/useCart";
 import { OrdersProvider } from "@/hooks/useOrders";
 import { QueryProvider } from "@/hooks/useQuery";
 import { RestaurantProvider } from "@/hooks/useRestaurant";
@@ -22,20 +23,22 @@ export const metadata: Metadata = {
     return (
       <QueryProvider>
         <ThemeProvider>
-          <RestaurantProvider>
-            <UserProvider>
-                <OrdersProvider>
-                    <EdgeStoreProvider>
-                      <HaveRestaurant>
-                          <div className="flex">
-                              <SideBar />
-                              {children}
-                          </div>
-                      </HaveRestaurant>
-                      </EdgeStoreProvider>
-                </OrdersProvider>
-              </UserProvider>
-          </RestaurantProvider>
+          <CartProvider>
+            <RestaurantProvider>
+              <UserProvider>
+                  <OrdersProvider>
+                      <EdgeStoreProvider>
+                        <HaveRestaurant>
+                            <div className="flex">
+                                <SideBar />
+                                {children}
+                            </div>
+                        </HaveRestaurant>
+                        </EdgeStoreProvider>
+                  </OrdersProvider>
+                </UserProvider>
+            </RestaurantProvider>
+          </CartProvider>
         </ThemeProvider>
       </QueryProvider>
     );

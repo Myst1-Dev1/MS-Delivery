@@ -3,6 +3,7 @@ import { Header } from "@/components/principal/Header";
 import { CartProvider } from "@/hooks/useCart";
 import { OrdersProvider } from "@/hooks/useOrders";
 import { QueryProvider } from "@/hooks/useQuery";
+import { RestaurantProvider } from "@/hooks/useRestaurant";
 import { UserProvider } from "@/hooks/useUser";
 import type { Metadata } from "next";
 
@@ -19,15 +20,17 @@ export const metadata: Metadata = {
     return (
       <>
       <QueryProvider>
-          <UserProvider>
-            <CartProvider>
+          <RestaurantProvider>
+            <UserProvider>
+              <CartProvider>
               <OrdersProvider>
-                <Header />
-                {children}
-                <Footer /> 
-              </OrdersProvider>
-            </CartProvider>
-          </UserProvider>
+                  <Header />
+                  {children}
+                  <Footer /> 
+                  </OrdersProvider>
+                </CartProvider>
+              </UserProvider>
+          </RestaurantProvider>
         </QueryProvider>
       </>
     );

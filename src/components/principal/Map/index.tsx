@@ -25,8 +25,6 @@ export function Map({ zipCode }:MapProps) {
           return;
         }
   
-        console.log("Cidade e Estado:", viaCepData.localidade, viaCepData.uf);
-  
         // 2️⃣ Buscar coordenadas da cidade no Nominatim
         const nominatimResponse = await fetch(
           `https://nominatim.openstreetmap.org/search?city=${viaCepData.localidade}&state=${viaCepData.uf}&country=Brazil&format=json`
@@ -41,7 +39,6 @@ export function Map({ zipCode }:MapProps) {
         }
   
         const { lat, lon } = nominatimData[0];
-        console.log(`Coordenadas encontradas: ${lat}, ${lon}`);
   
         // 3️⃣ Criar a rota no OpenRouteService
         const apiKey = "5b3ce3597851110001cf62482db8175f134f43a19dfc97e345e26f69";
@@ -50,7 +47,6 @@ export function Map({ zipCode }:MapProps) {
         );
   
         const data = await response.json();
-        console.log("Resposta OpenRouteService:", data);
   
         if (data.features) {
           const coordinates = data.features[0].geometry.coordinates.map(([lng, lat]: any) => [lat, lng]);
