@@ -14,7 +14,6 @@ export function About({ about }: AboutProps) {
     return (
         <>
             <div className="about m-auto mt-7">
-                <h2 className="font-bold text-xl">Sobre o restaurante</h2>
                 <p>{about}</p>
             </div>
         </>

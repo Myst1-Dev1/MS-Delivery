@@ -17,7 +17,7 @@ export default async function Checkout({ params }:any) {
 
     return (
         <>
-            <CheckoutContent orders = {restaurantDetails.orders} data = {userData} />
+            <CheckoutContent restaurant = {restaurantDetails} orders = {restaurantDetails.orders} data = {userData} />
         </>
     )
 }

@@ -20,6 +20,7 @@
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.7",
     "dayjs": "^1.11.13",
+    "framer-motion": "^12.6.3",
     "graphql": "^16.9.0",
     "graphql-request": "^7.1.0",
     "gsap": "^3.12.5",

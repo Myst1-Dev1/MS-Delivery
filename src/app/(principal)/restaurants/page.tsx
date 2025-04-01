@@ -38,7 +38,7 @@ export default async function Restaurants() {
                     ))}
                 </div>
                 
-                <button className="m-auto mt-16 text-xl font-bold p-3 text-white bg-orange-500 rounded-md max-w-48 w-full transition-all duration-500 hover:bg-orange-600">Ver Mais</button>
+                {/* <button className="m-auto mt-16 text-xl font-bold p-3 text-white bg-orange-500 rounded-md max-w-48 w-full transition-all duration-500 hover:bg-orange-600">Ver Mais</button> */}
             </div>
         </>
     )

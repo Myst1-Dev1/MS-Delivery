@@ -7,7 +7,7 @@ import gsap from "gsap";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
 interface CartProps {
@@ -20,10 +20,9 @@ export function Cart({ id }:CartProps) {
     const [showUserOption, setShowUserOption] = useState(false);
 
     const pathname = usePathname();
+    const hasOpenedCartRef:any = useRef(false);
 
-    function handleShowUserOptions(option: string, desktopHeight: number, mobileHeight?: number) {
-        const isMobile = window.innerWidth <= 768;
-        const targetHeight = isMobile ? mobileHeight : desktopHeight;
+    function handleShowUserOptions(option: string, height?: number) {
     
         if (showUserOption) {
             gsap.to(`${option}`, {
@@ -39,7 +38,7 @@ export function Cart({ id }:CartProps) {
             gsap.to(`${option}`, {
                 opacity: 1,
                 display: 'block',
-                height: targetHeight,
+                height: height,
                 duration: 0.4,
                 ease: 'power1.inOut',
             });
@@ -59,12 +58,33 @@ export function Cart({ id }:CartProps) {
         }
       }, [pathname]);
 
+    useGSAP(() => {
+    // só abre se o carrinho tiver 1 item e ainda não tiver aberto
+    if (cart.length === 1 && !hasOpenedCartRef.current) {
+        setShowUserOption(true);
+        hasOpenedCartRef.current = true; // marca que já abriu
+        gsap.to(`.cart`, {
+        opacity: 1,
+        display: 'block',
+        height: '100vh',
+        duration: 0.4,
+        ease: 'power1.inOut',
+        });
+    }
+
+    // se o carrinho estiver vazio, reseta a flag e fecha
+    if (cart.length === 0) {
+        hasOpenedCartRef.current = false;
+        setShowUserOption(false);
+    }
+    }, [cart]);
+
     return (
         <>
-            <div className="z-50 cart opacity-0 hidden h-screen lg:h-[500px] bg-white lg:max-w-80 fixed lg:absolute top-0 lg:top-20 right-0 w-full p-3 rounded-lg border border-[#ededed]">
+            <div ref={hasOpenedCartRef} className="z-50 cart opacity-0 hidden h-screen bg-white fixed top-0 right-0 w-full p-3 rounded-lg border border-[#ededed]">
                 <div className="flex flex-col h-full justify-between">
                     <div>
-                        <FaTimes onClick={() => handleShowUserOptions('.cart', 500, window.innerHeight)} className="absolute top-3 right-2 cursor-pointer transition-all duration-500 hover:text-orange-500" />
+                        <FaTimes onClick={() => handleShowUserOptions('.cart', window.innerHeight)} className="absolute top-3 right-2 cursor-pointer transition-all duration-500 hover:text-orange-500" />
                         <h5 className="text-xl font-bold">Carrinho</h5>
                         <h6 className="mt-3 font-bold">Meu pedido</h6>
                         <div className="mt-5 flex flex-col overflow-y-scroll scrollDontShow h-60 gap-4">

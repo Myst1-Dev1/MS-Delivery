@@ -1,17 +1,15 @@
 'use client';
 
-import { SignIn } from "../SignIn";
-import { SignUp } from "../SignUp";
 import { useEffect, useState } from "react";
-import { FaShoppingBag } from "react-icons/fa";
+import { FaBell, FaShoppingBag } from "react-icons/fa";
 import Image from "next/image";
-import { UserBox } from "../UserBox";
 import gsap from "gsap";
 import { useCart } from "@/hooks/useCart";
 import { usePathname, useRouter } from "next/navigation";
 import { useGSAP } from "@gsap/react";
 import { Logo } from "../Logo";
 import { useUser } from "@/hooks/useUser";
+import { NavBar } from "../navBar";
 
 export function HeaderContent() {
     const { cart } = useCart();
@@ -19,13 +17,9 @@ export function HeaderContent() {
     const pathname = usePathname();
     const router = useRouter();
 
-    const [openSignInModal, setSignInModal] = useState(false);
-    const [openSignUpModal, setSignUpModal] = useState(false);
     const [showUserOption, setShowUserOption] = useState(false);
 
-    function handleShowUserOptions(option: string, desktopHeight: number, mobileHeight?: number) {
-        const isMobile = window.innerWidth <= 768;
-        const targetHeight = isMobile ? mobileHeight : desktopHeight;
+    function handleShowUserOptions(option: string, height?: number) {
     
         if (showUserOption) {
             gsap.to(`${option}`, {
@@ -41,7 +35,7 @@ export function HeaderContent() {
             gsap.to(`${option}`, {
                 opacity: 1,
                 display: 'block',
-                height: targetHeight,
+                height: height,
                 duration: 0.4,
                 ease: 'power1.inOut',
             });
@@ -85,19 +79,19 @@ export function HeaderContent() {
                 <p>Carregando...</p>
                 :
                 <>
-                    <div className="flex items-center gap-5">
+                    <div className={`flex items-center ${cart.length === 0 ? '' : 'gap-5'}`}>
+                        <div className="cursor-pointer w-10 h-10 grid place-items-center bg-slate-200 rounded-full transition-all duration-500 hover:bg-orange-500 hover:text-white">
+                            <FaBell />
+                        </div>
                         <div className="relative">
                             <span className={`absolute bottom-[9px] right-[-11px] w-5 h-5 bg-orange-500 text-white rounded-full ${cart.length === 0 ? 'hidden' : 'flex'} justify-center items-center`}>{cart.length}</span>
-                            <FaShoppingBag onClick={() => handleShowUserOptions('.cart', 500, window.innerHeight)} className="text-xl cursor-pointer transition-all duration-500 hover:text-orange-500" />
+                            {cart.length === 0 ? '' : <FaShoppingBag onClick={() => handleShowUserOptions('.cart', window.innerHeight)} className="text-xl cursor-pointer transition-all duration-500 hover:text-orange-500" />}
                         </div>
-                        <Image onClick={() => handleShowUserOptions('.user-box', 158, 160)} className="w-10 h-10 object-cover cursor-pointer" src="/images/user-icon.png" width={500} height={500} alt="icone de usuário" />
                     </div>
-                    <UserBox />
                 </>
                 }
             </header>
-            <SignIn open={openSignInModal} setOpen={setSignInModal} />
-            <SignUp open={openSignUpModal} setOpen={setSignUpModal} />
+           <NavBar />
         </>
     )
 }
