@@ -1,9 +1,14 @@
+import { Avaliation } from "@/types/restaurantDetails";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
 
-export function Testimonials() {
+interface TestimonialsProps {
+    avaliation:Avaliation[];
+}
+
+export function Testimonials({ avaliation }:TestimonialsProps) {
     
     useGSAP(() => {
         gsap.fromTo(".testimonial", { opacity:0 }, { opacity:1, duration:0.4, ease:'power1.inOut' });
@@ -27,70 +32,27 @@ export function Testimonials() {
                     </form>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 gap-10">
-                    <div className="lg:max-w-72 w-full p-5 rounded-md border border-gray-300">
-                        <div className="flex items-center gap-4">
-                            <Image className="w-14 h-14 rounded-full object-cover aspect-square" src="/images/user.jpg" width={50} height={50} alt="foto do usuário" />
-                            <div className="flex flex-col gap-3">
-                                <h6 className="font-bold">John Doe</h6>
-                                <div className="flex gap-3">
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
+                    {avaliation?.map(aval => (
+                        <div key={aval.id} className="lg:max-w-72 w-full p-5 rounded-md border border-gray-300">
+                            <div className="flex items-center gap-4">
+                                {/* <Image className="w-14 h-14 rounded-full object-cover aspect-square" src="/images/user-icon.png" width={50} height={50} alt="foto do usuário" /> */}
+                                <div className="flex flex-col gap-3">
+                                    <h6 className="font-bold">{aval.userName}</h6>
+                                    <div className="flex gap-3">
+                                        {[...Array(aval.stars)].map((_, i) => (
+                                            <FaStar key={i} className="text-yellow-400" />
+                                        ))}
+                                    </div>
+                                    <span className="font-thin text-gray-500">Avaliado em {new Date(aval.createdAt).toLocaleDateString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "long",
+                                        year: "numeric",
+                                    })}</span>
                                 </div>
                             </div>
+                            <p className="text-gray-500 mt-3">{aval.comment}</p>
                         </div>
-                        <p className="text-gray-500 mt-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut ratione pariatur, perspiciatis mollitia magnam incidunt aspernatur saepe facilis voluptatem doloribus ad eveniet enim soluta nemo amet laudantium doloremque magni praesentium.</p>
-                    </div>
-                    <div className="lg:max-w-72 w-full p-5 rounded-md border border-gray-300">
-                        <div className="flex items-center gap-4">
-                            <Image className="w-14 h-14 rounded-full object-cover aspect-square" src="/images/user.jpg" width={50} height={50} alt="foto do usuário" />
-                            <div className="flex flex-col gap-3">
-                                <h6 className="font-bold">John Doe</h6>
-                                <div className="flex gap-3">
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                </div>
-                            </div>
-                        </div>
-                        <p className="text-gray-500 mt-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut ratione pariatur, perspiciatis mollitia magnam incidunt aspernatur saepe facilis voluptatem doloribus ad eveniet enim soluta nemo amet laudantium doloremque magni praesentium.</p>
-                    </div>
-                    <div className="lg:max-w-72 w-full p-5 rounded-md border border-gray-300">
-                        <div className="flex items-center gap-4">
-                            <Image className="w-14 h-14 rounded-full object-cover aspect-square" src="/images/user.jpg" width={50} height={50} alt="foto do usuário" />
-                            <div className="flex flex-col gap-3">
-                                <h6 className="font-bold">John Doe</h6>
-                                <div className="flex gap-3">
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                </div>
-                            </div>
-                        </div>
-                        <p className="text-gray-500 mt-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut ratione pariatur, perspiciatis mollitia magnam incidunt aspernatur saepe facilis voluptatem doloribus ad eveniet enim soluta nemo amet laudantium doloremque magni praesentium.</p>
-                    </div>
-                    <div className="lg:max-w-72 w-full p-5 rounded-md border border-gray-300">
-                        <div className="flex items-center gap-4">
-                            <Image className="w-14 h-14 rounded-full object-cover aspect-square" src="/images/user.jpg" width={50} height={50} alt="foto do usuário" />
-                            <div className="flex flex-col gap-3">
-                                <h6 className="font-bold">John Doe</h6>
-                                <div className="flex gap-3">
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                    <FaStar className="text-yellow-400" />
-                                </div>
-                            </div>
-                        </div>
-                        <p className="text-gray-500 mt-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut ratione pariatur, perspiciatis mollitia magnam incidunt aspernatur saepe facilis voluptatem doloribus ad eveniet enim soluta nemo amet laudantium doloremque magni praesentium.</p>
-                    </div>
+                    ))}
                 </div>
             </div>
         </>

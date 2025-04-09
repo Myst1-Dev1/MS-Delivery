@@ -42,6 +42,34 @@ export async function handleCreateOrder(cart: CartItem[], id: string, user: any,
     console.log('Pedido revalidado');
 }
 
+// export async function handleSaveOrderOnUser(cart: CartItem[], id:string, restaurantId:string, totalCart:any) {
+//     try {
+//         if (cart.length === 0) {
+//             console.log("Carrinho vazio!");
+//             return;
+//         }
+
+//         const orderProductsName = cart.map(item => item.product.name);
+//         const orderProductsImage = cart.map(item => item.product.image);
+
+//         const res = await api.post("/orders/" + id, {
+//             orderProductsName,
+//             orderProductsImage,
+//             orderValue: totalCart,
+//             restaurantId,
+//             status: 'Pending',
+//             createdAt: new Date().toISOString(),
+            
+//         });
+
+//         console.log('Pedido criado', res.data);
+
+//     } catch (error) {
+//         console.log('Erro ao salvar o pedido no usuário', error);
+//     }
+
+//     revalidateTag('orders');
+// }
 
 export async function handleUpdateOrder(id:string, status:string) {
     try {

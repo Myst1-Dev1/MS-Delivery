@@ -8,6 +8,8 @@ export default async function RestaurantPage({ params }:any) {
     const { id } = await params;
 
     const restaurantDetails = await FetchSingleRestaurant(id);
+
+    console.log(restaurantDetails);
     
     return (
         <>

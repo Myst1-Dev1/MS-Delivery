@@ -3,7 +3,7 @@
 import { useCart } from "@/hooks/useCart";
 import { FormatPrice } from "@/utils/formatPrice";
 import Image from "next/image";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { FaMapLocation, FaPix, FaStar } from "react-icons/fa6";
 import { useUser } from "@/hooks/useUser";
 import { useOrders } from "@/hooks/useOrders";
@@ -12,6 +12,7 @@ import { FaRocketchat } from "react-icons/fa";
 import { Map } from "../Map";
 import { Orders, Restaurant } from "@/types/restaurantDetails";
 import { handleCreateOrder } from "@/app/actions/OrderActions";
+import { handleAvaliation } from "@/app/actions/RestaurantActions";
 
 interface CheckoutContentProps {
     orders:Orders[];
@@ -24,6 +25,7 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
     const [orderStatus, setOrderStatus] = useState(false);
     const [loading, setLoading] = useState(false);
     const [avaliation, setAvaliation] = useState(false);
+    const [selectedStars, setSelectedStars] = useState(0);
 
     const { cart, totalCart } = useCart();
     const { user } = useUser();
@@ -65,6 +67,19 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
             }, 1000);
          }
     }
+
+    async function createAvaliation(e: FormEvent | any) {
+        e.preventDefault();
+        const data = new FormData(e.currentTarget);
+        const comment = data.get('comment') as string;
+      
+        if (selectedStars === 0) {
+          alert("Por favor, selecione uma quantidade de estrelas.");
+          return;
+        }
+      
+        await handleAvaliation( id, selectedStars, comment, user?.id);
+      }
 
     return (
         <>
@@ -220,14 +235,21 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
                     loading ? (
                     <div />
                     ) : (
-                    <form className="flex flex-col gap-5">
+                    <form onSubmit={createAvaliation} className="flex flex-col gap-5">
                         <h2 className="text-xl text-center font-bold">Avalie a entrega do seu pedido</h2>
                         <div className="flex items-center justify-center gap-3">
                         {[...Array(5)].map((_, i) => (
-                            <FaStar key={i} className="cursor-pointer text-2xl text-gray-400" />
+                            <FaStar
+                            key={i}
+                            className={`cursor-pointer text-2xl ${
+                                i < selectedStars ? 'text-yellow-400' : 'text-gray-400'
+                            }`}
+                            onClick={() => setSelectedStars(i + 1)}
+                            />
                         ))}
                         </div>
                         <textarea
+                        name="comment"
                         className="w-full p-3 resize-none outline-none rounded-md border border-gray-300 h-28"
                         placeholder="O pedido veio excelente ..."
                         />

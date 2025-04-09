@@ -13,6 +13,8 @@ export default async function RestaurantAdmin() {
     const user = JSON.parse(id?.value);
     const getAdminDetails = await fetchRestaurantByUserId(user.id);
 
+    console.log(getAdminDetails);
+
     return (
         <>
             <RestaurantAdminContent getAdminDetails = {getAdminDetails} token = {token} />

@@ -12,8 +12,6 @@ export function OrdersAndSaled() {
 
     const data = order?.filter((pedido:any) => pedido.status === 'Accepted');
 
-    console.log(data);
-
     return (
         <>
              <div className="py-10 grid grid-cols-1 lg:grid-cols-3 flex-col lg:flex-row">
@@ -33,14 +31,14 @@ export function OrdersAndSaled() {
                             </tr>
                             </thead>
                             <tbody>
-                                {!data || data.length === 0 ? (
+                                {!data || data?.length === 0 ? (
                                     <tr>
                                         <td colSpan={7} className="px-4 py-2 text-center text-sm text-gray-300">
                                             Você não possui pedidos
                                         </td>
                                     </tr>
                                 ) : (
-                                    data.slice(-4).map((order: Orders, index: number) => (
+                                    data?.slice(-4).map((order: Orders, index: number) => (
                                         <tr key={index} className="border-b hover:brightness-90">
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.userName}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.address}</td>
@@ -67,7 +65,7 @@ export function OrdersAndSaled() {
                 <div className="px-5 lg:mt-0 mt-5">
                     <h2 className="text-xl font-bold">Mais vendidos</h2>
                     <div className="mt-7 overflow-y-scroll h-60 scrollDontShow">
-                        {data.slice(-6)?.map((order:Orders) => (
+                        {data?.slice(-6)?.map((order:Orders) => (
                             <div key={order.id} className="flex gap-3 items-center border-b border-gray-300 pb-2">
                                 <Image className="w-20 h-20 object-cover" src={order?.orderProductsImage?.[0] ?? "/images/cheddar-burguer.jpg"}  width={200} height={200} alt="imagem do produto" />
                                 <div className="flex flex-col gap-3">

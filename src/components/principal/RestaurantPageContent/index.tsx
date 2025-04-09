@@ -15,6 +15,12 @@ interface RestaurantPageContentProps {
 export function RestaurantPageContent({ restaurantDetails }:RestaurantPageContentProps) {
     const [activeMenu, setActiveMenu] = useState('categories');
 
+    // Media de estrelas para avaliação do restaurante
+
+    const totalStars = restaurantDetails.avaliations.reduce((acc, aval) => acc + aval.stars, 0);
+    const averageStars = (totalStars / restaurantDetails.avaliations.length) || 0;
+    const formattedAverage = averageStars.toFixed(1);
+
     return (
         <>
             <div className="px-4 lg:px-16 py-10">
@@ -26,7 +32,7 @@ export function RestaurantPageContent({ restaurantDetails }:RestaurantPageConten
                     </div>
                     <div className="flex gap-3 items-center">
                         <FaStar className="text-yellow-500" />
-                        <span className="text-gray-500">5.0 (3)</span>
+                        <span className="text-gray-500">{formattedAverage} ({restaurantDetails.avaliations.length})</span>
                     </div>
                     <div className="flex gap-3 items-center text-gray-500">
                         <FaMapMarkerAlt />
@@ -45,7 +51,7 @@ export function RestaurantPageContent({ restaurantDetails }:RestaurantPageConten
 
                     {activeMenu === 'categories' ? <Categories options={restaurantDetails.menuOptions} dishes={restaurantDetails.dishes} id={restaurantDetails.id} /> : ''}
                     {activeMenu === 'about' ? <About about={restaurantDetails.description} /> : ''}
-                    {activeMenu === 'testimonials' ? <Testimonials /> : ''}
+                    {activeMenu === 'testimonials' ? <Testimonials avaliation = {restaurantDetails.avaliations} /> : ''}
                 </div>
             </div>
         </>
