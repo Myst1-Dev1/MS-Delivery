@@ -13,9 +13,10 @@ import { api } from "@/services/axios";
 interface BannerProps {
     banner:string;
     id:string;
+    openRestaurant:boolean
 }
 
-export function Banner({ banner, id }:BannerProps) {
+export function Banner({ banner, id, openRestaurant }:BannerProps) {
     const [openBannerModal, setOpenBannerModal] = useState(false);
     const [file, setFile] = useState<File | null>();
     const [loading, setLoading] = useState(false);
@@ -49,9 +50,36 @@ export function Banner({ banner, id }:BannerProps) {
         } finally { setLoading(false); }
     }
 
+    const handleOpenRestaurant = async (open: boolean) => {
+        try {
+          await api.put(`/restaurant/open/${id}`, { isOpen: open });
+          router.refresh();
+        } catch (error) {
+          console.log(error);
+        }
+    };
+
+    console.log(openRestaurant);
+
     return (
         <>
-            <div style={{backgroundImage: `url(${banner})`}} className="relative bg-center bg-cover w-full h-48 rounded-md">
+            <div className="flex flex-col gap-2">
+                {/* <h2>Utilize o botão abaixo, para controlar se o restaurante está aberto ou fechado, se aberto aparecerá na página onde os restaurantes são exibidos, caso fechado, ele não será exibido.</h2> */}
+                <span className="text-sm">{openRestaurant ? 'Restaurante Aberto' : 'Restaurante Fechado'}</span>
+                <div
+                    onClick={() => handleOpenRestaurant(!openRestaurant)}
+                    className={`relative w-16 h-8 flex items-center px-1 rounded-full cursor-pointer transition-colors duration-300 ${
+                        openRestaurant ? 'bg-green-500' : 'bg-gray-300'
+                    }`}
+                    >
+                    <div
+                        className={`absolute w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                        openRestaurant ? 'translate-x-[30px]' : 'translate-x-0'
+                        }`}
+                    ></div>
+                </div>
+            </div>
+            <div style={{backgroundImage: `url(${banner})`}} className="mt-5 relative bg-center bg-cover w-full h-48 rounded-md">
                 <div onClick={() => setOpenBannerModal(true)} className="transition-all duration-500 hover:bg-orange-500 cursor-pointer hover:text-white rounded-full aspect-square bg-white w-10 h-10 flex justify-center items-center absolute top-2 right-2">
                     <FaPencilAlt className="text-black" />
                 </div>

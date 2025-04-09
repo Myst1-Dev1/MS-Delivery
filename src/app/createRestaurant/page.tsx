@@ -11,6 +11,8 @@ export default async function Home() {
 
     const restaurant = await fetchRestaurantByUserId(value?.id);
 
+    console.log('to aqui',restaurant);
+
     return (
         <>
             <CreateRestaurantContent token={token?.value} restaurant = {restaurant} />

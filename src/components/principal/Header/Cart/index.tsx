@@ -17,6 +17,8 @@ interface CartProps {
 export function Cart({ id }:CartProps) {
     const { cart, handleRemoveToCart, totalCart } = useCart();
 
+    console.log(cart);
+
     const [showUserOption, setShowUserOption] = useState(false);
 
     const pathname = usePathname();
@@ -81,7 +83,7 @@ export function Cart({ id }:CartProps) {
 
     return (
         <>
-            <div ref={hasOpenedCartRef} className="z-50 cart opacity-0 hidden h-screen bg-white fixed top-0 right-0 w-full p-3 rounded-lg border border-[#ededed]">
+            <div ref={hasOpenedCartRef} className="z-[9999] cart opacity-0 hidden h-screen bg-white fixed top-0 right-0 w-full p-3 rounded-lg border border-[#ededed]">
                 <div className="flex flex-col h-full justify-between">
                     <div>
                         <FaTimes onClick={() => handleShowUserOptions('.cart', window.innerHeight)} className="absolute top-3 right-2 cursor-pointer transition-all duration-500 hover:text-orange-500" />

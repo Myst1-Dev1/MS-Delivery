@@ -12,16 +12,16 @@ export async function handleCreateOrder(cart: CartItem[], id: string, user: any,
         }
 
         const orderProductsName = cart.map(item => item.product.name);
-        const orderProductsImages = cart.map(item => item.product.image);
+        const orderProductsImage = cart.map(item => item.product.image);
         const orderProductsObservation = cart.map(item => item.observation);
 
-        console.log(orderProductsName, orderProductsImages, orderProductsObservation);
+        console.log(orderProductsName, orderProductsImage, orderProductsObservation);
 
         const res = await api.post("/orders/" + id, {
             userName: user.name,
             address: user.address,
             orderProductsName,
-            orderProductsImages,
+            orderProductsImage,
             orderProductsObservation,
             zipCode: user.zipCode,
             orderValue: totalCart,

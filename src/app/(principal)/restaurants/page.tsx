@@ -24,9 +24,10 @@ export default async function Restaurants() {
 
             <div className="px-4 lg:px-16 py-16 flex flex-col justify-center">
                 <h2 className="text-xl font-bold">Todos os Restaurantes</h2>
-                <span className="text-orange-500 font-bold mt-3">{restaurants?.length} Resultados</span>
+                <span className="text-orange-500 font-bold mt-3">{restaurants?.filter((r:any) => r.isOpen).length} Resultados</span>
                 <div className="mt-10 grid place-items-center grid-cols-1 lg:grid-cols-4 gap-10">
                     {restaurants?.map((restaurant:Restaurant) => (
+                    restaurant.isOpen === false ? '' :
                     <Link href={`/restaurantPage/${restaurant.id}`} key={restaurant.id} className="max-w-[300px] w-full flex flex-col gap-2">
                         <Image className="rounded-md w-full object-cover h-36" src={restaurant.banner || '/images/restaurant-photo.webp'} width={500} height={500} alt="foto do restaurante" />
                         <h6 className="font-bold">{restaurant.name}</h6>

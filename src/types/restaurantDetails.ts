@@ -50,6 +50,7 @@ export type Restaurant = {
     banner:string,
     address:string,
     description:string,
+    isOpen:boolean;
     type:string,
     menuOptions:string[],
     userId:string,
@@ -73,7 +74,7 @@ export type Orders = {
     userName:string,
     address:string,
     orderProductsName:string[],
-    orderProductsImages:string[],
+    orderProductsImage:string[],
     orderProductsObservation:string[],
     zipCode:string,
     orderValue:number,

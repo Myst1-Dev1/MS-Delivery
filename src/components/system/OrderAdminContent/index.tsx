@@ -5,7 +5,6 @@ import { FormatPrice } from "@/utils/formatPrice";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { Header } from "../Header";
 import { useTheme } from "@/hooks/useTheme";
-import { useUser } from "@/hooks/useUser";
 import { useOrders } from "@/hooks/useOrders";
 import { handleUpdateOrder } from "@/app/actions/OrderActions";
 
@@ -17,7 +16,6 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
     const { theme } = useTheme();
     const { order } = useOrders();
 
-    // console.log(order);
     return (
         <>
          <div className={`flex-1 min-h-screen ${theme === 'dark' ? 'bg-[#202020] text-white' : ''}`}>
@@ -40,7 +38,7 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
                             <tbody>
                                 {!order || order.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="px-4 py-2 text-center text-sm text-gray-800">
+                                        <td colSpan={7} className={`px-4 py-2 text-center text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-800'}`}>
                                             Você não possui pedidos
                                         </td>
                                     </tr>

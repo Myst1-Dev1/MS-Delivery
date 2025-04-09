@@ -22,12 +22,14 @@ export function SalesChart() {
   const { order } = useOrders();
   const { theme } = useTheme();
 
+  const orderData = order?.filter((pedido:any) => pedido.status === 'Accepted');
+
   const isDarkMode = theme === 'dark' ? '#fff': '#333';
 
   const monthlySales = useMemo(() => {
     const salesData: Record<string, number> = {};
 
-    order.data?.forEach((item: any) => {
+    orderData?.forEach((item: any) => {
       const month = dayjs(item.createdAt).locale("pt-br").format("MMM");
       if (!salesData[month]) {
         salesData[month] = 0;

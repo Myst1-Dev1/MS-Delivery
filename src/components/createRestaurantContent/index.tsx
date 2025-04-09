@@ -70,7 +70,8 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
                   description:data.about,
                   type: data.type,
                   menuOptions: foodTypes,
-                  userId: user?.id
+                  isOpen: false,
+                  userId: user?.id,
                 }, {
                   headers: {
                     Authorization: `Bearer ${token}`
@@ -98,7 +99,7 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
 
     return (
         <>
-            {restaurant !== undefined ?
+            {Object.keys(restaurant).length !== 0 ?
               <div className="bg-vector-bg w-full min-h-screen bg-cover flex justify-center items-center">
                   <div className="bg-white max-w-xl p-3 rounded-md mt-5 mb-5 flex flex-col justify-center items-center gap-4">
                     <h2 className="font-bold text-xl">Você já possui um restaurante, acesse o painel e comece a gerencia-lo</h2>

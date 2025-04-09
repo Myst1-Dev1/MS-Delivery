@@ -30,7 +30,7 @@ export function RestaurantAdminContent({ getAdminDetails, token }:RestaurantAdmi
                 :
                 getAdminDetails.map((admin:Restaurant) => (
                     <div key={admin.id} className="px-5 py-8">
-                        <Banner banner={admin.banner} id={admin.id} />
+                        <Banner banner={admin.banner} id={admin.id} openRestaurant = {admin.isOpen} />
                         <div className="mt-7 grid gap-0 lg:gap-10 grid-cols-1 lg:grid-cols-3">
                             <Form logo={admin.logo} title={admin.name} about={admin.description} address={admin.address} type={admin.menuOptions} id={admin.id} />
                             <Products foodType={admin.menuOptions} categorie={admin.dishes} id={admin.id} token={token?.value} />    

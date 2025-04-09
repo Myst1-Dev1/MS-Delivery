@@ -8,5 +8,6 @@ export async function FetchRestaurants() {
       return res.data;
     } catch (error) {
         console.log("Erro ao dar fetch nos restaurantes.",error);
+        return null;
     }
 }

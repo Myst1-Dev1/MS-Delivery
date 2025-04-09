@@ -3,7 +3,6 @@
 import { useOrders } from "@/hooks/useOrders";
 import { useTheme } from "@/hooks/useTheme";
 import { Orders } from "@/types/restaurantDetails";
-import Image from "next/image";
 import { useState } from "react";
 import { FaBell, FaMoon, FaSun } from "react-icons/fa";
 
@@ -23,7 +22,7 @@ export function Header() {
                         <FaBell onClick={() => setHaveOrder(!haveOrder)} className="text-xl transition-all duration-500 cursor-pointer hover:text-orange-500" />
                         {/* <span className="absolute -top-2 -right-1 w-4 h-4 bg-red-500 text-white flex items-center justify-center rounded-full">{order?.data?.length}</span> */}
                     </div>
-                    <Image className="w-9 h-9 rounded-full aspect-square object-cover" src="/images/user-icon.png" width={100} height={100} alt="foto do restaurante" />
+                    {/* <Image className="w-9 h-9 rounded-full aspect-square object-cover" src="/images/user-icon.png" width={100} height={100} alt="foto do restaurante" /> */}
                 </div>
             </div>
 
