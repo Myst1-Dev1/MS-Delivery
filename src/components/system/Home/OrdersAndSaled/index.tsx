@@ -65,12 +65,12 @@ export function OrdersAndSaled() {
                 <div className="px-5 lg:mt-0 mt-5">
                     <h2 className="text-xl font-bold">Mais vendidos</h2>
                     <div className="mt-7 overflow-y-scroll h-60 scrollDontShow">
-                        {data?.slice(-6)?.map((order:Orders) => (
+                        {data?.slice(-4)?.map((order:Orders) => (
                             <div key={order.id} className="flex gap-3 items-center border-b border-gray-300 pb-2">
                                 <Image className="w-20 h-20 object-cover" src={order?.orderProductsImage?.[0] ?? "/images/cheddar-burguer.jpg"}  width={200} height={200} alt="imagem do produto" />
                                 <div className="flex flex-col gap-3">
                                     <h5 className="font-bold">{order.orderProductsName}</h5>
-                                    <h5 className="font-bold">R$:18,90</h5>
+                                    <h5 className="font-bold">{FormatPrice(order.orderValue)}</h5>
                                 </div>
                             </div>
                         ))}

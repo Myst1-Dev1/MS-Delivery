@@ -26,9 +26,12 @@ export function SideBar() {
             const res = await api.post('auth/logout', {}, {
                 withCredentials: true
             });
-            destroyCookie(null,'user-token');
+    
+            destroyCookie(null, 'user-token', {
+                path: '/',
+            });
+    
             console.log('Logout success', res.data);
-            
             window.location.href = '/';
         } catch (error) {
             console.error("Erro ao deslogar:", error);
@@ -63,9 +66,9 @@ export function SideBar() {
                         <Link onClick={isMobile ? handleCloseResponsiveSideBar : undefined} href="/system/ordersAdmin" className="transition-all duration-500 hover:text-orange-500">Pedidos</Link>
                     </div>
                 </div>
-                <div className="cursor-pointer flex items-center gap-3">
+                <div onClick={handleSignOut} className="cursor-pointer flex items-center gap-3">
                     <FaSignOutAlt />
-                    <h6 onClick={handleSignOut} className="transition-all duration-500 hover:text-orange-500">Sair</h6>
+                    <h6 className="transition-all duration-500 hover:text-orange-500">Sair</h6>
                 </div>
             </div>
         </div>

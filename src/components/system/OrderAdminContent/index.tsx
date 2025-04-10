@@ -16,6 +16,8 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
     const { theme } = useTheme();
     const { order } = useOrders();
 
+    console.log(order);
+
     return (
         <>
          <div className={`flex-1 min-h-screen ${theme === 'dark' ? 'bg-[#202020] text-white' : ''}`}>

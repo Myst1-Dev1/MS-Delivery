@@ -13,6 +13,7 @@ import { Map } from "../Map";
 import { Orders, Restaurant } from "@/types/restaurantDetails";
 import { handleCreateOrder } from "@/app/actions/OrderActions";
 import { handleAvaliation } from "@/app/actions/RestaurantActions";
+import { Loading } from "@/components/global/Loading";
 
 interface CheckoutContentProps {
     orders:Orders[];
@@ -26,6 +27,7 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
     const [loading, setLoading] = useState(false);
     const [avaliation, setAvaliation] = useState(false);
     const [selectedStars, setSelectedStars] = useState(0);
+    const [avalLoading, setAvalLoading] = useState(false);
 
     const { cart, totalCart } = useCart();
     const { user } = useUser();
@@ -78,7 +80,12 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
           return;
         }
       
-        await handleAvaliation( id, selectedStars, comment, user?.id);
+        setAvalLoading(true);
+        try {
+            await handleAvaliation( id, selectedStars, comment, user?.id);
+        } catch (error) {
+            console.log('Tivemos um erro ao fazer a avaliação', error);
+        }finally { setAvalLoading(false) }
       }
 
     return (
@@ -253,7 +260,9 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
                         className="w-full p-3 resize-none outline-none rounded-md border border-gray-300 h-28"
                         placeholder="O pedido veio excelente ..."
                         />
-                        <button className="button">Enviar Avaliação</button>
+                        <button className="button">
+                            {avalLoading ? <Loading /> : 'Enviar Avaliação'}
+                        </button>
                     </form>
                     )
                 )}

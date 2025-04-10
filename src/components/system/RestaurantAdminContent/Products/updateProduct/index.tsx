@@ -9,7 +9,6 @@ import Image from "next/image";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { handleCurrency } from "@/utils/masks";
 import { Dishes } from "@/types/restaurantDetails";
-import { updateProduct } from "@/services/graphql/graphql";
 import { toast } from "react-toastify";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { Loading } from "@/components/global/Loading";
