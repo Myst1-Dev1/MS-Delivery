@@ -21,3 +21,13 @@ export async function FetchOrders(id: string) {
     throw new Error("Falha ao buscar os pedidos.");
   }
 }
+
+export async function FetchAllOrders() {
+  try {
+    const res = await api.get("/orders");
+
+    return res.data;
+  } catch (error) {
+    console.log('Tivemos um erro ao consultar os dados de todos os pedidos', error);
+  }
+}

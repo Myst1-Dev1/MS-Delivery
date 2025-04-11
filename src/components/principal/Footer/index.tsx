@@ -12,8 +12,8 @@ export function Footer() {
     }
 
     return (
-        <footer className="border border-t-orange-100">
-            <p className="text-center py-6">
+        <footer className="py-6">
+            {/* <p className="text-center py-6">
                 © 2024, Desenvolvido por{" "}
                 <Link 
                     target="_blank" 
@@ -22,7 +22,7 @@ export function Footer() {
                 >
                     Myst1 Dev
                 </Link>
-            </p>
+            </p> */}
         </footer>
     );
 }

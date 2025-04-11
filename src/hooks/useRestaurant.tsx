@@ -7,6 +7,7 @@ import { FetchRestaurants } from "@/services/fetchData/fetchRestaurants";
 
 interface RestaurantContextProps {
     restaurant:UseQueryResult<Restaurant[], Error> | any;
+    isFetching:boolean;
 }
 
 interface RestaurantProviderProps {
@@ -16,13 +17,13 @@ interface RestaurantProviderProps {
 export const RestaurantContext = createContext({} as RestaurantContextProps);
 
 export function RestaurantProvider({children}:RestaurantProviderProps) {
-    const { data:restaurant } = useQuery({
+    const { data:restaurant, isFetching } = useQuery({
         queryKey: ['Restaurant'],
         queryFn: async () => FetchRestaurants(),
     });
        
     return (
-        <RestaurantContext.Provider value={{restaurant}}>
+        <RestaurantContext.Provider value={{restaurant, isFetching}}>
             {children}
         </RestaurantContext.Provider>
     )

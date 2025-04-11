@@ -11,8 +11,6 @@ export default async function Checkout({ params }:any) {
     const cookie = await cookies();
     const user:any = cookie.get('user-token');
 
-    console.log(restaurantDetails.orders);
-
     const userData = JSON.parse(user?.value);
 
     return (
