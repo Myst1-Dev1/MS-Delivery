@@ -7,13 +7,16 @@ import { FormEvent, useState } from "react";
 import { FaMapLocation, FaPix, FaStar } from "react-icons/fa6";
 import { useUser } from "@/hooks/useUser";
 import { useOrders } from "@/hooks/useOrders";
-import { usePathname } from "next/navigation";
-import { FaRocketchat } from "react-icons/fa";
+import { usePathname, useRouter } from "next/navigation";
+import { FaRocketchat, FaTimesCircle } from "react-icons/fa";
 import { Map } from "../Map";
 import { Orders, Restaurant } from "@/types/restaurantDetails";
 import { handleCreateOrder } from "@/app/actions/OrderActions";
 import { handleAvaliation } from "@/app/actions/RestaurantActions";
 import { Loading } from "@/components/global/Loading";
+import Link from "next/link";
+import { toast } from "react-toastify";
+import { Chat } from "./Chat";
 
 interface CheckoutContentProps {
     orders:Orders[];
@@ -28,10 +31,13 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
     const [avaliation, setAvaliation] = useState(false);
     const [selectedStars, setSelectedStars] = useState(0);
     const [avalLoading, setAvalLoading] = useState(false);
+    const [showChat, setShowChat] = useState(false);
 
     const { cart, totalCart } = useCart();
     const { user } = useUser();
     const { order } = useOrders();
+
+    const router = useRouter();
 
     const pathname = usePathname();
     const pathSegments = pathname.split("/");
@@ -83,6 +89,9 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
         setAvalLoading(true);
         try {
             await handleAvaliation( id, selectedStars, comment, user?.id);
+
+            toast.success('Obrigado pela avaliação 😊 !!!')
+            router.push('/restaurants');
         } catch (error) {
             console.log('Tivemos um erro ao fazer a avaliação', error);
         }finally { setAvalLoading(false) }
@@ -153,6 +162,14 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
                 :
 
                 (avaliation === false ?
+                    pedidoMaisRecente.status === 'Recused' ?
+                    <div className="flex flex-col gap-4 justify-center items-center">
+                        <h2 className="text-xl font-bold">Seu pedido foi recusado</h2>
+                        <FaTimesCircle className="text-[60px] text-center text-red-600" />
+                        <p>O restaurante está passando por problemas por conta disso seu pedido não será concluído.</p>
+                        <Link href="/restaurants" className="button">Ver outros restaurantes</Link>
+                    </div>
+                    :
                 <div className="w-full flex flex-col gap-5 m-auto rounded-md justify-center items-center">
                     <h1 className="text-xl font-bold">Acompanhe seu pedido</h1>
                     <div className="max-w-md mb-24 w-full h-48 rounded-md">
@@ -166,19 +183,19 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
                                     <>
                                     <span
                                         className={`animate-ping ${
-                                        pedidoMaisRecente.status === 'Pending'
+                                        pedidoMaisRecente?.status === 'Pending'
                                             ? 'bg-yellow-400'
-                                            : pedidoMaisRecente.status === 'Recused'
+                                            : pedidoMaisRecente?.status === 'Recused'
                                             ? 'bg-red-600'
-                                            : pedidoMaisRecente.status === 'Accepted'
+                                            : pedidoMaisRecente?.status === 'Accepted'
                                             ? 'bg-green-500'
                                             : 'bg-gray-400'
                                         } w-5 h-5 rounded-full`}
                                     ></span>
                                     <h6 className="font-bold">
-                                        {pedidoMaisRecente.status === 'Pending'
+                                        {pedidoMaisRecente?.status === 'Pending'
                                         ? 'Aguardando confirmação do restaurante'
-                                        : pedidoMaisRecente.status === 'Accepted'
+                                        : pedidoMaisRecente?.status === 'Accepted'
                                         ? 'Pedido aprovado! Está a caminho!'
                                         : 'Pedido recusado 😔'}
                                     </h6>
@@ -198,14 +215,14 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
                                 <h6 className="font-bold">Total</h6>
                                 <h6>{FormatPrice(totalCart)}</h6>
                             </div>
-                            <div className="flex justify-between w-full">
+                            {/* <div className="flex justify-between w-full">
                                 <h6 className="font-bold">Pagamento</h6>
                                 <div className="flex items-center gap-3">
                                     <FaPix className="text-green-400" />
                                     Pix
                                 </div>
-                            </div>
-                            <div className="invisible font-bold gap-3 cursor-pointer flex justify-end items-center">
+                            </div> */}
+                            <div onClick={() => setShowChat(!showChat)} className="font-bold gap-3 cursor-pointer flex justify-end items-center">
                                 <FaRocketchat />
                                 Chat
                             </div>
@@ -267,7 +284,7 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
                     )
                 )}
             </div>
-
+            {showChat && <Chat orderId={pedidoMaisRecente.id} restaurantId={id} closeChat={setShowChat} />}
         </>
     )
 }

@@ -10,6 +10,16 @@ import { Restaurant } from "@/types/restaurantDetails";
 export default async function Restaurants() {
     const restaurants = await FetchRestaurants();
 
+    const restaurantsWithStars = restaurants.map((restaurant: any) => {
+        const totalStars = restaurant.avaliations?.reduce((acc: number, aval: any) => acc + aval.stars, 0) || 0;
+        const averageStars = restaurant.avaliations?.length ? (totalStars / restaurant.avaliations.length) : 0;
+        const formattedAverage = averageStars.toFixed(1);
+        return {
+          ...restaurant,
+          averageStars: formattedAverage,
+        };
+      });
+      
     return (
         <>
             <div className="bg-home-bg w-full min-h-[80vh] bg-cover flex justify-center items-center">
@@ -26,13 +36,13 @@ export default async function Restaurants() {
                 <h2 className="text-xl font-bold">Todos os Restaurantes</h2>
                 <span className="text-orange-500 font-bold mt-3">{restaurants?.filter((r:any) => r.isOpen).length} Resultados</span>
                 <div className="mt-10 grid place-items-center grid-cols-1 lg:grid-cols-4 gap-10">
-                    {restaurants?.map((restaurant:Restaurant) => (
+                    {restaurantsWithStars?.map((restaurant:Restaurant | any) => (
                     restaurant.isOpen === false ? '' :
                     <Link href={`/restaurantPage/${restaurant.id}`} key={restaurant.id} className="max-w-[300px] w-full flex flex-col gap-2">
                         <Image className="rounded-md w-full object-cover h-36" src={restaurant.banner || '/images/restaurant-photo.webp'} width={500} height={500} alt="foto do restaurante" />
                         <h6 className="font-bold">{restaurant.name}</h6>
                         <div className="flex justify-between items-center">
-                            <span className="flex items-center text-gray-500 gap-2"><FaStar className="text-yellow-400" /> 5.0</span>
+                            <span className="flex items-center text-gray-500 gap-2"><FaStar className="text-yellow-400" /> {restaurant.averageStars || '5;0'}</span>
                             <span className="text-orange-500 font-bold">{restaurant.type}</span>
                         </div>
                     </Link>

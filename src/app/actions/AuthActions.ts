@@ -1,18 +1,10 @@
 'use server';
 
-import { signInSchema, signUpRestaurantSchema, signUpSchema } from "@/lib/zod";
+import { signUpRestaurantSchema, signUpSchema, userSchema } from "@/lib/zod";
 import { api } from "@/services/axios";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-
-type SignInForm = {
-    errors: {
-        email?: string[];
-        password?: string[];
-        general?: string[];
-    };
-};
 
 type SignUpForm = {
     errors: {
@@ -20,6 +12,17 @@ type SignUpForm = {
         email?: string[];
         password?: string[];
         confirm_password?: string[];
+        address?: string[];
+        zipCode?: string[];
+        general?: string[];
+    }
+    message?:string;
+}
+
+type UserForm = {
+    errors: {
+        name?: string[];
+        email?: string[];
         address?: string[];
         zipCode?: string[];
         general?: string[];
@@ -37,29 +40,6 @@ type SignUpRestaurantForm = {
     }
     message?:string;
 }
-
-// export async function handleSignIn(formData: { email: string, password: string }): Promise<void> {
-//     const { email, password } = formData;
-
-//     const validatedFields = signInSchema.safeParse({ email, password });
-
-//     if (!validatedFields.success) {
-//         return;
-//     }
-
-//     try {
-//         const res = await api.post("/auth/login", { email, password }, { withCredentials: true });
-        
-//         const cookie = await cookies();
-//         cookie.set('user-token', JSON.stringify(res.data));
-
-//     } catch (error) {
-//         console.log("Erro no login", error);
-//     }
-
-//     revalidatePath('/restaurants');
-//     redirect('/restaurants');
-// }
 
 export async function handleCreateUserAccount(prevState: SignUpForm, formData: FormData): Promise<SignUpForm> {
     const name = formData.get('name');
@@ -142,3 +122,36 @@ export async function handleSignOut() {
 
     redirect('/');
 }
+
+export async function handleUpdateUserProfile(formData: FormData ) {
+    const id = formData.get('id');
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const address = formData.get('address');
+    const zipCode = formData.get('zipCode');
+  
+    const validatedFields = userSchema.safeParse({ name, email, address, zipCode });
+  
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors
+      };
+    }
+  
+    try {
+     await api.post('/user/' + id, {
+        name,
+        email,
+        address,
+        zipCode
+      });
+
+    } catch (error) {
+      console.error(error);
+    }
+
+    // RevalidatePath funciona somente forá do try/catch;
+    revalidatePath('/profile');
+    console.log('Profile revalidado com sucesso');
+  }  
+  

@@ -23,6 +23,15 @@ export const signUpSchema = z.object({
   zipCode:z.string().min(8, "O CEP deve ter até 8 números"),
 });
 
+export const userSchema = z.object({
+  name:z.string().min(3, "O nome deve ter até 3 letras").optional(),
+  email: string({ required_error: "Email is required" })
+        .min(1, "Email is required")
+        .email("Invalid email").optional(),
+  address:z.string().min(15, "O Endereço deve ter até 15 letras").optional(),
+  zipCode:z.string().min(8, "O CEP deve ter até 8 números").optional(),
+});
+
 export const signUpRestaurantSchema = z.object({
   name:z.string().min(3, "O nome deve ter até 3 letras"),
   email: string({ required_error: "Email is required" })

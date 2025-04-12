@@ -8,7 +8,7 @@ interface TestimonialsAndSatisfactionProps {
 }
 
 export function TestimonialsAndSatisfaction({ avaliations }:TestimonialsAndSatisfactionProps) {
-    console.log(avaliations);
+    console.log('aqui',avaliations);
 
     return (
         <>
@@ -16,8 +16,8 @@ export function TestimonialsAndSatisfaction({ avaliations }:TestimonialsAndSatis
                 <div className="lg:col-span-2">
                     <h2 className="text-xl font-bold">Últimas avaliações</h2>
                     <div className="mt-7 px-5 lg:px-0 grid m-auto lg:grid-cols-3 grid-cols-1 gap-4 lg:gap-0">
-                        {avaliations?.map(aval => (
-                            <div key={aval.id} className="lg:max-w-72 w-full p-5 rounded-md border border-gray-300">
+                        {avaliations?.slice(-3)?.map(aval => (
+                            <div key={aval.id} className="lg:max-w-72 mb-4 w-full p-5 rounded-md border border-gray-300">
                                 <div className="flex items-center gap-4">
                                     {/* <Image className="w-14 h-14 rounded-full object-cover aspect-square" src="/images/user-icon.png" width={50} height={50} alt="foto do usuário" /> */}
                                     <div className="flex flex-col gap-3">

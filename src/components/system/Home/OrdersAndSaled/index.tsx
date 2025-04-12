@@ -43,18 +43,22 @@ export function OrdersAndSaled() {
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.userName}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.address}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>
-                                                {order.orderProductsName.map((item, idx) => (
-                                                    <span key={idx}>{item}</span>
-                                                ))}
+                                                <div className="flex flex-col gap-2">
+                                                    {order.orderProductsName.map((item, idx) => (
+                                                        <span key={idx}>{item}</span>
+                                                    ))}
+                                                </div>
                                             </td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>
-                                                {order.orderProductsObservation.length === 0 ? '' : order.orderProductsObservation.map((item, idx) => (
-                                                    <span key={idx}>{item}</span>
-                                                ))}
+                                                <div className="flex flex-col gap-2">
+                                                    {order.orderProductsObservation.length === 0 ? '' : order.orderProductsObservation.map((item, idx) => (
+                                                        <span key={idx}>{item}</span>
+                                                    ))}
+                                                </div>
                                             </td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.zipCode}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{FormatPrice(order.orderValue)}</td>
-                                            <td className="px-4 py-2 flex gap-2">{order.status}</td>
+                                            <td className="px-4 py-2 text-center align-middle">{order.status}</td>
                                         </tr>
                                     ))
                                 )}
@@ -69,7 +73,7 @@ export function OrdersAndSaled() {
                             <div key={order.id} className="flex gap-3 items-center border-b border-gray-300 pb-2">
                                 <Image className="w-20 h-20 object-cover" src={order?.orderProductsImage?.[0] ?? "/images/cheddar-burguer.jpg"}  width={200} height={200} alt="imagem do produto" />
                                 <div className="flex flex-col gap-3">
-                                    <h5 className="font-bold">{order.orderProductsName}</h5>
+                                    <h5 className="font-bold">{order.orderProductsName[0]}</h5>
                                     <h5 className="font-bold">{FormatPrice(order.orderValue)}</h5>
                                 </div>
                             </div>

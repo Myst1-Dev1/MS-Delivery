@@ -57,8 +57,8 @@ export default function HomeContent() {
 
     return (
         <>
-            <div className="flex justify-between items-center lg:gap-0 gap-5">
-                <div className="bg-[#202020] w-full lg:w-1/2 min-h-screen grid place-items-center text-white">
+            <div className="px-4 py-10 lg:py-0 lg:px-0 flex flex-col lg:flex-row justify-between items-center lg:gap-0 gap-5">
+                <div className="bg-[#202020] w-full lg:w-1/2 min-h-screen hidden lg:grid place-items-center text-white">
                    <div className="px-5 flex flex-col justify-center items-center gap-4">
                         <Logo color="text-white" />
                         <Image src="/images/delivery-man.svg" width={400} height={400} alt="foto de um sistema de entrega" />

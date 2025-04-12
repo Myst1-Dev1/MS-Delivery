@@ -47,7 +47,7 @@ export function SideBar() {
 
     return (
         <div className="max-w-0 lg:max-w-60 w-full">
-            <FaBars onClick={handleOpenResponsiveSideBar} className="flex lg:hidden absolute top-6 left-4 cursor-pointer" />
+            <FaBars onClick={handleOpenResponsiveSideBar} className={`${theme === 'dark' ? 'text-white' : 'text-black'} flex lg:hidden absolute top-6 left-4 cursor-pointer`} />
             <div className={`sideBar transition-all duration-500 z-50 lg:z-0 fixed top-0 -left-full lg:left-0 ${theme === 'dark' ? 'bg-[#202020] text-white' : 'bg-white'} flex-1 flex flex-col justify-between h-screen max-w-60 border-r border-gray-300 w-full p-4`}>
                 <Logo color={`${theme === 'dark' ? 'text-white' : 'text-black'}`} />
                 <FaTimes onClick={handleCloseResponsiveSideBar} className="flex lg:hidden absolute top-6 right-2 cursor-pointer transition-all duration-500 hover:text-orange-500" />

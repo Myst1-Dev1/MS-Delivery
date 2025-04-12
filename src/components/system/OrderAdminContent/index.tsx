@@ -1,22 +1,24 @@
 'use client';
 
-import { Orders } from "@/types/restaurantDetails";
+import { Orders, Restaurant } from "@/types/restaurantDetails";
 import { FormatPrice } from "@/utils/formatPrice";
-import { FaCheck, FaTimes } from "react-icons/fa";
+import { FaCheck, FaRocketchat, FaTimes } from "react-icons/fa";
 import { Header } from "../Header";
 import { useTheme } from "@/hooks/useTheme";
 import { useOrders } from "@/hooks/useOrders";
 import { handleUpdateOrder } from "@/app/actions/OrderActions";
+import { Chat } from "@/components/principal/CheckoutContent/Chat";
+import { useState } from "react";
 
 interface OrderAdminContentProps {
-    restaurant: any;
+    restaurant:Restaurant
 }
 
 export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
     const { theme } = useTheme();
-    const { order } = useOrders();
+    const { order, id } = useOrders();
 
-    console.log(order);
+    const [chat, setChat] = useState<string | null>('');
 
     return (
         <>
@@ -35,6 +37,7 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
                                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Cep</th>
                                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Valor do pedido</th>
                                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Status</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-400">Chat</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,7 +48,7 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
                                         </td>
                                     </tr>
                                 ) : (
-                                     order?.map((order: Orders, index: number) => (
+                                    order?.map((order: Orders, index: number) => (
                                         <tr key={index} className="border-b hover:brightness-90">
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.userName}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.address}</td>
@@ -61,7 +64,7 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
                                             </td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.zipCode}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{FormatPrice(order.orderValue)}</td>
-                                            <td className="px-4 py-2 flex gap-2">
+                                            <td className="px-4 py-2 align-middle gap-2">
                                                 {order.status !== 'Pending' ?
                                                     <div>
                                                         {order.status === 'Accepted' ?
@@ -73,17 +76,20 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
                                                 :
                                                 (
                                                 <>
-                                                <div onClick={() => handleUpdateOrder( order.id, 'Accepted' )} className="cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-green-500 text-white rounded-xl">
+                                                <div onClick={() => handleUpdateOrder( order.id, 'Accepted' )} className="mb-3 text-center cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-green-500 text-white rounded-xl">
                                                     <FaCheck className="flex-shrink-0 text-xs" />
                                                     <span>Aceitar</span>
                                                 </div>
-                                                <div onClick={() => handleUpdateOrder( order.id, 'Recused' )} className="cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-red-600 text-white rounded-xl">
+                                                <div onClick={() => handleUpdateOrder( order.id, 'Recused' )} className="text-center cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-red-600 text-white rounded-xl">
                                                     <FaTimes className="flex-shrink-0 text-xs" />
                                                     <span>Recusar</span>
                                                 </div>
                                                 </>
                                                 )
                                                 }
+                                            </td>
+                                            <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>
+                                                <FaRocketchat onClick={() => setChat(order.id)} className="text-xl cursor-pointer" />
                                             </td>
                                         </tr>
                                     ))
@@ -93,6 +99,7 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
                     </div>
                 </div>
             </div>
+            {chat && <Chat orderId={chat} restaurantId={id} closeChat={setChat} />}
         </>
     )
 }
