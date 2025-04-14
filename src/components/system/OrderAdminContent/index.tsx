@@ -9,16 +9,23 @@ import { useOrders } from "@/hooks/useOrders";
 import { handleUpdateOrder } from "@/app/actions/OrderActions";
 import { Chat } from "@/components/principal/CheckoutContent/Chat";
 import { useState } from "react";
+import { useNotifications } from "@/hooks/useNotifications";
 
 interface OrderAdminContentProps {
     restaurant:Restaurant
 }
 
 export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
+    const [chat, setChat] = useState<string | null | any>('');
+    
     const { theme } = useTheme();
     const { order, id } = useOrders();
 
-    const [chat, setChat] = useState<string | null>('');
+    const pedidosIds = order?.map((p:any) => p.id) || [];
+
+    const { notifiedOrders, clearNotification } = useNotifications(pedidosIds);
+
+    console.log(order);
 
     return (
         <>
@@ -65,31 +72,59 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.zipCode}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{FormatPrice(order.orderValue)}</td>
                                             <td className="px-4 py-2 align-middle gap-2">
-                                                {order.status !== 'Pending' ?
+                                                {order.status !== 'Pending' ? (
                                                     <div>
-                                                        {order.status === 'Accepted' ?
-                                                        <span className="flex items-center gap-3">Pedido Aprovado <FaCheck className="text-green-500" /></span>
-                                                        :
-                                                        <span className="flex items-center gap-3">Pedido Recusado <FaTimes className="text-red-600" /></span>
-                                                        }
+                                                        {order.status === 'Accepted' && (
+                                                        <span className="flex items-center gap-3">
+                                                            Pedido Aceito <FaCheck className="text-green-500" />
+                                                        </span>
+                                                        )}
+
+                                                        {order.status === 'Completed' && (
+                                                        <span className="flex items-center gap-3">
+                                                            Pedido Concluído <FaCheck className="text-blue-500" />
+                                                        </span>
+                                                        )}
+
+                                                        {order.status === 'Recused' && (
+                                                        <span className="flex items-center gap-3">
+                                                            Pedido Recusado <FaTimes className="text-red-600" />
+                                                        </span>
+                                                        )}
                                                     </div>
-                                                :
-                                                (
-                                                <>
-                                                <div onClick={() => handleUpdateOrder( order.id, 'Accepted' )} className="mb-3 text-center cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-green-500 text-white rounded-xl">
-                                                    <FaCheck className="flex-shrink-0 text-xs" />
-                                                    <span>Aceitar</span>
-                                                </div>
-                                                <div onClick={() => handleUpdateOrder( order.id, 'Recused' )} className="text-center cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-red-600 text-white rounded-xl">
-                                                    <FaTimes className="flex-shrink-0 text-xs" />
-                                                    <span>Recusar</span>
-                                                </div>
-                                                </>
-                                                )
-                                                }
+                                                    ) : (
+                                                    <>
+                                                        <div
+                                                        onClick={() => handleUpdateOrder(order.id, 'Accepted')}
+                                                        className="mb-3 text-center cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-green-500 text-white rounded-xl"
+                                                        >
+                                                        <FaCheck className="flex-shrink-0 text-xs" />
+                                                        <span>Aceitar</span>
+                                                        </div>
+                                                        <div
+                                                        onClick={() => handleUpdateOrder(order.id, 'Recused')}
+                                                        className="text-center cursor-pointer max-w-24 h-[30px] flex p-2 gap-2 items-center bg-red-600 text-white rounded-xl"
+                                                        >
+                                                        <FaTimes className="flex-shrink-0 text-xs" />
+                                                        <span>Recusar</span>
+                                                        </div>
+                                                    </>
+                                                )}
                                             </td>
-                                            <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>
-                                                <FaRocketchat onClick={() => setChat(order.id)} className="text-xl cursor-pointer" />
+                                            <td className="px-4 py-2 text-sm relative">
+                                                <FaRocketchat
+                                                    onClick={() => {
+                                                    setChat(order.id);
+                                                    clearNotification(order.id);
+                                                    }}
+                                                    className={`text-xl ${order.status === 'Completed' || order.status === 'Recused' ? 'cursor-not-allowed opacity-60' : 'opacity-100 cursor-pointer'}`}
+                                                />
+
+                                                {notifiedOrders.includes(order.id) && (
+                                                    <span className="absolute top-2 right-4 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                                                    !
+                                                    </span>
+                                                )}
                                             </td>
                                         </tr>
                                     ))

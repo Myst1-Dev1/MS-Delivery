@@ -1,7 +1,8 @@
+import { api } from "@/services/axios";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:8800"); // troque pela URL da sua API se for produção
+const socket = io("http://localhost:8800");
 
 type Message = {
   sender: string;
@@ -11,13 +12,29 @@ type Message = {
 
 export function useChat(orderId: string, userName: string) {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState("");
+  const [newMessage, setNewMessage] = useState<string>("");
+  const [loadingMessage, setLoadingMessage] = useState<boolean>(false);
 
   useEffect(() => {
     if (!orderId) return;
 
+    // Entra na sala do pedido
     socket.emit("join_room", orderId);
 
+    // Buscar histórico no backend
+    const fetchHistory = async () => {
+      try {
+        const res = await api.get('/chat/' + orderId);
+        console.log("Mensagens carregadas:", res.data);
+        setMessages(res.data);
+      } catch (err) {
+        console.error("Erro ao buscar histórico do chat:", err);
+      }
+    };
+
+    fetchHistory();
+
+    // Recebe mensagens em tempo real
     const handleReceive = (data: Message) => {
       setMessages((prev) => [...prev, data]);
     };
@@ -29,22 +46,34 @@ export function useChat(orderId: string, userName: string) {
     };
   }, [orderId]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (newMessage.trim() === "") return;
-
+  
     const msg: Message = {
       sender: userName,
       message: newMessage,
-      timestamp: new Date().toLocaleTimeString("pt-BR", { hour: '2-digit', minute: '2-digit' }),
+      timestamp: new Date().toISOString(),
     };
-
+  
+    setLoadingMessage(true);
+    setNewMessage("");
+  
     socket.emit("send_message", {
       orderId,
-      ...msg
+      ...msg,
     });
+  
+    try {
+      await Promise.all([
+        api.post('/chat/' + orderId, msg),
+        new Promise((res) => setTimeout(res, 1000)),
+      ]);
+    } catch (err) {
+      console.error("Erro ao salvar mensagem:", err);
+    } finally {
+      setLoadingMessage(false);
+    }
+  };  
 
-    setNewMessage(""); // limpa o campo sem adicionar no state diretamente
-  };
-
-  return { messages, newMessage, setNewMessage, sendMessage };
+  return { messages, newMessage, setNewMessage, sendMessage, loadingMessage };
 }

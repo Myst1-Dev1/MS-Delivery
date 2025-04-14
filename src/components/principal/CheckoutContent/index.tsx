@@ -4,19 +4,20 @@ import { useCart } from "@/hooks/useCart";
 import { FormatPrice } from "@/utils/formatPrice";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
-import { FaMapLocation, FaPix, FaStar } from "react-icons/fa6";
+import { FaMapLocation, FaStar } from "react-icons/fa6";
 import { useUser } from "@/hooks/useUser";
 import { useOrders } from "@/hooks/useOrders";
 import { usePathname, useRouter } from "next/navigation";
 import { FaRocketchat, FaTimesCircle } from "react-icons/fa";
 import { Map } from "../Map";
 import { Orders, Restaurant } from "@/types/restaurantDetails";
-import { handleCreateOrder } from "@/app/actions/OrderActions";
+import { handleCreateOrder, handleUpdateOrder } from "@/app/actions/OrderActions";
 import { handleAvaliation } from "@/app/actions/RestaurantActions";
 import { Loading } from "@/components/global/Loading";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { Chat } from "./Chat";
+import { useNotifications } from "@/hooks/useNotifications";
 
 interface CheckoutContentProps {
     orders:Orders[];
@@ -52,6 +53,8 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
 
     const pedidoMaisRecente = pedidosDoUsuario?.[0];
 
+    const { notifiedOrders, clearNotification } = useNotifications([pedidoMaisRecente?.id]);
+
     async function createOrder() {
         try {
             setLoading(true);
@@ -63,9 +66,10 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
         }finally { setLoading(false) }
     }
 
-    function handleShowAvaliationForm() {
+    async function handleShowAvaliationForm() {
         setLoading(true);
         try {
+            await handleUpdateOrder(pedidoMaisRecente?.id, 'Completed')
             setAvaliation(true);
         } catch (error) {
             console.log(error);
@@ -222,8 +226,21 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
                                     Pix
                                 </div>
                             </div> */}
-                            <div onClick={() => setShowChat(!showChat)} className="font-bold gap-3 cursor-pointer flex justify-end items-center">
+                           <div
+                                onClick={() => {
+                                    setShowChat(!showChat);
+                                    clearNotification(pedidoMaisRecente?.id);
+                                }}
+                                className="font-bold gap-3 cursor-pointer flex justify-end items-center relative"
+                                >
                                 <FaRocketchat />
+
+                                {notifiedOrders.includes(pedidoMaisRecente?.id) && (
+                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 rounded-full">
+                                    !
+                                    </span>
+                                )}
+
                                 Chat
                             </div>
                             <button

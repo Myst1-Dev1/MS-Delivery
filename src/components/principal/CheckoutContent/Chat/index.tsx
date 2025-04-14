@@ -19,7 +19,7 @@ export function Chat({ orderId, restaurantId, closeChat }: ChatProps) {
   const { restaurant } = useRestaurant();
   const isRestaurant = user.isAdmin;
 
-  const { messages, newMessage, setNewMessage, sendMessage } = useChat(
+  const { messages, newMessage, setNewMessage, sendMessage , loadingMessage } = useChat(
     orderId,
     isRestaurant ? "restaurante" : "cliente"
   );
@@ -74,7 +74,9 @@ export function Chat({ orderId, restaurantId, closeChat }: ChatProps) {
                   />
                 )}
                 <div className="grid grid-cols-1 gap-1 max-w-[70%]">
-                  <p className="text-sm bg-gray-100 p-2 rounded-md">{msg.message}</p>
+                  <p className="text-sm bg-gray-100 p-2 rounded-md">
+                    {msg.message}
+                  </p>
                   <span className="text-xs font-thin">{timeOnly}</span>
                 </div>
                 {isMyMessage && (
@@ -89,6 +91,9 @@ export function Chat({ orderId, restaurantId, closeChat }: ChatProps) {
               </div>
             );
           })}
+          {loadingMessage && (
+            <div className="text-xs text-gray-500 italic text-center py-2">Enviando mensagem...</div>
+          )}
         </div>
 
         <div className="flex items-center h-16 justify-between border-t border-gray-300">

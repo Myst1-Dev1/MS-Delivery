@@ -62,12 +62,12 @@ export function OrdersData({ order }:OrdersDataProps) {
                         ))}
                     </div>
                     <div className="flex items-center gap-3">
-                        {order.status === 'Accepted' ?
-                            <FaCheckCircle className="text-green-500" />
+                        {order.status === 'Accepted' || order.status === 'Completed' ?
+                            <FaCheckCircle className={`${order.status === 'Accepted' ? 'text-green-500' : order.status === 'Completed' ? 'text-blue-500' : ''}`} />
                                 :
                             <FaTimesCircle className="text-red-600" />
                         }
-                        <h6>Pedido {order.status === 'Accepted' ? 'aceito' : 'recusado'}</h6>
+                        <h6>Pedido {order.status === 'Accepted' ? 'aceito' : order.status === 'Completed' ? 'Concluido' : 'recusado'}</h6>
                     </div>
                     <div className="flex justify-between">
                         <h6>Total</h6>
