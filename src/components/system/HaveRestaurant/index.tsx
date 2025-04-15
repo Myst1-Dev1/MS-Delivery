@@ -19,7 +19,7 @@ export async function HaveRestaurant({ children }:HaveRestaurantProps) {
     
     return (
         <>
-            {getAdminDetails.length === 0 ? 
+            {getAdminDetails?.length === 0 ? 
                     <div className="min-h-screen w-full bg-vector-bg m-auto grid place-content-center">
                         <div className="flex text-center flex-col gap-3 bg-white m-auto max-w-96 p-3 rounded-md">
                             <p className="text-xl font-bold">

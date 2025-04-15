@@ -91,9 +91,9 @@ export function Chat({ orderId, restaurantId, closeChat }: ChatProps) {
               </div>
             );
           })}
-          {loadingMessage && (
+          {/* {loadingMessage && (
             <div className="text-xs text-gray-500 italic text-center py-2">Enviando mensagem...</div>
-          )}
+          )} */}
         </div>
 
         <div className="flex items-center h-16 justify-between border-t border-gray-300">

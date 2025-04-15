@@ -16,7 +16,7 @@ export function Header() {
     const socket = useRef<null | any>(null); // 👈 importante
 
     useEffect(() => {
-        socket.current = io("http://localhost:8800"); // ajuste se estiver em prod
+        socket.current = io("https://ms-delivery-api.onrender.com"); // ajuste se estiver em prod
 
         socket.current.on("connect", () => {
             console.log("Conectado ao servidor de pedidos!");

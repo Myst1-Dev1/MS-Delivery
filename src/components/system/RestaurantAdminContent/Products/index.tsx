@@ -75,6 +75,7 @@ export function Products({ foodType, categorie, id, token }:ProductsProps) {
                     router.refresh();
                     reset();
                     setFile(null);
+                    setOpenProductModal(false);
                 } else {
                     throw new Error("Falha ao gerar a URL do arquivo.");
                 }

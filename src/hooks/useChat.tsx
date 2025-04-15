@@ -2,7 +2,7 @@ import { api } from "@/services/axios";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:8800");
+const socket = io("https://ms-delivery-api.onrender.com");
 
 type Message = {
   sender: string;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:8800"); // ou seu endpoint real
+const socket = io("https://ms-delivery-api.onrender.com"); // ou seu endpoint real
 
 export function useNotifications(orderIds: string[]) {
   const [notifiedOrders, setNotifiedOrders] = useState<string[]>([]);

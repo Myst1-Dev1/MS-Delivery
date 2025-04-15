@@ -2,7 +2,7 @@ import { api } from "../axios";
 
 export async function FetchSingleRestaurant(id:string) {
   try {
-      const res = await fetch(`http://localhost:8800/api/restaurant/${id}`, {
+      const res = await fetch(`https://ms-delivery-api.onrender.com/api/restaurant/${id}`, {
           method: "GET",
           headers: {
               "Content-Type": "application/json"

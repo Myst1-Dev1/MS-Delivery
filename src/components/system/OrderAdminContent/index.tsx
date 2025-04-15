@@ -60,14 +60,18 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.userName}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.address}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>
-                                                {order.orderProductsName.map((item, idx) => (
-                                                    <span key={idx}>{item}</span>
-                                                ))}
+                                                <div className="flex flex-col gap-1">
+                                                    {order.orderProductsName.map((item, idx) => (
+                                                        <span key={idx}>{item}</span>
+                                                    ))}
+                                                </div>
                                             </td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>
-                                                {order.orderProductsObservation.length === 0 ? '' : order.orderProductsObservation.map((item, idx) => (
-                                                    <span key={idx}>{item}</span>
-                                                ))}
+                                                <div className="flex flex-col gap-1">
+                                                    {order.orderProductsObservation.length === 0 ? '' : order.orderProductsObservation.map((item, idx) => (
+                                                        <span key={idx}>{item}</span>
+                                                    ))}
+                                                </div>
                                             </td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.zipCode}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{FormatPrice(order.orderValue)}</td>
@@ -114,8 +118,9 @@ export function OrderAdminContent({ restaurant }:OrderAdminContentProps) {
                                             <td className="px-4 py-2 text-sm relative">
                                                 <FaRocketchat
                                                     onClick={() => {
-                                                    setChat(order.id);
-                                                    clearNotification(order.id);
+                                                        if (order.status === 'Completed' || order.status === 'Recused') return;
+                                                        setChat(order.id);
+                                                        clearNotification(order.id);
                                                     }}
                                                     className={`text-xl ${order.status === 'Completed' || order.status === 'Recused' ? 'cursor-not-allowed opacity-60' : 'opacity-100 cursor-pointer'}`}
                                                 />

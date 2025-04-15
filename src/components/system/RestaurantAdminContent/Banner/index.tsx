@@ -59,8 +59,6 @@ export function Banner({ banner, id, openRestaurant }:BannerProps) {
         }
     };
 
-    console.log(openRestaurant);
-
     return (
         <>
             <div className="flex flex-col gap-2">

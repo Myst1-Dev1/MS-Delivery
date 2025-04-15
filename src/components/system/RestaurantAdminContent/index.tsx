@@ -20,7 +20,7 @@ export function RestaurantAdminContent({ getAdminDetails, token }:RestaurantAdmi
         <>
             <div className={`flex-1 ${theme === 'dark' ? 'bg-[#202020] text-white' : ''}`}>
                 <Header />
-                {getAdminDetails.length === 0 ? 
+                {getAdminDetails?.length === 0 ? 
                     <div className="flex flex-col gap-3 m-auto justify-center items-center">
                         <p className="text-xl font-bold">Voce ainda não possui um restaurante</p>
                         <Link className="button" href="/createRestaurant">

@@ -10,7 +10,7 @@ export function OrdersAndSaled() {
     const { order } = useOrders();
     const { theme } = useTheme();
 
-    const data = order?.filter((pedido:any) => pedido.status === 'Accepted');
+    const data = order?.filter((pedido:any) => pedido.status === 'Completed');
 
     return (
         <>
@@ -43,14 +43,14 @@ export function OrdersAndSaled() {
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.userName}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>{order.address}</td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>
-                                                <div className="flex flex-col gap-2">
+                                                <div className="flex flex-col gap-1">
                                                     {order.orderProductsName.map((item, idx) => (
                                                         <span key={idx}>{item}</span>
                                                     ))}
                                                 </div>
                                             </td>
                                             <td className={`px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700 transition-all duration-500'}`}>
-                                                <div className="flex flex-col gap-2">
+                                                <div className="flex flex-col gap-1">
                                                     {order.orderProductsObservation.length === 0 ? '' : order.orderProductsObservation.map((item, idx) => (
                                                         <span key={idx}>{item}</span>
                                                     ))}

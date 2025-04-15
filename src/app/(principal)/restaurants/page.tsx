@@ -10,7 +10,7 @@ import { Restaurant } from "@/types/restaurantDetails";
 export default async function Restaurants() {
     const restaurants = await FetchRestaurants();
 
-    const restaurantsWithStars = restaurants.map((restaurant: any) => {
+    const restaurantsWithStars = restaurants?.map((restaurant: any) => {
         const totalStars = restaurant.avaliations?.reduce((acc: number, aval: any) => acc + aval.stars, 0) || 0;
         const averageStars = restaurant.avaliations?.length ? (totalStars / restaurant.avaliations.length) : 0;
         const formattedAverage = averageStars.toFixed(1);
