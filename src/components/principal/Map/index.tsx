@@ -21,53 +21,59 @@ export function Map({ zipCode, address }:MapProps) {
   
     const fetchCoordinates = async () => {
       try {
-        const zip = zipCode.zipCode.replace("-", "");
+        const clientCep = zipCode.zipCode.replace("-", "");
+        const restaurantCep = address.replace("-", "");
   
-        console.log("Buscando coordenadas para:", address, "e CEP:", zip);
+        // Buscar endereço do restaurante pelo CEP
+        const restaurantViaCepRes = await fetch(`https://viacep.com.br/ws/${restaurantCep}/json/`);
+        const restaurantViaCepData = await restaurantViaCepRes.json();
   
-        const restaurantResponse = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json`
+        if (!restaurantViaCepData.logradouro || !restaurantViaCepData.localidade || !restaurantViaCepData.uf) {
+          console.error("Endereço do restaurante incompleto.");
+          return;
+        }
+  
+        const fullRestaurantAddress = `${restaurantViaCepData.logradouro}, ${restaurantViaCepData.localidade}, ${restaurantViaCepData.uf}, Brazil`;
+        const restaurantGeoRes = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullRestaurantAddress)}&format=json`
         );
-        const restaurantData = await restaurantResponse.json();
-        console.log("Dados do restaurante:", restaurantData);
+        const restaurantGeoData = await restaurantGeoRes.json();
   
-        if (!restaurantData || restaurantData.length === 0) {
-          console.error("Não foi possível obter coordenadas do restaurante.");
+        if (!restaurantGeoData?.length) {
+          console.error("Coordenadas do restaurante não encontradas.");
           return;
         }
   
-        const { lat: latRestaurante, lon: lonRestaurante } = restaurantData[0];
+        const { lat: latRestaurante, lon: lonRestaurante } = restaurantGeoData[0];
   
-        const viaCepResponse = await fetch(`https://viacep.com.br/ws/${zip}/json/`);
-        const viaCepData = await viaCepResponse.json();
-        console.log("Dados do cliente (via CEP):", viaCepData);
+        // Buscar endereço do cliente pelo CEP
+        const clientViaCepRes = await fetch(`https://viacep.com.br/ws/${clientCep}/json/`);
+        const clientViaCepData = await clientViaCepRes.json();
   
-        if (!viaCepData.localidade || !viaCepData.uf || !viaCepData.logradouro) {
-          console.error("Dados incompletos do cliente.");
+        if (!clientViaCepData.logradouro || !clientViaCepData.localidade || !clientViaCepData.uf) {
+          console.error("Endereço do cliente incompleto.");
           return;
         }
   
-        const fullAddress = `${viaCepData.logradouro}, ${viaCepData.localidade}, ${viaCepData.uf}, Brazil`;
-        const clientResponse = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullAddress)}&format=json`
+        const fullClientAddress = `${clientViaCepData.logradouro}, ${clientViaCepData.localidade}, ${clientViaCepData.uf}, Brazil`;
+        const clientGeoRes = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullClientAddress)}&format=json`
         );
-        const clientData = await clientResponse.json();
-        console.log("Dados do cliente (Nominatim):", clientData);
+        const clientGeoData = await clientGeoRes.json();
   
-        if (!clientData || clientData.length === 0) {
-          console.error("Nenhuma coordenada encontrada para o cliente.");
+        if (!clientGeoData?.length) {
+          console.error("Coordenadas do cliente não encontradas.");
           return;
         }
   
-        const { lat: latDestino, lon: lonDestino } = clientData[0];
+        const { lat: latCliente, lon: lonCliente } = clientGeoData[0];
   
+        // Gerar rota
         const apiKey = "5b3ce3597851110001cf62482db8175f134f43a19dfc97e345e26f69";
-        const routeResponse = await fetch(
-          `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${lonRestaurante},${latRestaurante}&end=${lonDestino},${latDestino}`
+        const routeRes = await fetch(
+          `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${lonRestaurante},${latRestaurante}&end=${lonCliente},${latCliente}`
         );
-  
-        const routeData = await routeResponse.json();
-        console.log("Rota:", routeData);
+        const routeData = await routeRes.json();
   
         if (routeData.features) {
           const coordinates = routeData.features[0].geometry.coordinates.map(
@@ -77,8 +83,8 @@ export function Map({ zipCode, address }:MapProps) {
         } else {
           console.error("Erro ao gerar rota:", routeData);
         }
-      } catch (error) {
-        console.error("Erro ao buscar coordenadas ou rota:", error);
+      } catch (err) {
+        console.error("Erro geral:", err);
       }
     };
   

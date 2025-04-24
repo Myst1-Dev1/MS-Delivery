@@ -8,7 +8,7 @@ import { Restaurant } from "@/types/restaurantDetails";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { FaCheck, FaCloudUploadAlt } from "react-icons/fa";
 
@@ -31,6 +31,8 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
     register,
     handleSubmit,
     control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(restaurantSchema),
@@ -40,6 +42,7 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
       title: "",
       about: "",
       address: "",
+      zipCode: "",
       type: "",
       foodTypes: [""],
     },
@@ -49,6 +52,8 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
     control,
     name: "foodTypes",
   });
+
+  const zipCode = watch("zipCode");
 
   const onSubmit = async (data: any) => {
     try {
@@ -67,6 +72,7 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
                   logo: logoUpload.url,
                   banner: bannerUpload.url,
                   address: data.address,
+                  zipCode: data.zipCode,
                   description:data.about,
                   type: data.type,
                   menuOptions: foodTypes,
@@ -96,6 +102,26 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
         setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      if (zipCode && zipCode.replace(/\D/g, "").length === 8) {
+        try {
+          const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`);
+          const data = await response.json();
+
+          if (!data.erro) {
+            const fullAddress = `${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`;
+            setValue("address", fullAddress);
+          }
+        } catch (error) {
+          console.error("Erro ao buscar endereço:", error);
+        }
+      }
+    };
+
+    fetchAddress();
+  }, [zipCode, setValue]);
 
     return (
         <>
@@ -151,9 +177,9 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
-                                <label htmlFor="restaurantType" className="font-bold">Tipo do restaurante</label>
-                                <input placeholder="Japonesa" id="restaurantType" type="text" {...register("type")} className="border border-gray-300 rounded-md p-3 w-full outline-none" />
-                                {errors.type && <p className="text-red-500">{errors.type.message}</p>}
+                                <label htmlFor="restauranZipCode" className="font-bold">CEP do restaurante</label>
+                                <input placeholder="12345-678" id="restaurantZipCode" type="text" {...register("zipCode")} className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                                {errors.zipCode && <p className="text-red-500">{errors.zipCode.message}</p>}
                             </div>
                             <div className="flex flex-col gap-3">
                                 <label htmlFor="restaurantAdress" className="font-bold">Endereço do restaurante</label>
@@ -161,17 +187,25 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
                                 {errors.address && <p className="text-red-500">{errors.address.message}</p>}
                             </div>
                         </div>
-                        <div className="flex flex-col gap-3">
-                            <label className="font-bold">Categorias</label>
-                            {fields.map((item, index) => (
-                                <div key={item.id} className="flex items-center gap-2">
-                                <input className="outline-none border p-3 rounded-md w-full" {...register(`foodTypes.${index}`)} />
-                                <button type="button" onClick={() => remove(index)} className="text-red-500 font-bold">Remover</button>
-                                </div>
-                            ))}
-                            <button type="button" onClick={() => append("")} className="mt-2 text-blue-500 font-bold">+ Adicionar categoria</button>
-                            {errors.foodTypes && <p className="text-red-500">{errors.foodTypes.message}</p>}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div className="flex flex-col gap-3">
+                              <label htmlFor="restaurantType" className="font-bold">Tipo do restaurante</label>
+                              <input placeholder="Japonesa" id="restaurantType" type="text" {...register("type")} className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                              {errors.type && <p className="text-red-500">{errors.type.message}</p>}
+                          </div>
+                          <div className="flex flex-col gap-3">
+                              <label className="font-bold">Categorias</label>
+                              {fields.map((item, index) => (
+                                  <div key={item.id} className="flex items-center gap-2">
+                                  <input className="outline-none border p-3 rounded-md w-full" {...register(`foodTypes.${index}`)} />
+                                  <button type="button" onClick={() => remove(index)} className="text-red-500 font-bold">Remover</button>
+                                  </div>
+                              ))}
+                              <button type="button" onClick={() => append("")} className="mt-2 text-blue-500 font-bold">+ Adicionar categoria</button>
+                              {errors.foodTypes && <p className="text-red-500">{errors.foodTypes.message}</p>}
+                          </div>
                         </div>
+                        
                         <button className="button">Criar restaurante</button>
                     </form>
                     ) : (

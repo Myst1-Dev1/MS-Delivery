@@ -177,7 +177,7 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
                 <div className="w-full flex flex-col gap-5 m-auto rounded-md justify-center items-center">
                     <h1 className="text-xl font-bold">Acompanhe seu pedido</h1>
                     <div className="max-w-md mb-24 w-full h-48 rounded-md">
-                                <Map zipCode={data} address={restaurant.address} />
+                            <Map zipCode={data} address={restaurant.zipCode} />
                         </div>
                         <div className="px-6 lg:px-0 max-w-md flex flex-col gap-3">
                             <div className="flex items-center gap-3">

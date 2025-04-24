@@ -50,6 +50,7 @@ export type Restaurant = {
     banner:string,
     address:string,
     description:string,
+    zipCode:string,
     isOpen:boolean;
     type:string,
     menuOptions:string[],

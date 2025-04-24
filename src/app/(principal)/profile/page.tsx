@@ -3,6 +3,7 @@
 import { Loading } from "@/components/global/Loading";
 import { useUser } from "@/hooks/useUser";
 import { api } from "@/services/axios";
+import { handleCepChange } from "@/utils/cepChange";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { setCookie } from "nookies";
@@ -24,6 +25,11 @@ export default function Profile() {
         const formData = new FormData(e.currentTarget);
         const { name, email, address, zipCode } = Object.fromEntries(formData);
       
+        if (address !== user?.address && (!zipCode || zipCode === user?.zipCode)) {
+            setPending(false);
+            return alert('Você precisa preencher um novo CEP para alterar o endereço.');
+        }
+
         try {
           const res = await api.put('/user/' + user?.id, {
             name,
@@ -80,7 +86,14 @@ export default function Profile() {
                         </div>
                         <div className="flex flex-col gap-3">
                             <label htmlFor="zipCode">CEP</label>
-                            <input className="input text-gray-500 font-thin" name="zipCode" type="tel" defaultValue={user?.zipCode} id="zipCode" />
+                            <input 
+                                className="input text-gray-500 font-thin" 
+                                name="zipCode" 
+                                type="tel" 
+                                defaultValue={user?.zipCode} 
+                                id="zipCode" 
+                                onBlur={(e) => handleCepChange(e.target.value)}
+                            />
                         </div>
                     </div>
                     <span className="text-red-600 text-center">{error}</span>

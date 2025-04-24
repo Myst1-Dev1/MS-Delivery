@@ -46,6 +46,7 @@ export const signUpRestaurantSchema = z.object({
 export const restaurantSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
   address: z.string().min(1, "O endereço é obrigatório."),
+  zipCode: z.string().min(1, "O CEP é obrigatório."),
   about: z.string().min(10, "A descrição deve ter pelo menos 10 caracteres."),
   type: z.string().min(1, "O tipo é obrigatório."),
   foodTypes: z.array(z.string().min(1, "Os tipos de comida são obrigatórios.")),
@@ -89,6 +90,7 @@ export const productSchema = z.object({
 export const infoSchema = z.object({
   title: z.string().min(1, "Informe um titulo.").optional(),
   address: z.string().min(5, "O endereço deve ter pelo menos 5 caracteres."),
+  zipCode: z.string().min(8, "O CEP deve ter pelo menos 8 caracteres."),
   about: z.string().min(10, "A descrição deve ter pelo menos 10 caracteres.").optional(),
   foodTypes: z.array(z.string().optional()),
 })

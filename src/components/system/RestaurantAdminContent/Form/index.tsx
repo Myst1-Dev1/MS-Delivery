@@ -10,17 +10,19 @@ import { FaTrashAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { LogoUpdate } from "../LogoUpdate";
 import { api } from "@/services/axios";
+import { handleCepChange } from "@/utils/cepChange";
 
 interface FormProps {
     logo:string;
     title:string;
     about:string;
     address:string;
+    zipCode:string;
     type: string[];
     id:string;
 }
 
-export function Form({ logo, title, about, address, type, id }:FormProps) {
+export function Form({ logo, title, about, address, zipCode, type, id }:FormProps) {
     const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
@@ -30,6 +32,7 @@ export function Form({ logo, title, about, address, type, id }:FormProps) {
         defaultValues: {
         title: "",
         address: "",
+        zipCode: "",
         about: "",
         foodTypes: [""],
         }
@@ -40,7 +43,7 @@ export function Form({ logo, title, about, address, type, id }:FormProps) {
         name: "foodTypes",
       });
     
-    const data = { title, address, about, type };
+    const data = { title, address, zipCode, about, type };
 
     async function handleUpdateRestaurantInformations(data:any) {
         setIsLoading(true);
@@ -50,9 +53,14 @@ export function Form({ logo, title, about, address, type, id }:FormProps) {
                 ...(Array.isArray(data.foodTypes) ? data.foodTypes : [data.foodTypes])
             ];
 
+            if (data.address !== address && (data.zipCode === zipCode || !data.zipCode)) {
+                return alert('Você precisa preencher um novo CEP para alterar o endereço.');
+            }
+
             await api.put("/restaurant/info/" + id, {
                 name: data.title,
                 address: data.address,
+                zipCode: data.zipCode,
                 description: data.about,
                 menuOptions
             })
@@ -88,6 +96,7 @@ export function Form({ logo, title, about, address, type, id }:FormProps) {
         setValue("title", data.title);
         setValue("address", data.address);
         setValue("about", data.about);
+        setValue("zipCode", data.zipCode);
     }, [setValue, data]);
 
     return (
@@ -101,9 +110,21 @@ export function Form({ logo, title, about, address, type, id }:FormProps) {
                     {errors.title && <p className="text-red-500">{errors.title.message}</p>}
                 </div>
                 <div className="flex flex-col gap-3">
-                    <label htmlFor="restaurantName" className="font-bold">Endereço do restaurante</label>
-                    <input {...register("address")} placeholder={address} id="restaurantName" type="text" className="input bg-transparent" />
+                    <label htmlFor="address" className="font-bold">Endereço do restaurante</label>
+                    <input {...register("address")} placeholder={address} id="address" type="text" className="input bg-transparent" />
                     {errors.address && <p className="text-red-500">{errors.address.message}</p>}
+                </div>
+                <div className="flex flex-col gap-3">
+                    <label htmlFor="restaurantzipCode" className="font-bold">CEP do restaurante</label>
+                    <input 
+                        {...register("zipCode")} 
+                        placeholder={address} 
+                        id="restaurantZipCode" 
+                        type="tel" 
+                        className="input bg-transparent" 
+                        onBlur={(e) => handleCepChange(e.target.value)}
+                    />
+                    {errors.zipCode && <p className="text-red-500">{errors.zipCode.message}</p>}
                 </div>
                 <div className="flex flex-col gap-3">
                     <label htmlFor="restaurantCategory" className="font-bold">Nova categoria</label>

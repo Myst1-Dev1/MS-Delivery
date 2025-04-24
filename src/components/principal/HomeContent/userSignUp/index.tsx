@@ -1,5 +1,6 @@
 import { handleCreateUserAccount } from "@/app/actions/AuthActions";
 import { Loading } from "@/components/global/Loading";
+import { handleCepChange } from "@/utils/cepChange";
 import { useActionState } from "react";
 
 interface userSignUpProps {
@@ -26,14 +27,14 @@ export function UserSignUp({ setHaveAccount }:userSignUpProps) {
                 </div>
                 <div className="flex flex-col lg:flex-row gap-3">
                     <div className="flex flex-col gap-3">
+                        <label htmlFor="zipCode">CEP</label>
+                        <input className="input" type="tel" id="zipCode" name="zipCode" placeholder="12345-00" onBlur={(e) => handleCepChange(e.target.value)} />
+                        {formState.errors?.zipCode && <p className="text-red-500 text-sm">{formState.errors.zipCode[0]}</p>}
+                    </div>
+                    <div className="flex flex-col gap-3">
                         <label htmlFor="address">Endereço</label>
                         <input className="input" type="text" id="address" name="address" placeholder="Rua San Loren Av 15" />
                         {formState.errors?.address && <p className="text-red-500 text-sm">{formState.errors.address[0]}</p>}
-                    </div>
-                    <div className="flex flex-col gap-3">
-                        <label htmlFor="zipCode">CEP</label>
-                        <input className="input" type="tel" id="zipCode" name="zipCode" placeholder="12345-00" />
-                        {formState.errors?.zipCode && <p className="text-red-500 text-sm">{formState.errors.zipCode[0]}</p>}
                     </div>
                 </div>
                 <div className="flex flex-col lg:flex-row gap-3">
