@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MS Delivery
 
-## Getting Started
+Sistema de delivery no qual é possível criar uma conta como restaurante ou como cliente. Restaurantes podem gerenciar seus pratos e acompanhar as vendas, enquanto clientes podem explorar opções e realizar pedidos com praticidade.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Funcionalidades
+
+- Cadastro e login de usuários e restaurantes
+- Painel de administração para restaurantes
+- Criação e gerenciamento de produtos (pratos)
+- Gerenciamento de pedidos (criar, aceitar, recusar, concluir)
+- Avaliações de usuários para restaurantes
+- Chat em tempo real entre cliente e restaurante
+
+🛠️ Tecnologias Utilizadas
+
+Este projeto foi desenvolvido utilizando uma stack moderna e robusta, com foco em performance, escalabilidade e experiência do usuário. Abaixo estão as principais tecnologias utilizadas:
+
+---
+
+🔧 Front-end
+
+- Next.js – Framework React para aplicações web otimizadas com SSR e rotas automáticas.
+- React 19 (Release Candidate) – Biblioteca principal para criação da UI.
+- Tailwind CSS – Utilitário de estilos para desenvolvimento rápido e responsivo.
+- GSAP + @gsap/react – Biblioteca para animações fluidas e interativas.
+- React Hook Form + Zod + @hookform/resolvers – Gerenciamento eficiente de formulários com validações tipadas.
+- React Icons – Ícones prontos para uso com suporte a múltiplas bibliotecas.
+- React ChartJS 2 + Chart.js – Visualização de dados com gráficos dinâmicos.
+- React Leaflet + Leaflet – Integração de mapas interativos.
+- React Toastify – Notificações toast elegantes e configuráveis.
+
+---
+
+💬 Funcionalidades em Tempo Real
+
+- Socket.IO (cliente) – Comunicação em tempo real para funcionalidades como chat ao vivo.
+
+---
+
+🌐 Integração e Consumo de APIs
+
+- Axios – Cliente HTTP para integração com backends e APIs externas.
+
+---
+
+🗺️ Geolocalização e Rotas
+
+- OpenRouteService JS – Cálculo de rotas, distâncias e geocodificação usando mapas.
+
+---
+
+🔐 Autenticação e Sessão
+
+- Nookies – Gerenciamento de cookies no lado do servidor e cliente.
+
+---
+
+
+📦 Deploy
+- Vercel – Plataforma de deploy e hospedagem otimizada para projetos Next.js, com CI/CD integrado.
+
+---
+
+🧪 Outras Bibliotecas
+- Day.js – Manipulação de datas simples e leve.
+- Radix UI (Dialog) – Componentes acessíveis e estilizados via Tailwind.
+- TanStack React Query – Gerenciamento de dados assíncronos com cache e reatividade.
+- Edgestore - Uploads e gerenciamento de arquivos com integração edge-ready.
+
+🚀 Iniciando o Projeto
+Siga os passos abaixo para rodar o MS-Delivery localmente:
+
+1. Clone o repositório
+
+```
+git clone https://github.com/Myst1-Dev1/MS-Delivery.git
+cd MS-Delivery
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Instale as dependências
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
 
-## Learn More
+3. Configure as váriaveis de ambiente
 
-To learn more about Next.js, take a look at the following resources:
+```
+Crie um arquivo .env com para a utilização do upload do edgestore ao criar um restaurante com banner, logo ou um prato que possui uma imagem
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+EDGE_STORE_ACCESS_KEY=your_access_key
+EDGE_STORE_SECRET_KEY=your_secret_key
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
 
-## Deploy on Vercel
+4. Rode o projeto
+```
+npm run dev
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+📚 Api utilizada
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+
+https://ms-delivery-api.onrender.com/api-docs/
+
+```
