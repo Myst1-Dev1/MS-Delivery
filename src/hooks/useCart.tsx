@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
 import { Category, Dishes } from "@/types/restaurantDetails";
-import { getRestaurantUserId } from "@/services/graphql/graphql";
 
 export type CartItem = {
   quantity: number;
@@ -67,18 +66,18 @@ export function CartProvider({ children }:CartProvicerProps) {
     return total + (current.product.price * current.quantity)
   }, 0);
 
-  async function getUserId() {
-    try {
-      const id = await getRestaurantUserId();
-      setUserId(id);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // async function getUserId() {
+  //   try {
+  //     const id = await getRestaurantUserId();
+  //     setUserId(id);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
-  useEffect(() => {
-    getUserId();
-  }, []);
+  // useEffect(() => {
+  //   getUserId();
+  // }, []);
 
   return (
     <CartContext.Provider value={{cart, handleAddToCart, handleRemoveToCart, handleObservationChange, totalCart, observation, setObservation, userId}}>

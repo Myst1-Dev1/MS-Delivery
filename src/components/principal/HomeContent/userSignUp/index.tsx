@@ -39,13 +39,13 @@ export function UserSignUp({ setHaveAccount }:userSignUpProps) {
                 </div>
                 <div className="flex flex-col lg:flex-row gap-3">
                     <div className="flex flex-col gap-3">
-                        <label htmlFor="senha" id="senha">Senha</label>
-                        <input className="input" type="password" id="senha" name="password" placeholder="***********" />
+                        <label htmlFor="password">Senha</label>
+                        <input className="input" type="password" id="password" name="password" placeholder="***********" />
                         {formState.errors?.password && <p className="text-red-500 text-sm">{formState.errors.password[0]}</p>}
                     </div>
                     <div className="flex flex-col gap-3">
-                        <label htmlFor="comfirm_senha" id="comfirm_senha">Confirme a Senha</label>
-                        <input className="input" type="password" id="comfirm_senha" name="confirm_password" placeholder="***********" />
+                        <label htmlFor="comfirm_password">Confirme a Senha</label>
+                        <input className="input" type="password" id="comfirm_password" name="confirm_password" placeholder="***********" />
                         {formState.errors?.confirm_password && <p className="text-red-500 text-sm">{formState.errors.confirm_password[0]}</p>}
                     </div>
                 </div>

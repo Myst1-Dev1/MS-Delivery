@@ -47,11 +47,17 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
     const restaurantInCart = cart.find((cartItem) => cartItem.restaurantId === id);
     const restaurantId:any = restaurantInCart ? restaurantInCart.restaurantId : null;
 
-    const pedidosDoUsuario = order
-  ?.filter((pedido:any) => pedido.userId === user?.id)
-  ?.sort((a:any, b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+//     const pedidosDoUsuario = order
+//   ?.filter((pedido:any) => pedido.userId === user?.id)
+//   ?.sort((a:any, b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    const pedidoMaisRecente = pedidosDoUsuario?.[0];
+//     const pedidoMaisRecente = pedidosDoUsuario?.[0];
+
+    const pedidosDoUsuario = Array.isArray(order)
+        ? order.filter((pedido: any) => pedido.userId === user?.id).sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        : [];
+
+    const pedidoMaisRecente = pedidosDoUsuario.find((pedido: any) => pedido.status === 'Pending') || pedidosDoUsuario[0];
 
     const { notifiedOrders, clearNotification } = useNotifications([pedidoMaisRecente?.id]);
 
@@ -63,7 +69,11 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
             setOrderStatus(true);
         } catch (error) {
             console.log(error);
-        }finally { setLoading(false) }
+        }finally { 
+            setTimeout(() => {
+                setLoading(false);
+            }, 2000);
+         }
     }
 
     async function handleShowAvaliationForm() {
@@ -105,7 +115,7 @@ export function CheckoutContent({ data, restaurant }:CheckoutContentProps) {
         <>
             <div className="mt-10 py-6 px-4 lg:px-10 mb-10 max-w-xl w-full m-auto border-0 lg:border border-gray-300 rounded-md">
                 {loading ? 
-                    <div className="grid place-items-center"><div className="loader-spin"/> </div>
+                    <div data-testid="loading" className="grid place-items-center"><div className="loader-spin"/> </div>
                 : orderStatus === false ?
                 <div>
                     <h2 className="text-center text-3xl font-bold">Seu Pedido</h2>

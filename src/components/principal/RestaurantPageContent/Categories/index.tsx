@@ -53,7 +53,7 @@ export function Categories({ options, dishes, id }: CategoriesProps) {
                 </div>
                     <div>
                         <div className="food-box flex flex-col">
-                            <h2 className="font-bold text-xl">{selectedType}</h2>
+                            <h2 data-testid="menu-option" className="font-bold text-xl">{selectedType}</h2>
                             <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
                                 {filteredData.length === 0 ? 
                                     <div>

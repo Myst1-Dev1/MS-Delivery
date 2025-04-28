@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { FaBell, FaShoppingBag } from "react-icons/fa";
-import Image from "next/image";
 import gsap from "gsap";
 import { useCart } from "@/hooks/useCart";
 import { usePathname, useRouter } from "next/navigation";
@@ -66,7 +65,7 @@ export function HeaderContent() {
       }, [pathname]);
 
     useEffect(() => {
-        if (user.isAdmin === true) {
+        if (user && user.isAdmin === true) {
             router.push("/system/restaurantAdmin");
         }
     }, [user, router]);
@@ -81,11 +80,11 @@ export function HeaderContent() {
                 <>
                     <div className={`flex items-center ${cart.length === 0 ? '' : 'gap-5'}`}>
                         <div className="cursor-pointer w-10 h-10 grid place-items-center bg-slate-200 rounded-full transition-all duration-500 hover:bg-orange-500 hover:text-white">
-                            <FaBell />
+                            <FaBell data-testid="bell" />
                         </div>
                         <div className="relative">
                             <span className={`absolute bottom-[9px] right-[-11px] w-5 h-5 bg-orange-500 text-white rounded-full ${cart.length === 0 ? 'hidden' : 'flex'} justify-center items-center`}>{cart.length}</span>
-                            {cart.length === 0 ? '' : <FaShoppingBag onClick={() => handleShowUserOptions('.cart', window.innerHeight)} className="text-xl cursor-pointer transition-all duration-500 hover:text-orange-500" />}
+                            {cart.length === 0 ? '' : <FaShoppingBag data-testid="cart" onClick={() => handleShowUserOptions('.cart', window.innerHeight)} className="text-xl cursor-pointer transition-all duration-500 hover:text-orange-500" />}
                         </div>
                     </div>
                 </>

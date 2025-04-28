@@ -12,10 +12,9 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { signInSchema } from "@/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "@/services/axios";
-import { setCookie } from "nookies";
 import { z } from "zod";
 import { useUser } from "@/hooks/useUser";
+import { handleSignIn } from "./homeContent";
 
 export default function HomeContent() {
     const { setUser } = useUser();
@@ -34,20 +33,9 @@ export default function HomeContent() {
             },
         });
 
-    async function handleSignIn(values: z.infer<typeof signInSchema>) {
-        setLoading(true);
+    async function signIn(values: z.infer<typeof signInSchema>) {
         try {
-            const res = await api.post("/auth/login", { email: values.email, password: values.password },
-                { withCredentials: true }
-            );
-            setCookie(undefined, 'user-token', JSON.stringify(res.data), {
-                maxAge: 604800, // 7 dias em segundos
-                path: '/', // Garante que o cookie seja acessível em todo o site
-            });
-
-            setUser(res.data)
-
-            router.push('/restaurants');
+            await handleSignIn(values, setLoading, setUser, router);
         } catch (error) {
             console.log("An unexpected error occurred. Please try again.");
         } finally {
@@ -71,7 +59,7 @@ export default function HomeContent() {
                 {haveAccount === 'login' &&
                     <div className="w-full max-w-[426px] m-auto flex flex-col gap-4">
                         <h2 className="text-2xl text-center font-bold">Bem vindo</h2>
-                        <form onSubmit={handleSubmit(handleSignIn)} className="flex flex-col gap-3">
+                        <form onSubmit={handleSubmit(signIn)} className="flex flex-col gap-3">
                             <div className="flex flex-col gap-3">
                                 <label htmlFor="email">Endereço de email</label>
                                 <input
