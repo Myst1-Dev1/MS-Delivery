@@ -5,6 +5,7 @@ import { useEdgeStore } from "@/lib/edgestore";
 import { restaurantSchema } from "@/lib/zod";
 import { api } from "@/services/axios";
 import { Restaurant } from "@/types/restaurantDetails";
+import { handleCepChange } from "@/utils/cepChange";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
@@ -53,14 +54,16 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
     name: "foodTypes",
   });
 
-  const zipCode = watch("zipCode");
-
   const onSubmit = async (data: any) => {
     try {
         setIsLoading(true);
         setIsSubmited(true);
 
         const foodTypes = data.foodTypes.map((item: any) => item.type || item);
+
+         if (data.address && !data.zipCode) {
+          alert("Você deve preencher o CEP antes de preencher o endereço.");
+        }
 
         if (file && logo) {
             const bannerUpload = await edgestore.myPublicImages.upload({ file });
@@ -103,25 +106,25 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
     }
   };
 
-  useEffect(() => {
-    const fetchAddress = async () => {
-      if (zipCode && zipCode.replace(/\D/g, "").length === 8) {
-        try {
-          const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`);
-          const data = await response.json();
+  // useEffect(() => {
+  //   const fetchAddress = async () => {
+  //     if (zipCode && zipCode.replace(/\D/g, "").length === 8) {
+  //       try {
+  //         const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`);
+  //         const data = await response.json();
 
-          if (!data.erro) {
-            const fullAddress = `${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`;
-            setValue("address", fullAddress);
-          }
-        } catch (error) {
-          console.error("Erro ao buscar endereço:", error);
-        }
-      }
-    };
+  //         if (!data.erro) {
+  //           const fullAddress = `${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`;
+  //           setValue("address", fullAddress);
+  //         }
+  //       } catch (error) {
+  //         console.error("Erro ao buscar endereço:", error);
+  //       }
+  //     }
+  //   };
 
-    fetchAddress();
-  }, [zipCode, setValue]);
+  //   fetchAddress();
+  // }, [zipCode, setValue]);
 
     return (
         <>
@@ -178,12 +181,12 @@ export default function CreateRestaurantContent({ token, restaurant }:CreateRest
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
                                 <label htmlFor="restauranZipCode" className="font-bold">CEP do restaurante</label>
-                                <input placeholder="12345-678" id="restaurantZipCode" type="text" {...register("zipCode")} className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                                <input placeholder="12345-678" id="restaurantZipCode" type="text" {...register("zipCode")} onBlur={(e) => handleCepChange(e.target.value)} className="border border-gray-300 rounded-md p-3 w-full outline-none" />
                                 {errors.zipCode && <p className="text-red-500">{errors.zipCode.message}</p>}
                             </div>
                             <div className="flex flex-col gap-3">
-                                <label htmlFor="restaurantAdress" className="font-bold">Endereço do restaurante</label>
-                                <input placeholder="RJ, Lorem silva" id="restaurantAdress" type="text"  {...register("address")} className="border border-gray-300 rounded-md p-3 w-full outline-none" />
+                                <label htmlFor="address" className="font-bold">Endereço do restaurante</label>
+                                <input placeholder="RJ, Lorem silva" id="address" type="text"  {...register("address")} className="border border-gray-300 rounded-md p-3 w-full outline-none" />
                                 {errors.address && <p className="text-red-500">{errors.address.message}</p>}
                             </div>
                         </div>
