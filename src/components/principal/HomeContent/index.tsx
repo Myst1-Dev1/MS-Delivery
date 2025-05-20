@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useUser } from "@/hooks/useUser";
 import { handleSignIn } from "./homeContent";
+import { CiForkAndKnife } from "react-icons/ci";
 
 export default function HomeContent() {
     const { setUser } = useUser();
@@ -48,7 +49,10 @@ export default function HomeContent() {
             <div className="px-4 py-10 lg:py-0 lg:px-0 flex flex-col lg:flex-row justify-between items-center lg:gap-0 gap-5">
                 <div className="bg-[#202020] w-full lg:w-1/2 min-h-screen hidden lg:grid place-items-center text-white">
                    <div className="px-5 flex flex-col justify-center items-center gap-4">
-                        <Logo color="text-white" />
+                        <div className="flex gap-3 items-center">
+                            <h1 className={`font-bold text-xl lg:text-3xl text-white`}><span className="text-orange-500">MS</span> Delivery</h1>
+                            <CiForkAndKnife className="text-orange-500 text-xl" />
+                        </div>
                         <Image src="/images/delivery-man.svg" width={400} height={400} alt="foto de um sistema de entrega" />
                         <p>
                             Facilite a gestão do seu restaurante e otimize suas operações com o MS Delivery, a solução completa para o seu negócio
@@ -57,7 +61,7 @@ export default function HomeContent() {
                 </div>
 
                 {haveAccount === 'login' &&
-                    <div className="w-full max-w-[426px] m-auto flex flex-col gap-4">
+                    <div className="w-full max-w-[426px] m-auto flex justify-center min-h-screen lg:h-full flex-col gap-4">
                         <h2 className="text-2xl text-center font-bold">Bem vindo</h2>
                         <form onSubmit={handleSubmit(signIn)} className="flex flex-col gap-3">
                             <div className="flex flex-col gap-3">
@@ -93,7 +97,7 @@ export default function HomeContent() {
                 }
 
                 {haveAccount === 'signUp' &&
-                <div className=" m-auto flex flex-col gap-4">
+                <div className="m-auto flex justify-center min-h-screen lg:h-full flex-col gap-4">
                     <h2 className="text-2xl text-center font-bold">Criar conta</h2>
                     <div className="flex gap-3">
                         <div onClick={() => setAccountType('user')} className={`cursor-pointer w-full flex items-center justify-center gap-3 p-3 rounded-md ${accountType === 'user' ? 'bg-orange-600 text-white' : 'border border-gray-500'} transition-all duration-500 hover:bg-orange-700 hover:text-white`}>

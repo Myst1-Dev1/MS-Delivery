@@ -44,6 +44,7 @@ export function UserSignUp({ setHaveAccount }:userSignUpProps) {
             console.log(error);
         }finally {
             setPending(false);
+            setHaveAccount('login');
         }
     }
 

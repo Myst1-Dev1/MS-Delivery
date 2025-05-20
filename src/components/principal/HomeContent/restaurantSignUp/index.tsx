@@ -41,6 +41,7 @@ export function RestaurantSignUp({ setHaveAccount }:RestaurantSignUpProps) {
             console.log(error);
         } finally {
             setPending(false);
+            setHaveAccount('login');
         }
     }
 
