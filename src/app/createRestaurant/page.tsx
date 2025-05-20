@@ -1,9 +1,9 @@
-import CreateRestaurantContent from "@/components/CreateRestaurantContent";
+import { CreateRestaurantContent } from "@/components/CreateRestaurantContent";
 import { fetchRestaurantByUserId } from "@/services/fetchData/fetchRestaurantByUserId";
 import { cookies } from "next/headers";
 
-export default async function Home() {
-    const cookie = await cookies();
+export default async function CreateRestaurantPage() {
+    const cookie = cookies();
     const token = cookie.get('token');
 
     const id = cookie.get('user-token');

@@ -9,7 +9,7 @@ import { handleCepChange } from "@/utils/cepChange";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { FaCheck, FaCloudUploadAlt } from "react-icons/fa";
 
@@ -18,7 +18,7 @@ interface CreateRestaurantContentProps {
     restaurant: Restaurant;
 }
 
-export default function CreateRestaurantContent({ token, restaurant }:CreateRestaurantContentProps) {
+export function CreateRestaurantContent({ token, restaurant }:CreateRestaurantContentProps) {
   const { user } = useUser();
 
   const [isSubmited, setIsSubmited] = useState(false);
