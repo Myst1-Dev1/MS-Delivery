@@ -11,16 +11,21 @@ export const signInSchema = object({
 });
 
 export const signUpSchema = z.object({
-  name:z.string().min(3, "O nome deve ter até 3 letras"),
-  email: string({ required_error: "Email is required" })
-        .min(1, "Email is required")
-        .email("Invalid email"),
-  password: string({ required_error: "Password is required" })
-      .min(1, "Password is required")
-      .min(6, "Password must be more than 6 characters")
-      .max(32, "Password must be less than 32 characters"),
-  address:z.string().min(15, "O Endereço deve ter até 15 letras"),
-  zipCode:z.string().min(8, "O CEP deve ter até 8 números"),
+  name: z.string().min(3, "O nome deve ter no mínimo 3 letras"),
+  email: z.string({ required_error: "Email is required" })
+          .min(1, "Email is required")
+          .email("Invalid email"),
+  address: z.string().min(15, "O Endereço deve ter no mínimo 15 letras"),
+  zipCode: z.string().min(8, "O CEP deve ter no mínimo 8 números"),
+  password: z.string({ required_error: "Password is required" })
+          .min(1, "Password is required")
+          .min(6, "Password must be more than 6 characters")
+          .max(32, "Password must be less than 32 characters"),
+  comfirm_password: z.string().min(6, "Confirme a senha"),
+})
+.refine((data) => data.password === data.comfirm_password, {
+  path: ["comfirm_password"],
+  message: "As senhas não coincidem",
 });
 
 export const userSchema = z.object({
@@ -32,15 +37,21 @@ export const userSchema = z.object({
   zipCode:z.string().min(8, "O CEP deve ter até 8 números").optional(),
 });
 
-export const signUpRestaurantSchema = z.object({
-  name:z.string().min(3, "O nome deve ter até 3 letras"),
-  email: string({ required_error: "Email is required" })
-        .min(1, "Email is required")
-        .email("Invalid email"),
-  password: string({ required_error: "Password is required" })
-      .min(1, "Password is required")
-      .min(6, "Password must be more than 6 characters")
-      .max(32, "Password must be less than 32 characters")
+export const signUpRestaurantSchema = z
+  .object({
+    name: z.string().min(3, "O nome deve ter no mínimo 3 letras"),
+    email: z.string({ required_error: "Email é obrigatório" })
+      .min(1, "Email é obrigatório")
+      .email("Email inválido"),
+    password: z.string({ required_error: "Senha é obrigatória" })
+      .min(1, "Senha é obrigatória")
+      .min(6, "A senha deve ter no mínimo 6 caracteres")
+      .max(32, "A senha deve ter no máximo 32 caracteres"),
+    comfirm_password: z.string().min(6, "Confirme a senha"),
+  })
+  .refine((data) => data.password === data.comfirm_password, {
+    path: ["comfirm_password"],
+    message: "As senhas não coincidem",
 });
 
 export const restaurantSchema = z.object({
