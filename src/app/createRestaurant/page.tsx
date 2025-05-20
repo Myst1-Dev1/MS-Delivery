@@ -1,4 +1,4 @@
-import { CreateRestaurantContent } from "@/components/CreateRestaurantContent";
+import { CreateRestaurantContent } from "@/components/createRestaurantContent";
 import { fetchRestaurantByUserId } from "@/services/fetchData/fetchRestaurantByUserId";
 import { cookies } from "next/headers";
 
