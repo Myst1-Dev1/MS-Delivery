@@ -15,7 +15,8 @@ export const signUpSchema = z.object({
   email: z.string({ required_error: "Email is required" })
           .min(1, "Email is required")
           .email("Invalid email"),
-  address: z.string().min(15, "O Endereço deve ter no mínimo 15 letras"),
+  address: z.string().min(15, "O Endereço deve ter no mínimo 15 letras")
+  .max(100, "O Endereço deve ter no máximo 100 letras"),
   zipCode: z.string().min(8, "O CEP deve ter no mínimo 8 números"),
   password: z.string({ required_error: "Password is required" })
           .min(1, "Password is required")
