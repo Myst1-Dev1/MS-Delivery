@@ -1,45 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export default function middleware(request: NextRequest) {
-  const token = request.cookies.get('user-token')?.value;
+export function middleware(request: NextRequest) {
+  const tokenCookie = request.cookies.get('user-token');
   const url = request.nextUrl;
-  const home = new URL('/', request.url);
-  const system = new URL('/system', request.url);
-  const restaurants = new URL('/restaurants', request.url);
 
-  // ✅ Se não tiver token, pode acessar qualquer rota pública
-  if (!token) return NextResponse.next();
+  const homeUrl = new URL('/', request.url);
+  const systemUrl = new URL('/system', request.url);
+  const restaurantsUrl = new URL('/restaurants', request.url);
 
-  // ✅ Parse do cookie para pegar o isAdmin
-  const userData = decodeURIComponent(token);
-  let parsed;
+  if (!tokenCookie) {
+    if (url.pathname.startsWith('/restaurants') || url.pathname.startsWith('/system')) {
+      return NextResponse.redirect(homeUrl);
+    }
+    return NextResponse.next();
+  }
+
+  let userData;
   try {
-    parsed = JSON.parse(userData);
+    const decoded = decodeURIComponent(tokenCookie.value);
+    userData = JSON.parse(decoded);
   } catch {
-    return NextResponse.redirect(home);
+    return NextResponse.redirect(homeUrl);
   }
 
-  const isAdmin = parsed?.isAdmin;
+  const isAdmin = userData?.isAdmin;
 
-  // 🔒 Impede que usuários logados vejam a home
   if (url.pathname === '/') {
-    return NextResponse.redirect(isAdmin ? system : restaurants);
+    return NextResponse.redirect(isAdmin ? systemUrl : restaurantsUrl);
   }
 
-  // 🔒 Admin tentando acessar restaurants → redireciona para /system
   if (isAdmin && url.pathname.startsWith('/restaurants')) {
-    return NextResponse.redirect(system);
+    return NextResponse.redirect(systemUrl);
   }
 
-  // 🔒 Usuário comum tentando acessar /system → redireciona para /restaurants
   if (!isAdmin && url.pathname.startsWith('/system')) {
-    return NextResponse.redirect(restaurants);
+    return NextResponse.redirect(restaurantsUrl);
   }
 
   return NextResponse.next();
 }
 
-// Aplica só nas rotas necessárias
 export const config = {
-  matcher: ['/', '/system', '/restaurants'],
+  matcher: ['/', '/system/:path*', '/restaurants/:path*'],
 };
