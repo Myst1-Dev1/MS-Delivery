@@ -73,7 +73,7 @@ export function HeaderContent() {
     return (
         <>
             <header className="px-4 lg:px-16 py-6 flex justify-between items-center w-full">
-                <Logo />
+                <Logo link="/restaurants" />
                 {user === null ? 
                 <p>Carregando...</p>
                 :
