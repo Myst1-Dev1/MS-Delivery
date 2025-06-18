@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 
 interface RestaurantSignUpProps {
-    setHaveAccount:any;
+    setHaveAccount?:any;
 }
 
 export function RestaurantSignUp({ setHaveAccount }:RestaurantSignUpProps) {
@@ -47,8 +47,8 @@ export function RestaurantSignUp({ setHaveAccount }:RestaurantSignUpProps) {
 
     return (
         <>
-            <form onSubmit={handleSubmit(handleCreateRestaurantAccount)} className="flex flex-col gap-3">
-                <div className="flex flex-col lg:flex-row gap-3">
+            <form onSubmit={handleSubmit(handleCreateRestaurantAccount)} className="max-w-80 lg:max-w-md w-full m-auto flex flex-col justify-center items-center mb-10 gap-3">
+                <div className="flex flex-col lg:flex-row lg:gap-0 justify-between w-full gap-5">
                     <div className="flex flex-col gap-3">
                         <label htmlFor="name">Nome</label>
                         <input className="input" type="text" id="name" {...register("name")} placeholder="john" />
@@ -60,7 +60,7 @@ export function RestaurantSignUp({ setHaveAccount }:RestaurantSignUpProps) {
                         {errors?.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                     </div>
                 </div>
-                <div className="flex flex-col lg:flex-row gap-3">
+                <div className="flex flex-col lg:flex-row lg:gap-0 justify-between w-full gap-5">
                     <div className="flex flex-col gap-3">
                         <label htmlFor="password">Senha</label>
                         <input className="input" type="password" id="password" {...register("password")} placeholder="***********" />
@@ -73,7 +73,7 @@ export function RestaurantSignUp({ setHaveAccount }:RestaurantSignUpProps) {
                     </div>
                 </div>
                 <p className="mt-0 text-center">Já possui uma conta? <span onClick={() => setHaveAccount('login')} className="cursor-pointer text-orange-600 font-bold">Login</span></p>
-                <button className="button" type="submit">{pending ? <Loading /> : 'Cadastrar'}</button>
+                <button className="button w-full" type="submit">{pending ? <Loading /> : 'Cadastrar'}</button>
             </form>
         </>
     )

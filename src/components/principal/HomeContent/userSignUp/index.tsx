@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 interface userSignUpProps {
-    setHaveAccount:any;
+    setHaveAccount?:any;
 }
 
 export function UserSignUp({ setHaveAccount }:userSignUpProps) {
@@ -50,8 +50,8 @@ export function UserSignUp({ setHaveAccount }:userSignUpProps) {
 
     return (
         <>
-            <form onSubmit={handleSubmit(handleCreateUserAccount)} className="flex flex-col gap-3">
-                <div className="flex flex-col lg:flex-row gap-3">
+            <form onSubmit={handleSubmit(handleCreateUserAccount)} className="h-[520px] overflow-y-scroll scrollDontShow lg:h-full max-w-80 lg:max-w-md w-full m-auto flex justify-center items-center mb-5 flex-col gap-3">
+                <div className="flex flex-col lg:flex-row lg:gap-0 justify-between w-full gap-5">
                     <div className="flex flex-col gap-3">
                         <label htmlFor="name">Nome</label>
                         <input className="input" type="text" id="name" {...register("name")} placeholder="john" />
@@ -63,7 +63,7 @@ export function UserSignUp({ setHaveAccount }:userSignUpProps) {
                         {errors?.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                     </div>
                 </div>
-                <div className="flex flex-col lg:flex-row gap-3">
+                <div className="flex flex-col lg:flex-row lg:gap-0 justify-between w-full gap-5">
                     <div className="flex flex-col gap-3">
                         <label htmlFor="zipCode">CEP</label>
                         <input className="input" type="tel" id="zipCode" {...register("zipCode")} placeholder="12345-00" onBlur={(e) => handleCepChange(e.target.value)} />
@@ -75,7 +75,7 @@ export function UserSignUp({ setHaveAccount }:userSignUpProps) {
                         {errors?.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
                     </div>
                 </div>
-                <div className="flex flex-col lg:flex-row gap-3">
+                <div className="flex flex-col lg:flex-row lg:gap-0 justify-between w-full gap-5">
                     <div className="flex flex-col gap-3">
                         <label htmlFor="password">Senha</label>
                         <input className="input" type="password" id="password" {...register("password")} placeholder="***********" />
@@ -88,7 +88,7 @@ export function UserSignUp({ setHaveAccount }:userSignUpProps) {
                     </div>
                 </div>
                 <p className="mt-0 text-center">Já possui uma conta? <span onClick={() => setHaveAccount('login')} className="cursor-pointer text-orange-600 font-bold">Login</span></p>
-                <button className="button" type="submit">
+                <button className="button w-full" type="submit">
                     {pending ? <Loading /> : 'Cadastrar'}
                 </button>
             </form>

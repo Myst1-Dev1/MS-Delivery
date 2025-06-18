@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export function Testimonials() {
     const [selected, setSelected] = useState(0);
@@ -28,20 +31,34 @@ export function Testimonials() {
       comment:
       "A plataforma é muito intuitiva e me ajudou a agilizar meu atendimento ao cliente. Fiquei impressionada com a eficiência da entrega e a atenção aos detalhes."
     },
-  ];
+    ];
+
+    useGSAP(() => {
+        ScrollTrigger.create({
+            trigger:'#testimonials',
+            start:'top 90%',
+            once:true,
+            onEnter:() => {
+                const tl = gsap.timeline({defaults:{ stagger:0.4, duration:0.4, ease:'sine' }});
+
+                tl.fromTo('.ts-text', { opacity:0, y:40 }, { opacity:1, y:0 });
+                tl.fromTo('.avatar', { opacity:0, x:-80 }, { opacity:1, x:0 });
+                tl.fromTo('.ts-comment', { opacity:0, y:50 }, { opacity:1, y:0 });
+            }
+        });
+    }, []);
 
     return (
         <>
-            <div className="py-8">
-                <h2 className="text-2xl text-center font-bold">O que os nossos clientes satisfeitos dizem</h2>
+            <div id="testimonials" className="py-16">
+                <h2 className="ts-text text-2xl text-center font-bold">O que os nossos clientes satisfeitos dizem</h2>
                  <div className="mt-20 max-w-5xl mx-auto flex flex-col lg:flex-row items-center gap-10 px-4">
-                    {/* Avatares */}
                     <div className="flex flex-col items-start gap-6 w-full lg:w-1/3">
                         {testimonials.map((person, index) => (
                             <button
                                 key={index}
                                 onClick={() => setSelected(index)}
-                                className="flex items-center gap-4 text-left focus:outline-none"
+                                className="avatar flex items-center gap-4 text-left focus:outline-none"
                                 >
                                 <img
                                     src={person.image}
@@ -60,7 +77,7 @@ export function Testimonials() {
                         ))}
                     </div>
 
-                    <div className="w-full lg:w-2/3 transition-all duration-300">
+                    <div className="ts-comment w-full lg:w-2/3 transition-all duration-300">
                         <blockquote className="text-gray-600 italic text-lg border-l-4 pl-4 border-orange-500">
                             “{testimonials[selected].comment}”
                         </blockquote>

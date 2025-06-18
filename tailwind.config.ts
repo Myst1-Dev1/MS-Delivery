@@ -17,6 +17,9 @@ const config: Config = {
         "home-bg": "url(/images/home-bg.webp)",
         "restaurant-bg": "url(/images/restaurant-photo.webp)",
         "vector-bg": "url(/images/vector-bg.webp)"
+      },
+      strokeWidth: {
+        '2': '20px',
       }
     },
   },
