@@ -18,6 +18,10 @@ export function OurFuncionalities() {
                 tl.fromTo('.our-text', { opacity:0, y:50 }, { opacity:1, y:0 });
                 tl.fromTo('.our-box', { opacity:0, scale:1.4 }, { opacity:1, scale:1 });
                 tl.fromTo('.ourImg', { opacity:0, x:100 }, { opacity:1, x:0 });
+
+                 tl.fromTo('.our-r-text', { opacity:0, y:50 }, { opacity:1, y:0 });
+                tl.fromTo('.our-r-box', { opacity:0, scale:1.4 }, { opacity:1, scale:1 });
+                tl.fromTo('.our-rImg', { opacity:0, x:100 }, { opacity:1, x:0 });
             }
         });
     }, []);
@@ -53,27 +57,27 @@ export function OurFuncionalities() {
                     <Image className="ourImg" src="/images/client-funcionality.webp" width={400} height={400} alt="foto de funcionalidades do cliente" />
                 </div>
                 <div className="mt-10 flex justify-evenly items-center flex-wrap lg:gap-0 gap-10">
-                    <Image className="ourImg" src="/images/restaurant-funcionality.webp" width={400} height={400} alt="foto de funcionalidades do restaurante" />
+                    <Image className="our-rImg" src="/images/restaurant-funcionality.webp" width={400} height={400} alt="foto de funcionalidades do restaurante" />
                     <div className="flex flex-col gap-3 max-w-md w-full">
-                        <h3 className="our-text text-xl font-bold">Para o restaurante</h3>
-                        <p className="our-text">
+                        <h3 className="our-r-text text-xl font-bold">Para o restaurante</h3>
+                        <p className="our-r-text">
                             Nossa plataforma ajuda restaurantes a gerenciar pedidos com agilidade, oferecendo controle das operações em tempo real. <br /> Com um painel completo, é possível acompanhar vendas, atualizar status e se comunicar com seus clientes de forma prática.
                         </p>
-                        <p className="our-text">Veja abaixo as funcionalidades do restaurante:</p>
+                        <p className="our-r-text">Veja abaixo as funcionalidades do restaurante:</p>
                         <div className="flex flex-col gap-2">
                             <div className="our-box flex items-center gap-3">
                                 <FaChartBar className="stroke-2 text-xl stroke-orange-600 fill-none" />
                                 Painel de administração completo
                             </div>
-                            <div className="our-box flex items-center gap-3">
+                            <div className="our-r-box flex items-center gap-3">
                                 <FaCube className="stroke-2 text-xl stroke-orange-600 fill-none" />
                                 Gerenciar pratos, pedidos e vendas
                             </div>
-                            <div className="our-box flex items-center gap-3">
+                            <div className="our-r-box flex items-center gap-3">
                                 <FaChartLine className="stroke-2 text-xl stroke-orange-600 fill-none" />
                                 Atualizar status de pedidos
                             </div>
-                            <div className="our-box flex items-center gap-3">
+                            <div className="our-r-box flex items-center gap-3">
                                 <FaRocketchat className="stroke-2 text-xl stroke-orange-600 fill-none" />
                                 Comunicação direta com o cliente
                             </div>
